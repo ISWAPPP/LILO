@@ -1,0 +1,341 @@
+/* styles/features.css — стилі специфічні для кожної вкладки. */
+
+/* ============================================================
+   DNS FEATURE
+   ============================================================ */
+#output { margin-top: 16px; }
+
+.results-container {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.result-row {
+    display: flex;
+    padding: 10px 12px;
+    align-items: baseline;
+    cursor: pointer;
+    border-radius: var(--radius-md);
+    background: var(--bg-sec);
+    border: 1px solid var(--border-light);
+    transition: all 0.2s;
+}
+
+.result-row:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--border-focus);
+}
+
+.result-row.copied {
+    background: var(--success-bg);
+    border-color: var(--success-text);
+}
+
+.result-label {
+    width: 70px;
+    font-weight: 600;
+    color: var(--text-muted);
+    font-size: 0.85em;
+    flex-shrink: 0;
+}
+
+.result-value {
+    flex-grow: 1;
+    font-family: 'SF Mono', 'Menlo', monospace;
+    font-size: 0.9em;
+    word-break: break-all;
+    line-height: 1.5;
+    color: var(--text-main);
+    user-select: text;
+    -webkit-user-select: text;
+}
+
+.badge-mx {
+    background: var(--accent);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 0.75em;
+    margin-right: 6px;
+    font-weight: 600;
+}
+
+.geo-tag {
+    font-size: 0.85em;
+    color: var(--text-muted);
+    display: inline-block;
+    margin-top: 4px;
+}
+
+/* ============================================================
+   PICS FEATURE
+   ============================================================ */
+.upload-zone {
+    border: 2px dashed var(--border-light);
+    padding: 40px 20px;
+    text-align: center;
+    border-radius: var(--radius-lg);
+    background: var(--bg-sec);
+    transition: all 0.2s;
+    margin-top: 10px;
+}
+
+.upload-zone:hover, .upload-zone:focus-within {
+    border-color: var(--accent);
+    background: var(--bg-tertiary);
+}
+
+.upload-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+    opacity: 0.8;
+}
+
+.img-result {
+    border: 1px solid var(--border-light);
+    padding: 12px;
+    border-radius: var(--radius-md);
+    background: var(--bg-sec);
+    text-align: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.img-result img {
+    max-width: 100%;
+    border-radius: 4px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow-sm);
+}
+
+.img-success {
+    margin: 0 0 12px 0;
+    color: var(--success-text);
+    font-weight: 600;
+}
+
+.img-url-input {
+    width: 100%;
+    text-align: center;
+    color: var(--accent);
+}
+
+/* ============================================================
+   NOTES FEATURE — PASSWORD GENERATOR
+   ============================================================ */
+.passgen-section {
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    margin-bottom: 16px;
+    background: var(--bg-sec);
+}
+
+.passgen-label {
+    font-weight: 600;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 10px;
+    letter-spacing: 0.5px;
+}
+
+.passgen-output {
+    display: flex;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow-sm);
+    border-radius: var(--radius-md);
+}
+
+.passgen-output input {
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.passgen-section.copied .passgen-output input {
+    background: var(--success-bg);
+    color: var(--success-text);
+    border-color: var(--success-text);
+}
+
+.passgen-options {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+}
+
+/* Custom checkbox */
+.passgen-options label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--text-main);
+}
+
+.passgen-options input[type="checkbox"] {
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border: 1px solid var(--border-light);
+    border-radius: 3px;
+    background: var(--bg-main);
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s;
+}
+
+.passgen-options input[type="checkbox"]:checked {
+    background: var(--accent);
+    border-color: var(--accent);
+}
+
+.passgen-options input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    left: 4px;
+    top: 1px;
+    width: 3px;
+    height: 7px;
+    border: solid white;
+    border-width: 0 1.5px 1.5px 0;
+    transform: rotate(45deg);
+}
+
+.passgen-length {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.passgen-length input[type="range"] {
+    flex: 1;
+    accent-color: var(--accent);
+}
+
+.passgen-length span:last-child {
+    width: 24px;
+    text-align: right;
+    color: var(--text-muted);
+}
+
+/* ============================================================
+   NOTES FEATURE — NOTES LIST
+   ============================================================ */
+.notes-add {
+    display: flex;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow-sm);
+    border-radius: var(--radius-md);
+}
+
+.notes-add button {
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+}
+
+.notes-add button:hover {
+    background: var(--accent-hover);
+}
+
+.notes-empty {
+    text-align: center;
+    color: var(--text-muted);
+    padding: 24px;
+    font-size: 13px;
+    background: var(--bg-sec);
+    border-radius: var(--radius-md);
+    border: 1px dashed var(--border-light);
+}
+
+.note-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    margin-bottom: 6px;
+    background: var(--bg-main);
+    transition: all 0.2s;
+    animation: fadeIn 0.2s ease;
+}
+
+.note-item:hover {
+    border-color: var(--border-focus);
+    box-shadow: var(--shadow-sm);
+}
+
+.note-item.copied {
+    background: var(--success-bg);
+    border-color: var(--success-text);
+}
+
+.note-text {
+    flex: 1;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 13px;
+    color: var(--text-main);
+    cursor: pointer;
+    line-height: 1.4;
+}
+
+/* Actions */
+.note-actions {
+    display: flex;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.note-item:hover .note-actions {
+    opacity: 1;
+}
+
+.note-edit-btn,
+.note-delete-btn,
+.note-save-btn {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.note-edit-btn:hover { color: var(--accent); background: var(--bg-tertiary); }
+.note-delete-btn:hover { color: var(--error-text); background: var(--error-bg); }
+.note-save-btn { color: var(--success-text); }
+.note-save-btn:hover { background: var(--success-bg); }
+
+/* Режим редагування */
+.note-item.editing {
+    border-color: var(--accent);
+    background: var(--bg-sec);
+}
+
+.note-edit-input {
+    flex: 1;
+    padding: 6px 10px;
+    min-height: 32px;
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    font-size: 13px;
+    resize: vertical;
+    font-family: inherit;
+}

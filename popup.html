@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>LILO DNS & Tools</title>
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/features.css">
+    <script type="module" src="popup.js"></script>
+</head>
+<body>
+    <!-- Вкладки навігації (DNS, PICS, NOTES) -->
+    <div class="tabs-header">
+        <button class="tab-link active" data-tab="dns" data-i18n="tab_dns">DNS</button>
+        <button class="tab-link" data-tab="pics" id="tab-btn-pics" data-i18n="tab_pics" style="display: none;">PICS</button>
+        <button class="tab-link" data-tab="notes" data-i18n="tab_notes">NOTES</button>
+        <button class="tab-link" data-tab="settings" data-i18n-title="tab_settings" style="flex: 0 0 auto; width: 34px; font-size: 16px; padding: 0;" title="Налаштування">⚙️</button>
+    </div>
+
+    <!-- ===== DNS TAB ===== -->
+    <!-- Вкладка для перевірки DNS записів, SSL сертифікатів та Whois інформації -->
+    <div id="dns-tab" class="tab-content active">
+        <div class="toolbar">
+            <div class="toolbar-btn-group" id="groupSSL">
+                <button id="copySSL" class="disabled" title="Копіювати посилання" data-i18n="dns_ssl"><span>🔒</span> SSL</button>
+                <a id="linkSSL" target="_blank" class="disabled" title="Перейти">➜</a>
+            </div>
+            <div class="toolbar-btn-group" id="groupDNS">
+                <button id="copyDNS" class="disabled" title="Копіювати посилання" data-i18n="dns_dns"><span>🌍</span> DNS</button>
+                <a id="linkDNS" target="_blank" class="disabled" title="Перейти">➜</a>
+            </div>
+            <div class="toolbar-btn-group" id="groupWhois">
+                <button id="copyWhois" class="disabled" title="Копіювати посилання" data-i18n="dns_whois"><span>👤</span> Whois</button>
+                <a id="linkWhois" target="_blank" class="disabled" title="Перейти">➜</a>
+            </div>
+        </div>
+        <div class="input-row">
+            <input type="text" id="domain_input" placeholder="example.com" data-i18n="dns_placeholder" spellcheck="false" autocomplete="off"/>
+            <button id="btnDIG" data-i18n="dns_btn_go">GO</button>
+        </div>
+        <div id="history-list" class="history-container"></div>
+        <div id="output" data-i18n="dns_output_wait">Очікування...</div>
+    </div>
+
+    <!-- ===== PICS TAB ===== -->
+    <!-- Вкладка для завантаження зображень (скріншотів) на сторонній хостинг -->
+    <div id="pics-tab" class="tab-content">
+        <div class="pics-warning" data-i18n="pics_warning" style="text-align: center; color: var(--error-text); margin-bottom: 10px; font-size: 12px; font-weight: 500;">
+            ⚠️ Зображення зберігаються на сторонніх серверах. Не поширюйте приватну інформацію!
+        </div>
+        <div class="upload-zone" id="upload_zone">
+            <div class="upload-icon">📋</div>
+            <p data-i18n="pics_paste">Натисніть <b>Ctrl + V</b> щоб вставити скріншот</p>
+            <small data-i18n="pics_auto">Зображення буде завантажено автоматично</small>
+        </div>
+        <div id="pics-output"></div>
+    </div>
+
+    <!-- ===== NOTES TAB ===== -->
+    <div id="notes-tab" class="tab-content">
+        <!-- Password Generator -->
+        <div class="passgen-section">
+            <div class="passgen-output">
+                <input type="text" id="passgen-result" readonly placeholder="..." data-i18n="passgen_placeholder" title="Натисніть щоб скопіювати" data-i18n-title="passgen_tooltip">
+                <button id="passgen-refresh" title="Згенерувати новий" data-i18n-title="passgen_refresh">🔄</button>
+            </div>
+            <div class="passgen-options" style="display: flex; align-items: center; gap: 15px; flex-wrap: nowrap; margin-bottom: 0;">
+                <div style="display: flex; gap: 10px; flex-shrink: 0;">
+                    <label><input type="checkbox" id="opt-lower" checked> a-z</label>
+                    <label><input type="checkbox" id="opt-upper" checked> A-Z</label>
+                    <label><input type="checkbox" id="opt-numbers" checked> 0-9</label>
+                    <label><input type="checkbox" id="opt-symbols"> !@#</label>
+                </div>
+                <div class="passgen-length" style="display: flex; align-items: center; gap: 8px; flex: 1;">
+                    <input type="range" id="passgen-length" min="4" max="64" value="16" style="flex: 1; min-width: 50px;">
+                    <span id="passgen-length-val" style="width: 20px; text-align: right; font-weight: 600;">16</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notes -->
+        <div class="notes-section">
+            <div class="notes-add">
+                <textarea id="note-input" placeholder="Нова нотатка..." data-i18n="notes_placeholder" spellcheck="false" rows="1"></textarea>
+                <button id="note-add-btn">+</button>
+            </div>
+            <div id="notes-list"></div>
+        </div>
+    </div>
+
+    <!-- ===== SETTINGS TAB ===== -->
+    <div id="settings-tab" class="tab-content">
+        <h3 data-i18n="settings_title" style="margin-bottom: 15px; border-bottom: 1px solid var(--border-light); padding-bottom: 8px;">Налаштування</h3>
+        
+        <div class="settings-group" style="margin-bottom: 20px;">
+            <label for="setting-language" data-i18n="settings_lang" style="display: block; font-weight: 600; margin-bottom: 8px;">Мова інтерфейсу</label>
+            <select id="setting-language" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid var(--border-light); background: var(--bg-main); color: var(--text-main);">
+                <option value="auto" data-i18n="settings_lang_auto">Автоматично (браузер)</option>
+                <option value="uk" data-i18n="settings_lang_uk">Українська</option>
+                <option value="en" data-i18n="settings_lang_en">English</option>
+            </select>
+        </div>
+
+        <div class="settings-group" style="margin-bottom: 20px;">
+            <label for="setting-startup-tab" data-i18n="settings_startup" style="display: block; font-weight: 600; margin-bottom: 8px;">Початкова вкладка</label>
+            <select id="setting-startup-tab" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid var(--border-light); background: var(--bg-main); color: var(--text-main);">
+                <option value="last" data-i18n="settings_startup_last">Остання відкрита</option>
+                <option value="dns" data-i18n="settings_startup_dns">DNS</option>
+                <option value="pics" data-i18n="settings_startup_pics" id="setting-startup-pics" style="display: none;">PICS</option>
+                <option value="notes" data-i18n="settings_startup_notes">NOTES</option>
+            </select>
+        </div>
+
+        <div class="settings-group" style="margin-bottom: 20px;">
+            <label for="setting-dns-provider" data-i18n="settings_dns" style="display: block; font-weight: 600; margin-bottom: 8px;">DNS Провайдер</label>
+            <select id="setting-dns-provider" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid var(--border-light); background: var(--bg-main); color: var(--text-main);">
+                <option value="google" data-i18n="settings_dns_google">Google (8.8.8.8)</option>
+                <option value="cloudflare" data-i18n="settings_dns_cloudflare">Cloudflare (1.1.1.1)</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Feedback Overlay -->
+    <div id="feedback-overlay" class="feedback-overlay hidden">
+        <div class="feedback-modal">
+            <button id="feedback-close" class="feedback-close">&times;</button>
+            <h3 data-i18n="feedback_title">Є ідеї як покращити LILO?</h3>
+            <p data-i18n="feedback_text">Залиште свій відгук, щоб зробити плагін ще кращим!</p>
+            <a href="https://feedback.iswappp.com" target="_blank" id="feedback-btn" class="feedback-btn" data-i18n="feedback_btn">Залишити відгук</a>
+        </div>
+    </div>
+</body>
+</html>

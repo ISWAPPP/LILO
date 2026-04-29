@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "LILO Tools",
+  "description": "DNS перевірка, завантаження зображень, нотатки та генератор паролів",
+  "version": "0.3",
+
+  "permissions": [
+    "tabs",
+    "storage"
+  ],
+
+  "host_permissions": [
+    "https://dns.google/*",
+    "https://1.1.1.1/*",
+    "https://cloudflare-dns.com/*",
+    "https://freeimage.host/*"
+  ],
+
+  "action": {
+    "default_popup": "popup.html"
+  }
+}

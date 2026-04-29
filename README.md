@@ -1,0 +1,34 @@
+# LILO Tools 🌍
+
+**LILO Tools** is a multifunctional Chrome extension designed for webmasters, developers, and power users. It combines essential tools for DNS checking, image uploading, note-taking, and password generation.
+
+## ✨ Key Features
+
+- **DNS Checker**: Quick analysis of DNS records (A, MX, TXT, NS) via Google DNS or Cloudflare DNS.
+- **Image Upload**: Instant screenshot uploading from clipboard to third-party hosting (PICS).
+- **Notes**: Convenient storage for text snippets directly in your browser.
+- **Password Generator**: Create secure passwords with one-click copying.
+- **Localization**: Full support for English and Ukrainian languages.
+- **Flexible Settings**: Choose your preferred language, startup tab, and DNS provider.
+
+## 🛠 Technologies
+
+- **Manifest V3**
+- **Vanilla JavaScript (ES Modules)**
+- **CSS3 (Custom Properties, Animations)**
+- **Chrome Storage API**
+
+## ⚙️ Settings & Secrets
+
+- **Startup Tab**: You can choose which tab opens by default — the last opened one or a specific fixed tab.
+- **DNS Provider**: Toggle between Google (8.8.8.8) and Cloudflare (1.1.1.1).
+- **Secret PICS Tab**: By default, the image upload tab is hidden.
+  - To **enable** it: type `GETPICS` in the note input field and click +.
+  - To **disable** it: type `NOPICS` in the note input field and click +.
+
+## 📦 Installation
+
+1. Download the repository.
+2. Open `chrome://extensions/` in your browser.
+3. Enable **Developer mode**.
+4. Click **Load unpacked** and select the `LILO` folder.

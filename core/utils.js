@@ -1,0 +1,34 @@
+// core/utils.js — чисті утиліти без побічних ефектів.
+
+export const Utils = {
+  isValidDomain(domain) {
+    return /^(?!:\/\/)([a-zA-Z0-9-_]+\.)*[a-zA-Z0-9][a-zA-Z0-9-_]+\.[a-zA-Z]{2,11}?$/.test(domain);
+  },
+
+  escapeHTML(str) {
+    if (!str) return '';
+    return str.replace(/[&<>'"]/g, tag => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+    }[tag]));
+  },
+
+  // Повертає HTML з CSS-класом замість inline стилів.
+  formatTime(ms) {
+    if (typeof ms !== 'number') return '—';
+    const cls = ms < 100 ? 'ping-fast' : ms < 300 ? 'ping-mid' : 'ping-slow';
+    return `<span class="${cls}">${ms} ms</span>`;
+  },
+
+  cleanDomain(input) {
+    return input.trim().toLowerCase().replace(/^(https?:\/\/)?(www\.)?/, '').split('/')[0];
+  },
+
+  async copyToClipboard(text) {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+      return false;
+    }
+  },
+};
