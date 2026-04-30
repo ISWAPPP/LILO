@@ -1,4 +1,4 @@
-// config.js — єдине джерело констант для всього розширення.
+// config.js — single source of truth for constants across the extension.
 
 export const Config = {
   api: {

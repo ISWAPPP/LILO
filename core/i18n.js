@@ -33,9 +33,14 @@ export const I18n = {
       'settings_startup_dns': 'DNS',
       'settings_startup_pics': 'PICS',
       'settings_startup_notes': 'NOTES',
-      'settings_dns': 'DNS Провайдер',
-      'settings_dns_google': 'Google (8.8.8.8)',
       'settings_dns_cloudflare': 'Cloudflare (1.1.1.1)',
+      'settings_theme': 'Тема оформлення',
+      'settings_theme_auto': 'Автоматично (браузер)',
+      'settings_theme_light': 'Світла',
+      'settings_theme_dark': 'Темна',
+      'settings_theme_forest': 'Ліс',
+      'settings_theme_paper': 'Папір',
+      'settings_theme_sea': 'Море',
       'settings_save': 'Зберегти'
     },
     en: {
@@ -69,9 +74,14 @@ export const I18n = {
       'settings_startup_dns': 'DNS',
       'settings_startup_pics': 'PICS',
       'settings_startup_notes': 'NOTES',
-      'settings_dns': 'DNS Provider',
-      'settings_dns_google': 'Google (8.8.8.8)',
       'settings_dns_cloudflare': 'Cloudflare (1.1.1.1)',
+      'settings_theme': 'Theme',
+      'settings_theme_auto': 'Auto (Browser)',
+      'settings_theme_light': 'Light',
+      'settings_theme_dark': 'Dark',
+      'settings_theme_forest': 'Forest',
+      'settings_theme_paper': 'Paper',
+      'settings_theme_sea': 'Sea',
       'settings_save': 'Save'
     }
   },
@@ -94,13 +104,13 @@ export const I18n = {
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.getAttribute('data-i18n');
       if (this.translations[this.currentLang][key]) {
-        // Якщо це placeholder, оновлюємо атрибут
+        // If it's a placeholder, update the attribute
         if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
           if (el.hasAttribute('placeholder')) {
             el.setAttribute('placeholder', this.t(key));
           }
         } else if (el.tagName === 'BUTTON' && el.querySelector('span')) {
-            // Зберегти іконку, змінити текст
+            // Keep the icon, change the text
             const icon = el.querySelector('span');
             el.innerHTML = '';
             el.appendChild(icon);

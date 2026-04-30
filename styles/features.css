@@ -1,4 +1,4 @@
-/* styles/features.css — стилі специфічні для кожної вкладки. */
+/* styles/features.css — tab-specific styles. */
 
 /* ============================================================
    DNS FEATURE
@@ -323,7 +323,7 @@
 .note-save-btn { color: var(--success-text); }
 .note-save-btn:hover { background: var(--success-bg); }
 
-/* Режим редагування */
+/* Editing mode */
 .note-item.editing {
     border-color: var(--accent);
     background: var(--bg-sec);

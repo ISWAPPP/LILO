@@ -1,4 +1,4 @@
-// core/utils.js — чисті утиліти без побічних ефектів.
+// core/utils.js — pure utilities without side effects.
 
 export const Utils = {
   isValidDomain(domain) {
@@ -12,7 +12,7 @@ export const Utils = {
     }[tag]));
   },
 
-  // Повертає HTML з CSS-класом замість inline стилів.
+  // Returns HTML with CSS class instead of inline styles.
   formatTime(ms) {
     if (typeof ms !== 'number') return '—';
     const cls = ms < 100 ? 'ping-fast' : ms < 300 ? 'ping-mid' : 'ping-slow';

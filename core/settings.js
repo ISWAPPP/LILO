@@ -1,6 +1,7 @@
 export const Settings = {
   defaultSettings: {
     language: 'auto',
+    theme: 'auto',
     startupTab: 'last',
     picsUnlocked: false,
     dnsProvider: 'google'

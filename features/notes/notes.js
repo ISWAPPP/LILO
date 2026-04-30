@@ -1,4 +1,4 @@
-// features/notes/notes.js — модуль вкладки NOTES (генератор паролів + нотатки).
+// features/notes/notes.js — NOTES tab module (password generator + notes).
 
 import { Config } from '../../config.js';
 import { Utils } from '../../core/utils.js';
@@ -102,7 +102,7 @@ async function deleteNote(id) {
 
 async function updateNote(id, newText) {
   if (!newText.trim()) {
-    // Порожній текст = видалення
+    // Empty text = deletion
     notes = notes.filter(n => n.id !== id);
   } else {
     const note = notes.find(n => n.id === id);
@@ -119,7 +119,7 @@ async function copyNote(id) {
   const ok = await Utils.copyToClipboard(note.text);
   if (!ok) return;
 
-  // Візуальний фідбек
+  // Visual feedback
   const item = document.querySelector(`.note-item[data-id="${id}"]`);
   if (item) {
     item.classList.add('copied');
@@ -136,7 +136,7 @@ function startEditing(id) {
 
   item.outerHTML = NotesRenderer.noteItemEditing(note);
 
-  // Фокус на інпут
+  // Focus on input
   const input = document.querySelector(`.note-item[data-id="${id}"] .note-edit-input`);
   if (input) {
     input.focus();
@@ -155,36 +155,36 @@ function setupNoteEvents() {
     if (!item) return;
     const id = parseInt(item.dataset.id);
 
-    // Кнопка редагування
+    // Edit button
     if (e.target.closest('.note-edit-btn')) {
       startEditing(id);
       return;
     }
 
-    // Кнопка видалення
+    // Delete button
     if (e.target.closest('.note-delete-btn')) {
       deleteNote(id);
       return;
     }
 
-    // Кнопка збереження
+    // Save button
     if (e.target.closest('.note-save-btn')) {
       const input = item.querySelector('.note-edit-input');
       updateNote(id, input?.value || '');
       return;
     }
 
-    // Клік по тексту = копіювати
+    // Click on text = copy
     if (e.target.closest('.note-text')) {
       copyNote(id);
       return;
     }
   });
 
-  // Enter в режимі редагування = зберегти (Shift+Enter = новий рядок)
+  // Enter in edit mode = save (Shift+Enter = new line)
   list.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey && e.target.classList.contains('note-edit-input')) {
-      e.preventDefault(); // Запобігти додаванню нового рядка
+      e.preventDefault(); // Prevent adding new line
       const item = e.target.closest('.note-item');
       const id = parseInt(item?.dataset.id);
       updateNote(id, e.target.value || '');
@@ -212,7 +212,7 @@ export function initNotesFeature() {
         });
       }
 
-      // Клік по паролю = скопіювати (як нотатки)
+      // Click on password = copy (like notes)
       const passgenResult = document.getElementById('passgen-result');
       passgenResult?.addEventListener('click', async () => {
         if (!passgenResult.value) return;
@@ -243,14 +243,14 @@ export function initNotesFeature() {
         }
       });
 
-      // Event delegation на список нотаток
+      // Event delegation for notes list
       setupNoteEvents();
 
-      // Завантажити нотатки з storage
+      // Load notes from storage
       notes = await loadNotes();
       renderNotes();
 
-      // Згенерувати початковий пароль
+      // Generate initial password
       refreshPassword();
     },
 

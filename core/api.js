@@ -1,10 +1,10 @@
-// core/api.js — усі зовнішні HTTP-запити. Без кешу — дані завжди актуальні.
+// core/api.js — all external HTTP requests. No cache — data is always fresh.
 
 import { Config } from '../config.js';
 import { Settings } from './settings.js';
 
 export const Api = {
-  /** Отримує домен активної вкладки Chrome. */
+  /** Retrieves the domain of the active Chrome tab. */
   async getActiveTabDomain() {
     if (typeof chrome === 'undefined' || !chrome.tabs) return null;
     return new Promise((resolve) => {
@@ -19,7 +19,7 @@ export const Api = {
     });
   },
 
-  /** DNS-запит через обраний провайдер (Google або Cloudflare). */
+  /** DNS query via the selected provider (Google or Cloudflare). */
   async dnsQuery(name, type) {
     try {
       const settings = await Settings.load();
@@ -36,7 +36,7 @@ export const Api = {
     }
   },
 
-  /** HTTP HEAD ping з таймаутом. */
+  /** HTTP HEAD ping with timeout. */
   async httpPing(domain) {
     const start = performance.now();
     const controller = new AbortController();
@@ -50,7 +50,7 @@ export const Api = {
     } catch { return null; }
   },
 
-  /** Завантаження зображення на freeimage.host. */
+  /** Uploads an image to freeimage.host. */
   async uploadImage(blob) {
     const formData = new FormData();
     formData.append('key', Config.api.imgApiKey);

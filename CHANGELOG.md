@@ -1,5 +1,15 @@
 # Changelog — LILO Tools
 
+## [0.4] — 2026-05-01
+
+### Added
+- **Multi-Theme Support**: Introduced 5 custom UI themes (Light, Dark, Forest, Paper, Sea) and an "Auto" mode that follows system preferences.
+- **Settings Footer**: Added direct links to the feedback page and changelog in the settings tab.
+- **English Codebase**: Translated all internal code comments to English for better accessibility.
+
+### Removed
+- **Recurring Feedback Popup**: Removed the modal that appeared on first visit and every 8 hours.
+
 ## [0.3] — 2026-04-30
 
 ### Added

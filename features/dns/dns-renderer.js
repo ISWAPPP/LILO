@@ -1,9 +1,9 @@
-// features/dns/dns-renderer.js — побудова HTML для DNS результатів.
+// features/dns/dns-renderer.js — HTML rendering for DNS results.
 
 import { Utils } from '../../core/utils.js';
 
 export const DnsRenderer = {
-  /** Повний блок результатів DNS-перевірки. */
+  /** Full block of DNS check results. */
   results({ ips, mx, ns }) {
     let html = `<div class="results-container">`;
     html += this.row('IP (A)', ips.join('<br>'));

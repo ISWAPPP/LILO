@@ -1,4 +1,4 @@
-// features/pics/pics.js — модуль вкладки PICS (завантаження зображень).
+// features/pics/pics.js — PICS tab module (image uploading).
 
 import { Api } from '../../core/api.js';
 import { Utils } from '../../core/utils.js';
@@ -9,7 +9,7 @@ export function initPicsFeature() {
   const statusBox = document.getElementById('pics-output');
 
   const handlePaste = async (e) => {
-    // Обробляємо paste тільки коли вкладка PICS активна
+    // Handle paste only when PICS tab is active
     const picsTab = document.getElementById('pics-tab');
     if (!picsTab?.classList.contains('active')) return;
 
@@ -29,7 +29,7 @@ export function initPicsFeature() {
     }
   };
 
-  // Блокування копіювання на вкладці PICS
+  // Block copying on PICS tab
   const blockCopy = (e) => {
     const picsTab = document.getElementById('pics-tab');
     if (picsTab?.classList.contains('active')) {
@@ -41,7 +41,7 @@ export function initPicsFeature() {
     init() {
       document.addEventListener('paste', handlePaste);
 
-      // Заборонити Ctrl+A / Ctrl+C на вкладці PICS
+      // Disable Ctrl+A / Ctrl+C on PICS tab
       document.addEventListener('keydown', (e) => {
         const picsTab = document.getElementById('pics-tab');
         if (!picsTab?.classList.contains('active')) return;

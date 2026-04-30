@@ -1,4 +1,4 @@
-// core/tabs.js — реєстр вкладок. Фічі реєструють себе через register().
+// core/tabs.js — tab registry. Features register themselves via register().
 
 import { Settings } from './settings.js';
 
@@ -7,21 +7,21 @@ let activeTab = null;
 
 export const TabManager = {
   /**
-   * Реєструє вкладку з хендлером.
-   * @param {string} name — data-tab значення
+   * Registers a tab with a handler.
+   * @param {string} name — data-tab value
    * @param {{ init?: Function, onActivate?: Function, onDeactivate?: Function }} handler
    */
   register(name, handler) {
     registry.set(name, handler);
   },
 
-  /** Ініціалізує UI вкладок і викликає init() на всіх зареєстрованих фічах. */
+  /** Initializes tab UI and calls init() on all registered features. */
   init(initialTab = null) {
     document.querySelectorAll('.tab-link').forEach(btn => {
       btn.addEventListener('click', () => this.switchTo(btn.dataset.tab));
     });
 
-    // Ініціалізація всіх зареєстрованих фіч
+    // Initialize all registered features
     for (const [, handler] of registry) {
       handler.init?.();
     }
@@ -29,7 +29,7 @@ export const TabManager = {
     if (initialTab) {
       this.switchTo(initialTab, true); // true = don't save to storage initially
     } else {
-      // Активувати дефолтну вкладку
+      // Activate default tab
       const defaultBtn = document.querySelector('.tab-link.active');
       if (defaultBtn) {
         activeTab = defaultBtn.dataset.tab;
@@ -41,12 +41,12 @@ export const TabManager = {
   switchTo(name, skipSave = false) {
     if (name === activeTab) return;
 
-    // Деактивувати поточну
+    // Deactivate current
     if (activeTab) {
       registry.get(activeTab)?.onDeactivate?.();
     }
 
-    // Переключити UI
+    // Switch UI
     document.querySelectorAll('.tab-link, .tab-content')
       .forEach(el => el.classList.remove('active'));
     document.querySelector(`[data-tab="${name}"]`)?.classList.add('active');

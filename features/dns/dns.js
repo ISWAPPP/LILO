@@ -1,7 +1,7 @@
-// features/dns/dns.js — модуль вкладки DNS.
-// Цей модуль відповідає за перевірку DNS-записів (A, MX, TXT, NS),
-// отримання геоданих та виконання HTTP-пінгу введеного домену.
-// Також він керує станом UI (кнопки зовнішніх посилань, лоадер) під час запитів.
+// features/dns/dns.js — DNS tab module.
+// This module handles checking DNS records (A, MX, TXT, NS),
+// getting geodata, and performing HTTP pings for the entered domain.
+// It also manages UI state (external link buttons, loader) during requests.
 
 import { Api } from '../../core/api.js';
 import { Utils } from '../../core/utils.js';
@@ -22,9 +22,9 @@ export function initDnsFeature() {
 
   let lastRequest = 0;
 
-  // --- Оновлення зовнішніх посилань та обробників копіювання ---
-  // Ця функція активує кнопки в тулбарі та призначає URL-и для переходу
-  // Також вона налаштовує обробники для копіювання цих URL у буфер обміну
+  // --- External links and copy handlers update ---
+  // This function activates toolbar buttons and assigns target URLs.
+  // It also sets up handlers for copying these URLs to clipboard.
   const updateLinks = (domain) => {
     if (!domain) return;
     const urls = {
@@ -41,7 +41,7 @@ export function initDnsFeature() {
       a.classList.remove('disabled');
       btn.classList.remove('disabled');
 
-      // Обробник копіювання посилання при натисканні на кнопку
+      // Link copy handler on button click
       btn.onclick = async () => {
         const ok = await Utils.copyToClipboard(urls[key]);
         if (ok) {
@@ -53,8 +53,8 @@ export function initDnsFeature() {
     });
   };
 
-  // --- Основна перевірка DNS ---
-  // Виконує серію паралельних запитів до API для збору інформації про домен
+  // --- Main DNS check ---
+  // Performs a series of parallel API requests to gather domain info
   const checkDNS = async () => {
     const rawValue = input.value.trim();
     if (!rawValue) return;
@@ -94,7 +94,7 @@ export function initDnsFeature() {
             try {
                 const targetA = await Api.dnsQuery(target, 'A');
                 const targetIps = (targetA.Answer || []).map(a => a.data);
-                // Залишаємо тільки ті IP, які відрізняються від головного домену
+                // Keep only IPs that differ from the main domain
                 const differentIps = targetIps.filter(ip => !ips.includes(ip));
                 if (differentIps.length > 0) {
                     return { ...r, targetIps: differentIps };
@@ -117,7 +117,7 @@ export function initDnsFeature() {
     }
   };
 
-  // --- Реєстрація вкладки ---
+  // --- Tab registration ---
   TabManager.register('dns', {
     init() {
       btn.addEventListener('click', checkDNS);
@@ -125,7 +125,7 @@ export function initDnsFeature() {
         if (e.key === 'Enter') checkDNS();
       });
 
-      // Клік по result-row — скопіювати значення
+      // Click on result-row — copy value
       output.addEventListener('click', async (e) => {
         const row = e.target.closest('.result-row');
         if (!row) return;
@@ -133,12 +133,12 @@ export function initDnsFeature() {
         const valueEl = row.querySelector('.result-value');
         if (!valueEl) return;
 
-        // innerText автоматично перетворює <br> та блокові елементи в нові рядки
+        // innerText automatically converts <br> and block elements into new lines
         let textToCopy = valueEl.innerText.trim();
         if (!textToCopy) return;
 
-        // Для MX записів прибираємо текст бейджа (пріоритет) якщо потрібно, 
-        // але зазвичай пріоритет теж корисний. innerText зберігає його.
+        // For MX records, priority text could be removed if needed, 
+        // but priority is usually useful. innerText preserves it.
 
         const ok = await Utils.copyToClipboard(textToCopy);
         if (ok) {
@@ -151,7 +151,7 @@ export function initDnsFeature() {
     async onActivate() {
       input.focus();
 
-      // Автостарт з активної вкладки (тільки якщо інпут порожній)
+      // Autostart from active tab (only if input is empty)
       if (!input.value.trim()) {
         try {
           const tabDomain = await Api.getActiveTabDomain();
@@ -163,7 +163,7 @@ export function initDnsFeature() {
             }
           }
         } catch {
-          console.log('Автостарт неможливий');
+          console.log('Autostart failed');
         }
       }
     },
