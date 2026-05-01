@@ -36,10 +36,19 @@ function generatePassword() {
   if (!charset) charset = cfg.charsets.lower; // Fallback
 
   const length = parseInt(document.getElementById('passgen-length')?.value) || cfg.defaultLength;
-  const array = new Uint32Array(length);
-  crypto.getRandomValues(array);
+  
+  let password = '';
+  const array = new Uint8Array(1);
+  const maxValid = 256 - (256 % charset.length);
 
-  return Array.from(array, (v) => charset[v % charset.length]).join('');
+  while (password.length < length) {
+    crypto.getRandomValues(array);
+    if (array[0] < maxValid) {
+      password += charset[array[0] % charset.length];
+    }
+  }
+
+  return password;
 }
 
 function refreshPassword() {
@@ -89,7 +98,7 @@ async function addNote(text) {
     return;
   }
 
-  notes.unshift({ id: Date.now(), text: trimmed });
+  notes.unshift({ id: crypto.randomUUID(), text: trimmed });
   await saveNotes(notes);
   renderNotes();
 }
@@ -153,7 +162,7 @@ function setupNoteEvents() {
   list.addEventListener('click', (e) => {
     const item = e.target.closest('.note-item');
     if (!item) return;
-    const id = parseInt(item.dataset.id);
+    const id = item.dataset.id;
 
     // Edit button
     if (e.target.closest('.note-edit-btn')) {
@@ -181,12 +190,11 @@ function setupNoteEvents() {
     }
   });
 
-  // Enter in edit mode = save (Shift+Enter = new line)
   list.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey && e.target.classList.contains('note-edit-input')) {
       e.preventDefault(); // Prevent adding new line
       const item = e.target.closest('.note-item');
-      const id = parseInt(item?.dataset.id);
+      const id = item?.dataset.id;
       updateNote(id, e.target.value || '');
     }
   });

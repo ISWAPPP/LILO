@@ -19,6 +19,10 @@ export function initPicsFeature() {
     statusBox.innerHTML = PicsRenderer.loading();
 
     const blob = item.getAsFile();
+    if (blob.size > 10 * 1024 * 1024) { // 10MB limit
+      statusBox.innerHTML = PicsRenderer.error('❌ Файл занадто великий (> 10 МБ)');
+      return;
+    }
     const url = await Api.uploadImage(blob);
 
     if (url) {

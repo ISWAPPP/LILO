@@ -14,7 +14,7 @@ export const PicsRenderer = {
       </div>`;
   },
 
-  error() {
-    return '<div class="msg error">❌ Upload failed</div>';
+  error(msg = '❌ Upload failed') {
+    return `<div class="msg error">${msg}</div>`;
   },
 };

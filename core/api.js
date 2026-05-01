@@ -36,19 +36,6 @@ export const Api = {
     }
   },
 
-  /** HTTP HEAD ping with timeout. */
-  async httpPing(domain) {
-    const start = performance.now();
-    const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), Config.timing.pingTimeout);
-    try {
-      await fetch(`https://${domain}/?_p=${Date.now()}`, {
-        method: 'HEAD', mode: 'no-cors', signal: controller.signal,
-      });
-      clearTimeout(id);
-      return Math.round(performance.now() - start);
-    } catch { return null; }
-  },
 
   /** Uploads an image to freeimage.host. */
   async uploadImage(blob) {
@@ -63,7 +50,15 @@ export const Api = {
       });
 
       if (!res.ok) {
-        console.error('Server error:', await res.json());
+        let errData = 'Unknown error';
+        try {
+          if (res.headers.get('content-type')?.includes('application/json')) {
+            errData = await res.json();
+          } else {
+            errData = await res.text();
+          }
+        } catch (e) { /* ignore */ }
+        console.error('Server error:', errData);
         return null;
       }
 

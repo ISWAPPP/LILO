@@ -5,9 +5,9 @@
 ## ✨ Key Features
 
 - **DNS Checker**: Quick analysis of DNS records (A, MX, TXT, NS) via Google DNS or Cloudflare DNS.
-- **Image Upload**: Instant screenshot uploading from clipboard to third-party hosting (PICS).
+- **Image Upload**: Instant screenshot uploading from clipboard to third-party hosting (PICS) with a 10MB limit.
 - **Notes**: Convenient storage for text snippets directly in your browser.
-- **Password Generator**: Create secure passwords with one-click copying.
+- **Password Generator**: Create secure, cryptographically strong passwords with one-click copying.
 - **Multi-Theme UI**: Choose between Light, Dark, Forest, Paper, and Sea themes, or use Auto-mode.
 - **Localization**: Full support for English and Ukrainian languages.
 - **Flexible Settings**: Choose your preferred language, startup tab, theme, and DNS provider.

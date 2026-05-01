@@ -1,5 +1,18 @@
 # Changelog — LILO Tools
 
+## [0.5] — 2026-05-01
+
+### Added
+- **Secure Password Generator**: Switched to a cryptographically strong algorithm that eliminates modulo bias.
+- **Upload Validation**: Added a 10MB file size limit for the PICS feature to prevent browser/server overload.
+
+### Fixed
+- **Stability**: Migrated notes identification to `crypto.randomUUID()` to prevent ID collisions.
+- **Robust API**: Improved handling of non-JSON error responses from image hosting services.
+
+### Removed
+- **Dead Code**: Cleaned up the codebase by removing the unused `httpPing` function.
+
 ## [0.4] — 2026-05-01
 
 ### Added
