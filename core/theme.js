@@ -38,5 +38,8 @@ export const Theme = {
     
     // Also store the theme setting name (like 'auto')
     root.setAttribute('data-theme-setting', themeName);
+
+    // Sync to localStorage for fast sync access in popup.html (prevents flashing)
+    localStorage.setItem('lilo_theme_cache', themeName);
   }
 };

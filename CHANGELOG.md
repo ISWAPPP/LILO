@@ -1,5 +1,16 @@
 # Changelog — LILO Tools
 
+## [0.7] — 2026-05-01
+
+### Added
+- **Premium UI Enhancements**: Integrated a custom "Glow" spinner and smooth fade-in-up animations for results.
+- **Enhanced I18n**: Added comprehensive localization for error states and network messages in DNS module.
+
+### Fixed
+- **Startup Performance**: Eliminated the "flash of white" during startup by implementing synchronous theme detection using a `localStorage` cache.
+- **Theme Refinement**: Optimized color palettes for success (copy) and error states across all themes (Dark, Forest, Paper, Sea).
+- **Code Quality**: Refactored the DNS module to separate rendering from logic and moved inline styles to CSS classes.
+
 ## [0.6] — 2026-05-01
 
 ### Added

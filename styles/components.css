@@ -114,23 +114,38 @@
 .loader-container {
     display: flex;
     justify-content: center;
-    padding: 20px;
+    align-items: center;
+    padding: 30px;
 }
 
 .loader {
-    width: 24px;
-    height: 24px;
+    width: 32px;
+    height: 32px;
     border: 3px solid var(--border-light);
-    border-bottom-color: var(--accent);
     border-radius: 50%;
-    animation: rotation 1s linear infinite;
+    border-top-color: var(--accent);
+    animation: premium-spin 1s ease-in-out infinite, premium-glow 2s ease-in-out infinite alternate;
     margin: 20px auto;
     display: block;
 }
 
-@keyframes rotation {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+@keyframes premium-spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes premium-glow {
+    from { box-shadow: 0 0 5px var(--accent-hover); }
+    to { box-shadow: 0 0 15px var(--accent); }
+}
+
+/* Base Animations */
+.animate-fade-in-up {
+    animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 /* ===== MESSAGES ===== */
