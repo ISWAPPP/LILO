@@ -13,7 +13,8 @@
     "https://dns.google/*",
     "https://1.1.1.1/*",
     "https://cloudflare-dns.com/*",
-    "https://freeimage.host/*"
+    "https://freeimage.host/*",
+    "http://ip-api.com/*"
   ],
 
   "action": {

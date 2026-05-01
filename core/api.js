@@ -35,7 +35,20 @@ export const Api = {
       return { Answer: [] }; 
     }
   },
-
+  /** IP Geolocation via ip-api.com */
+  async getIpGeo(ip) {
+    try {
+      const res = await fetch(`http://ip-api.com/json/${encodeURIComponent(ip)}?fields=status,message,country,countryCode,regionName,city,isp,org,as,query`);
+      const data = await res.json();
+      if (data.status === 'success') {
+        return data;
+      }
+      return null;
+    } catch (err) {
+      console.error('IP Geo check failed:', err);
+      return null;
+    }
+  },
 
   /** Uploads an image to freeimage.host. */
   async uploadImage(blob) {

@@ -64,9 +64,10 @@ export function initDnsFeature() {
     lastRequest = Date.now();
 
     const domain = Utils.cleanDomain(rawValue);
+    const isIp = Utils.isValidIP(domain);
 
-    if (!Utils.isValidDomain(domain)) {
-      output.innerHTML = DnsRenderer.error('⚠️ Некоректний домен');
+    if (!Utils.isValidDomain(domain) && !isIp) {
+      output.innerHTML = DnsRenderer.error('⚠️ Некоректний домен або IP');
       return;
     }
 
@@ -77,6 +78,12 @@ export function initDnsFeature() {
     output.innerHTML = DnsRenderer.loader();
 
     try {
+      if (isIp) {
+        const geo = await Api.getIpGeo(domain);
+        output.innerHTML = DnsRenderer.ipResults(domain, geo);
+        return;
+      }
+
       const [A, MX, TXT, NS] = await Promise.all([
         Api.dnsQuery(domain, 'A'),
         Api.dnsQuery(domain, 'MX'),
@@ -104,10 +111,16 @@ export function initDnsFeature() {
         return r;
       }));
 
+      let mainGeo = null;
+      if (ips.length > 0) {
+        mainGeo = await Api.getIpGeo(ips[0]);
+      }
+
       output.innerHTML = DnsRenderer.results({
         ips,
         mx: mxResolved,
         ns: NS.Answer,
+        mainGeo
       });
     } catch (err) {
       console.error('DNS check failed:', err);
@@ -133,8 +146,11 @@ export function initDnsFeature() {
         const valueEl = row.querySelector('.result-value');
         if (!valueEl) return;
 
-        // innerText automatically converts <br> and block elements into new lines
-        let textToCopy = valueEl.innerText.trim();
+        // Clone to manipulate without affecting UI
+        const clone = valueEl.cloneNode(true);
+        clone.querySelectorAll('.no-copy').forEach(el => el.remove());
+        
+        let textToCopy = clone.innerText.trim();
         if (!textToCopy) return;
 
         // For MX records, priority text could be removed if needed, 

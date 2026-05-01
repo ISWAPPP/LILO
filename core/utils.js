@@ -5,6 +5,19 @@ export const Utils = {
     return /^(?!:\/\/)([a-zA-Z0-9-_]+\.)*[a-zA-Z0-9][a-zA-Z0-9-_]+\.[a-zA-Z]{2,11}?$/.test(domain);
   },
 
+  isValidIP(ip) {
+    return /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/.test(ip);
+  },
+
+  getFlagEmoji(countryCode) {
+    if (!countryCode) return '';
+    const codePoints = countryCode
+      .toUpperCase()
+      .split('')
+      .map(char => 127397 + char.charCodeAt(0));
+    return String.fromCodePoint(...codePoints);
+  },
+
   escapeHTML(str) {
     if (!str) return '';
     return str.replace(/[&<>'"]/g, tag => ({

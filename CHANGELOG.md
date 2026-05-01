@@ -1,5 +1,13 @@
 # Changelog — LILO Tools
 
+## [0.6] — 2026-05-01
+
+### Added
+- **IP Geolocation**: Integrated `ip-api.com` to provide location data for domains and IP addresses.
+- **Enhanced DNS Results**: A-records now display country and city information.
+- **MX Target Resolution**: MX records now show the resolved IP addresses of their mail servers.
+- **Smart Copying**: Geolocation data and auxiliary MX IPs are now excluded when copying results to the clipboard for cleaner data handling.
+
 ## [0.5] — 2026-05-01
 
 ### Added
