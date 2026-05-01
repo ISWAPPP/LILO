@@ -4,12 +4,14 @@
 
 ## ✨ Key Features
 
-- **DNS Checker**: Quick analysis of DNS records (A, MX, TXT, NS) via Google DNS or Cloudflare DNS.
-- **Image Upload**: Instant screenshot uploading from clipboard to third-party hosting (PICS).
+- **DNS Checker**: Quick analysis of DNS records (A, MX, TXT, NS) with automatic IP geolocation and MX host resolution.
+- **Image Upload**: Instant screenshot uploading from clipboard to third-party hosting (PICS) with a 10MB limit.
 - **Notes**: Convenient storage for text snippets directly in your browser.
-- **Password Generator**: Create secure passwords with one-click copying.
+- **Password Generator**: Create secure, cryptographically strong passwords with one-click copying.
+- **Multi-Theme UI**: Choose between Light, Dark, Forest, Paper, and Sea themes, or use Auto-mode.
 - **Localization**: Full support for English and Ukrainian languages.
-- **Flexible Settings**: Choose your preferred language, startup tab, and DNS provider.
+- **Smart Copying**: Click-to-copy results that intelligently exclude visual metadata like geolocation.
+- **Flexible Settings**: Choose your preferred language, startup tab, theme, and DNS provider.
 
 ## 🛠 Technologies
 
@@ -22,6 +24,7 @@
 
 - **Startup Tab**: You can choose which tab opens by default — the last opened one or a specific fixed tab.
 - **DNS Provider**: Toggle between Google (8.8.8.8) and Cloudflare (1.1.1.1).
+- **Custom Themes**: A variety of eye-friendly themes (Light, Dark, Forest, Paper, Sea) to suit your environment.
 - **Secret PICS Tab**: By default, the image upload tab is hidden.
   - To **enable** it: type `GETPICS` in the note input field and click +.
   - To **disable** it: type `NOPICS` in the note input field and click +.

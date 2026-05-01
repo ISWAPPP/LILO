@@ -1,10 +1,10 @@
-// core/api.js — усі зовнішні HTTP-запити. Без кешу — дані завжди актуальні.
+// core/api.js — all external HTTP requests. No cache — data is always fresh.
 
 import { Config } from '../config.js';
 import { Settings } from './settings.js';
 
 export const Api = {
-  /** Отримує домен активної вкладки Chrome. */
+  /** Retrieves the domain of the active Chrome tab. */
   async getActiveTabDomain() {
     if (typeof chrome === 'undefined' || !chrome.tabs) return null;
     return new Promise((resolve) => {
@@ -19,7 +19,7 @@ export const Api = {
     });
   },
 
-  /** DNS-запит через обраний провайдер (Google або Cloudflare). */
+  /** DNS query via the selected provider (Google or Cloudflare). */
   async dnsQuery(name, type) {
     try {
       const settings = await Settings.load();
@@ -35,22 +35,22 @@ export const Api = {
       return { Answer: [] }; 
     }
   },
-
-  /** HTTP HEAD ping з таймаутом. */
-  async httpPing(domain) {
-    const start = performance.now();
-    const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), Config.timing.pingTimeout);
+  /** IP Geolocation via ip-api.com */
+  async getIpGeo(ip) {
     try {
-      await fetch(`https://${domain}/?_p=${Date.now()}`, {
-        method: 'HEAD', mode: 'no-cors', signal: controller.signal,
-      });
-      clearTimeout(id);
-      return Math.round(performance.now() - start);
-    } catch { return null; }
+      const res = await fetch(`http://ip-api.com/json/${encodeURIComponent(ip)}?fields=status,message,country,countryCode,regionName,city,isp,org,as,query`);
+      const data = await res.json();
+      if (data.status === 'success') {
+        return data;
+      }
+      return null;
+    } catch (err) {
+      console.error('IP Geo check failed:', err);
+      return null;
+    }
   },
 
-  /** Завантаження зображення на freeimage.host. */
+  /** Uploads an image to freeimage.host. */
   async uploadImage(blob) {
     const formData = new FormData();
     formData.append('key', Config.api.imgApiKey);
@@ -63,7 +63,15 @@ export const Api = {
       });
 
       if (!res.ok) {
-        console.error('Server error:', await res.json());
+        let errData = 'Unknown error';
+        try {
+          if (res.headers.get('content-type')?.includes('application/json')) {
+            errData = await res.json();
+          } else {
+            errData = await res.text();
+          }
+        } catch (e) { /* ignore */ }
+        console.error('Server error:', errData);
         return null;
       }
 

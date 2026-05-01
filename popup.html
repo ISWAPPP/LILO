@@ -9,7 +9,7 @@
     <script type="module" src="popup.js"></script>
 </head>
 <body>
-    <!-- Вкладки навігації (DNS, PICS, NOTES) -->
+    <!-- Navigation tabs (DNS, PICS, NOTES) -->
     <div class="tabs-header">
         <button class="tab-link active" data-tab="dns" data-i18n="tab_dns">DNS</button>
         <button class="tab-link" data-tab="pics" id="tab-btn-pics" data-i18n="tab_pics" style="display: none;">PICS</button>
@@ -18,7 +18,7 @@
     </div>
 
     <!-- ===== DNS TAB ===== -->
-    <!-- Вкладка для перевірки DNS записів, SSL сертифікатів та Whois інформації -->
+    <!-- Tab for checking DNS records, SSL certificates and Whois information -->
     <div id="dns-tab" class="tab-content active">
         <div class="toolbar">
             <div class="toolbar-btn-group" id="groupSSL">
@@ -43,7 +43,7 @@
     </div>
 
     <!-- ===== PICS TAB ===== -->
-    <!-- Вкладка для завантаження зображень (скріншотів) на сторонній хостинг -->
+    <!-- Tab for uploading images (screenshots) to third-party hosting -->
     <div id="pics-tab" class="tab-content">
         <div class="pics-warning" data-i18n="pics_warning" style="text-align: center; color: var(--error-text); margin-bottom: 10px; font-size: 12px; font-weight: 500;">
             ⚠️ Зображення зберігаються на сторонніх серверах. Не поширюйте приватну інформацію!
@@ -102,6 +102,18 @@
         </div>
 
         <div class="settings-group" style="margin-bottom: 20px;">
+            <label for="setting-theme" data-i18n="settings_theme" style="display: block; font-weight: 600; margin-bottom: 8px;">Тема оформлення</label>
+            <select id="setting-theme" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid var(--border-light); background: var(--bg-main); color: var(--text-main);">
+                <option value="auto" data-i18n="settings_theme_auto">Автоматично (браузер)</option>
+                <option value="light" data-i18n="settings_theme_light">Світла</option>
+                <option value="dark" data-i18n="settings_theme_dark">Темна</option>
+                <option value="forest" data-i18n="settings_theme_forest">Ліс</option>
+                <option value="paper" data-i18n="settings_theme_paper">Папір</option>
+                <option value="sea" data-i18n="settings_theme_sea">Море</option>
+            </select>
+        </div>
+
+        <div class="settings-group" style="margin-bottom: 20px;">
             <label for="setting-startup-tab" data-i18n="settings_startup" style="display: block; font-weight: 600; margin-bottom: 8px;">Початкова вкладка</label>
             <select id="setting-startup-tab" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid var(--border-light); background: var(--bg-main); color: var(--text-main);">
                 <option value="last" data-i18n="settings_startup_last">Остання відкрита</option>
@@ -118,16 +130,17 @@
                 <option value="cloudflare" data-i18n="settings_dns_cloudflare">Cloudflare (1.1.1.1)</option>
             </select>
         </div>
-    </div>
 
-    <!-- Feedback Overlay -->
-    <div id="feedback-overlay" class="feedback-overlay hidden">
-        <div class="feedback-modal">
-            <button id="feedback-close" class="feedback-close">&times;</button>
-            <h3 data-i18n="feedback_title">Є ідеї як покращити LILO?</h3>
-            <p data-i18n="feedback_text">Залиште свій відгук, щоб зробити плагін ще кращим!</p>
-            <a href="https://feedback.iswappp.com" target="_blank" id="feedback-btn" class="feedback-btn" data-i18n="feedback_btn">Залишити відгук</a>
+        <div class="settings-footer" style="margin-top: 30px; padding-top: 15px; border-top: 1px solid var(--border-light); display: flex; gap: 15px; justify-content: center; font-size: 13px;">
+            <a href="https://feedback.iswappp.com/lilo-extension" target="_blank" style="color: var(--accent-main); text-decoration: none; display: flex; align-items: center; gap: 5px;">
+                <span>💬</span> Feedback
+            </a>
+            <span style="color: var(--text-muted);">|</span>
+            <a href="https://github.com/ISWAPPP/LILO/blob/master/CHANGELOG.md" target="_blank" style="color: var(--accent-main); text-decoration: none; display: flex; align-items: center; gap: 5px;">
+                <span>📜</span> Changelog
+            </a>
         </div>
     </div>
+
 </body>
 </html>

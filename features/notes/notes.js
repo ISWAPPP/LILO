@@ -1,4 +1,4 @@
-// features/notes/notes.js — модуль вкладки NOTES (генератор паролів + нотатки).
+// features/notes/notes.js — NOTES tab module (password generator + notes).
 
 import { Config } from '../../config.js';
 import { Utils } from '../../core/utils.js';
@@ -36,10 +36,19 @@ function generatePassword() {
   if (!charset) charset = cfg.charsets.lower; // Fallback
 
   const length = parseInt(document.getElementById('passgen-length')?.value) || cfg.defaultLength;
-  const array = new Uint32Array(length);
-  crypto.getRandomValues(array);
+  
+  let password = '';
+  const array = new Uint8Array(1);
+  const maxValid = 256 - (256 % charset.length);
 
-  return Array.from(array, (v) => charset[v % charset.length]).join('');
+  while (password.length < length) {
+    crypto.getRandomValues(array);
+    if (array[0] < maxValid) {
+      password += charset[array[0] % charset.length];
+    }
+  }
+
+  return password;
 }
 
 function refreshPassword() {
@@ -89,7 +98,7 @@ async function addNote(text) {
     return;
   }
 
-  notes.unshift({ id: Date.now(), text: trimmed });
+  notes.unshift({ id: crypto.randomUUID(), text: trimmed });
   await saveNotes(notes);
   renderNotes();
 }
@@ -102,7 +111,7 @@ async function deleteNote(id) {
 
 async function updateNote(id, newText) {
   if (!newText.trim()) {
-    // Порожній текст = видалення
+    // Empty text = deletion
     notes = notes.filter(n => n.id !== id);
   } else {
     const note = notes.find(n => n.id === id);
@@ -119,7 +128,7 @@ async function copyNote(id) {
   const ok = await Utils.copyToClipboard(note.text);
   if (!ok) return;
 
-  // Візуальний фідбек
+  // Visual feedback
   const item = document.querySelector(`.note-item[data-id="${id}"]`);
   if (item) {
     item.classList.add('copied');
@@ -136,7 +145,7 @@ function startEditing(id) {
 
   item.outerHTML = NotesRenderer.noteItemEditing(note);
 
-  // Фокус на інпут
+  // Focus on input
   const input = document.querySelector(`.note-item[data-id="${id}"] .note-edit-input`);
   if (input) {
     input.focus();
@@ -153,40 +162,39 @@ function setupNoteEvents() {
   list.addEventListener('click', (e) => {
     const item = e.target.closest('.note-item');
     if (!item) return;
-    const id = parseInt(item.dataset.id);
+    const id = item.dataset.id;
 
-    // Кнопка редагування
+    // Edit button
     if (e.target.closest('.note-edit-btn')) {
       startEditing(id);
       return;
     }
 
-    // Кнопка видалення
+    // Delete button
     if (e.target.closest('.note-delete-btn')) {
       deleteNote(id);
       return;
     }
 
-    // Кнопка збереження
+    // Save button
     if (e.target.closest('.note-save-btn')) {
       const input = item.querySelector('.note-edit-input');
       updateNote(id, input?.value || '');
       return;
     }
 
-    // Клік по тексту = копіювати
+    // Click on text = copy
     if (e.target.closest('.note-text')) {
       copyNote(id);
       return;
     }
   });
 
-  // Enter в режимі редагування = зберегти (Shift+Enter = новий рядок)
   list.addEventListener('keydown', (e) => {
     if (e.key === 'Enter' && !e.shiftKey && e.target.classList.contains('note-edit-input')) {
-      e.preventDefault(); // Запобігти додаванню нового рядка
+      e.preventDefault(); // Prevent adding new line
       const item = e.target.closest('.note-item');
-      const id = parseInt(item?.dataset.id);
+      const id = item?.dataset.id;
       updateNote(id, e.target.value || '');
     }
   });
@@ -212,7 +220,7 @@ export function initNotesFeature() {
         });
       }
 
-      // Клік по паролю = скопіювати (як нотатки)
+      // Click on password = copy (like notes)
       const passgenResult = document.getElementById('passgen-result');
       passgenResult?.addEventListener('click', async () => {
         if (!passgenResult.value) return;
@@ -243,14 +251,14 @@ export function initNotesFeature() {
         }
       });
 
-      // Event delegation на список нотаток
+      // Event delegation for notes list
       setupNoteEvents();
 
-      // Завантажити нотатки з storage
+      // Load notes from storage
       notes = await loadNotes();
       renderNotes();
 
-      // Згенерувати початковий пароль
+      // Generate initial password
       refreshPassword();
     },
 

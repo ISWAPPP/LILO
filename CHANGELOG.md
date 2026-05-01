@@ -1,5 +1,36 @@
 # Changelog — LILO Tools
 
+## [0.6] — 2026-05-01
+
+### Added
+- **IP Geolocation**: Integrated `ip-api.com` to provide location data for domains and IP addresses.
+- **Enhanced DNS Results**: A-records now display country and city information.
+- **MX Target Resolution**: MX records now show the resolved IP addresses of their mail servers.
+- **Smart Copying**: Geolocation data and auxiliary MX IPs are now excluded when copying results to the clipboard for cleaner data handling.
+
+## [0.5] — 2026-05-01
+
+### Added
+- **Secure Password Generator**: Switched to a cryptographically strong algorithm that eliminates modulo bias.
+- **Upload Validation**: Added a 10MB file size limit for the PICS feature to prevent browser/server overload.
+
+### Fixed
+- **Stability**: Migrated notes identification to `crypto.randomUUID()` to prevent ID collisions.
+- **Robust API**: Improved handling of non-JSON error responses from image hosting services.
+
+### Removed
+- **Dead Code**: Cleaned up the codebase by removing the unused `httpPing` function.
+
+## [0.4] — 2026-05-01
+
+### Added
+- **Multi-Theme Support**: Introduced 5 custom UI themes (Light, Dark, Forest, Paper, Sea) and an "Auto" mode that follows system preferences.
+- **Settings Footer**: Added direct links to the feedback page and changelog in the settings tab.
+- **English Codebase**: Translated all internal code comments to English for better accessibility.
+
+### Removed
+- **Recurring Feedback Popup**: Removed the modal that appeared on first visit and every 8 hours.
+
 ## [0.3] — 2026-04-30
 
 ### Added

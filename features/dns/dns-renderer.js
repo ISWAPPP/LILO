@@ -1,12 +1,18 @@
-// features/dns/dns-renderer.js — побудова HTML для DNS результатів.
+// features/dns/dns-renderer.js — HTML rendering for DNS results.
 
 import { Utils } from '../../core/utils.js';
 
 export const DnsRenderer = {
-  /** Повний блок результатів DNS-перевірки. */
-  results({ ips, mx, ns }) {
+  /** Full block of DNS check results. */
+  results({ ips, mx, ns, mainGeo }) {
     let html = `<div class="results-container">`;
-    html += this.row('IP (A)', ips.join('<br>'));
+    let ipContent = ips.join('<br>');
+    if (mainGeo && ips.length > 0) {
+      const geoStr = `<div class="no-copy" style="color:var(--text-muted); font-size:0.85em; margin-bottom:2px;">${Utils.getFlagEmoji(mainGeo.countryCode)} ${mainGeo.country}, ${mainGeo.city}</div>`;
+      ipContent = geoStr + ips.join('<br>');
+    }
+
+    html += this.row('IP (A)', ipContent);
 
     html += this.row('MX', this.formatMX(mx));
     html += this.row('NS', (ns || []).map(r => Utils.escapeHTML(r.data)).join('<br>'));
@@ -29,16 +35,34 @@ export const DnsRenderer = {
       .sort((a, b) => (parseInt(a.data) || 0) - (parseInt(b.data) || 0))
       .map(r => {
         const [prio, ...srv] = r.data.split(' ');
-        let result = `<span class="badge-mx">${prio}</span> ${Utils.escapeHTML(srv.join(' '))}`;
+        let result = '';
         if (r.targetIps && r.targetIps.length > 0) {
-            result += ` <span style="color:var(--text-muted); font-size: 0.9em; margin-left: 6px;">(${r.targetIps.join(', ')})</span>`;
+          result += `<div class="no-copy" style="color:var(--text-muted); font-size: 0.85em; margin-bottom: 2px;">${r.targetIps.join(', ')}</div>`;
         }
+        result += `<span class="badge-mx">${prio}</span> ${Utils.escapeHTML(srv.join(' '))}`;
         return result;
       }).join('<br>');
   },
 
   loader() {
     return '<div class="loader"></div>';
+  },
+
+  ipResults(ip, geo) {
+    if (!geo) {
+      return `<div class="results-container">${this.row('IP', ip)}</div>`;
+    }
+    
+    let html = `<div class="results-container">`;
+    html += this.row('IP', ip);
+    html += this.row('Location', `${Utils.getFlagEmoji(geo.countryCode)} ${geo.country}, ${geo.regionName}, ${geo.city}`);
+    html += this.row('ISP', geo.isp);
+    if (geo.org && geo.org !== geo.isp) {
+      html += this.row('Org', geo.org);
+    }
+    html += this.row('AS', geo.as);
+    html += '</div>';
+    return html;
   },
 
   error(msg) {

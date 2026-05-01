@@ -1,8 +1,21 @@
-// core/utils.js — чисті утиліти без побічних ефектів.
+// core/utils.js — pure utilities without side effects.
 
 export const Utils = {
   isValidDomain(domain) {
     return /^(?!:\/\/)([a-zA-Z0-9-_]+\.)*[a-zA-Z0-9][a-zA-Z0-9-_]+\.[a-zA-Z]{2,11}?$/.test(domain);
+  },
+
+  isValidIP(ip) {
+    return /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/.test(ip);
+  },
+
+  getFlagEmoji(countryCode) {
+    if (!countryCode) return '';
+    const codePoints = countryCode
+      .toUpperCase()
+      .split('')
+      .map(char => 127397 + char.charCodeAt(0));
+    return String.fromCodePoint(...codePoints);
   },
 
   escapeHTML(str) {
@@ -12,7 +25,7 @@ export const Utils = {
     }[tag]));
   },
 
-  // Повертає HTML з CSS-класом замість inline стилів.
+  // Returns HTML with CSS class instead of inline styles.
   formatTime(ms) {
     if (typeof ms !== 'number') return '—';
     const cls = ms < 100 ? 'ping-fast' : ms < 300 ? 'ping-mid' : 'ping-slow';
