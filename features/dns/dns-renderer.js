@@ -5,10 +5,10 @@ import { Utils } from '../../core/utils.js';
 export const DnsRenderer = {
   /** Full block of DNS check results. */
   results({ ips, mx, ns, mainGeo }) {
-    let html = `<div class="results-container">`;
+    let html = `<div class="results-container animate-fade-in-up">`;
     let ipContent = ips.join('<br>');
     if (mainGeo && ips.length > 0) {
-      const geoStr = `<div class="no-copy" style="color:var(--text-muted); font-size:0.85em; margin-bottom:2px;">${Utils.getFlagEmoji(mainGeo.countryCode)} ${mainGeo.country}, ${mainGeo.city}</div>`;
+      const geoStr = `<div class="geo-info no-copy">${Utils.getFlagEmoji(mainGeo.countryCode)} ${mainGeo.country}, ${mainGeo.city}</div>`;
       ipContent = geoStr + ips.join('<br>');
     }
 
@@ -37,7 +37,7 @@ export const DnsRenderer = {
         const [prio, ...srv] = r.data.split(' ');
         let result = '';
         if (r.targetIps && r.targetIps.length > 0) {
-          result += `<div class="no-copy" style="color:var(--text-muted); font-size: 0.85em; margin-bottom: 2px;">${r.targetIps.join(', ')}</div>`;
+          result += `<div class="geo-info no-copy">${r.targetIps.join(', ')}</div>`;
         }
         result += `<span class="badge-mx">${prio}</span> ${Utils.escapeHTML(srv.join(' '))}`;
         return result;
@@ -45,7 +45,7 @@ export const DnsRenderer = {
   },
 
   loader() {
-    return '<div class="loader"></div>';
+    return '<div class="loader-container animate-fade-in-up"><div class="loader"></div></div>';
   },
 
   ipResults(ip, geo) {
@@ -53,7 +53,7 @@ export const DnsRenderer = {
       return `<div class="results-container">${this.row('IP', ip)}</div>`;
     }
     
-    let html = `<div class="results-container">`;
+    let html = `<div class="results-container animate-fade-in-up">`;
     html += this.row('IP', ip);
     html += this.row('Location', `${Utils.getFlagEmoji(geo.countryCode)} ${geo.country}, ${geo.regionName}, ${geo.city}`);
     html += this.row('ISP', geo.isp);

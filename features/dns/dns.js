@@ -8,6 +8,7 @@ import { Utils } from '../../core/utils.js';
 import { Config } from '../../config.js';
 import { TabManager } from '../../core/tabs.js';
 import { DnsRenderer } from './dns-renderer.js';
+import { I18n } from '../../core/i18n.js';
 
 export function initDnsFeature() {
   const input  = document.getElementById('domain_input');
@@ -67,7 +68,7 @@ export function initDnsFeature() {
     const isIp = Utils.isValidIP(domain);
 
     if (!Utils.isValidDomain(domain) && !isIp) {
-      output.innerHTML = DnsRenderer.error('⚠️ Некоректний домен або IP');
+      output.innerHTML = DnsRenderer.error(I18n.t('dns_error_invalid'));
       return;
     }
 
@@ -124,7 +125,7 @@ export function initDnsFeature() {
       });
     } catch (err) {
       console.error('DNS check failed:', err);
-      output.innerHTML = DnsRenderer.error('❌ Помилка з\'єднання');
+      output.innerHTML = DnsRenderer.error(I18n.t('dns_error_network'));
     } finally {
       btn.disabled = false;
     }

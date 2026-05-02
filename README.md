@@ -12,6 +12,7 @@
 - **Localization**: Full support for English and Ukrainian languages.
 - **Smart Copying**: Click-to-copy results that intelligently exclude visual metadata like geolocation.
 - **Flexible Settings**: Choose your preferred language, startup tab, theme, and DNS provider.
+- **High Performance**: Optimized startup with synchronous theme detection to prevent UI flickering.
 
 ## 🛠 Technologies
 
