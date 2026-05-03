@@ -3,19 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>LILO DNS & Tools</title>
-    <script>
-        // Synchronous theme detection to prevent flashing
-        (function() {
-            const theme = localStorage.getItem('lilo_theme_cache') || 'auto';
-            let actualTheme = theme;
-            if (theme === 'auto') {
-                actualTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-            }
-            document.documentElement.classList.add('theme-' + actualTheme);
-            document.documentElement.setAttribute('data-theme', actualTheme);
-            document.documentElement.setAttribute('data-theme-setting', theme);
-        })();
-    </script>
+    <script src="core/theme-init.js"></script>
     <link rel="stylesheet" href="styles/base.css">
     <link rel="stylesheet" href="styles/components.css">
     <link rel="stylesheet" href="styles/features.css">
@@ -115,15 +103,31 @@
         </div>
 
         <div class="settings-group" style="margin-bottom: 20px;">
-            <label for="setting-theme" data-i18n="settings_theme" style="display: block; font-weight: 600; margin-bottom: 8px;">Тема оформлення</label>
-            <select id="setting-theme" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid var(--border-light); background: var(--bg-main); color: var(--text-main);">
-                <option value="auto" data-i18n="settings_theme_auto">Автоматично (браузер)</option>
-                <option value="light" data-i18n="settings_theme_light">Світла</option>
-                <option value="dark" data-i18n="settings_theme_dark">Темна</option>
-                <option value="forest" data-i18n="settings_theme_forest">Ліс</option>
-                <option value="paper" data-i18n="settings_theme_paper">Папір</option>
-                <option value="sea" data-i18n="settings_theme_sea">Море</option>
-            </select>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <label data-i18n="settings_theme" style="font-weight: 600;">Тема оформлення</label>
+                <div class="zen-mode-toggles" id="zen-mode-toggles">
+                    <button class="zen-mode-btn" data-value="auto" title="Автоматично">✨</button>
+                    <button class="zen-mode-btn" data-value="light" title="Світла">☀️</button>
+                    <button class="zen-mode-btn" data-value="dark" title="Темна">🌙</button>
+                </div>
+            </div>
+            
+            <div class="zen-palette-container">
+                <button class="zen-scroll-btn left" id="zen-scroll-left">‹</button>
+                <div class="theme-palette zen-scroll-area" id="setting-theme-palette">
+                    <div class="theme-swatch" data-value="forest" data-i18n-title="settings_theme_forest" title="Ліс" style="background: #141d14;"></div>
+                    <div class="theme-swatch" data-value="paper" data-i18n-title="settings_theme_paper" title="Папір" style="background: #fcfaf2; border: 1px solid var(--border-light) !important;"></div>
+                    <div class="theme-swatch" data-value="sea" data-i18n-title="settings_theme_sea" title="Море" style="background: #04121d;"></div>
+                    <div class="theme-swatch" data-value="sunset" data-i18n-title="settings_theme_sunset" title="Захід сонця" style="background: #2b1d24;"></div>
+                    <div class="theme-swatch" data-value="cyberpunk" data-i18n-title="settings_theme_cyberpunk" title="Кіберпанк" style="background: #0d0221;"></div>
+                    <div class="theme-swatch" data-value="coffee" data-i18n-title="settings_theme_coffee" title="Кава" style="background: #3e2723;"></div>
+                    <div class="theme-swatch" data-value="matcha" data-i18n-title="settings_theme_matcha" title="Матча" style="background: #f3f7f2; border: 1px solid var(--border-light) !important;"></div>
+                    <div class="theme-swatch" data-value="peach" data-i18n-title="settings_theme_peach" title="Персик" style="background: #fff5f2; border: 1px solid var(--border-light) !important;"></div>
+                    <div class="theme-swatch" data-value="lavender" data-i18n-title="settings_theme_lavender" title="Лаванда" style="background: #f8f7ff; border: 1px solid var(--border-light) !important;"></div>
+                    <div class="theme-swatch" data-value="nord" data-i18n-title="settings_theme_nord" title="Nord" style="background: #2e3440;"></div>
+                </div>
+                <button class="zen-scroll-btn right" id="zen-scroll-right">›</button>
+            </div>
         </div>
 
         <div class="settings-group" style="margin-bottom: 20px;">
@@ -142,6 +146,14 @@
                 <option value="google" data-i18n="settings_dns_google">Google (8.8.8.8)</option>
                 <option value="cloudflare" data-i18n="settings_dns_cloudflare">Cloudflare (1.1.1.1)</option>
             </select>
+        </div>
+
+        <div class="settings-group" style="margin-bottom: 20px;">
+            <label for="setting-window-height" style="display: block; font-weight: 600; margin-bottom: 8px;">Максимальна висота вікна (px)</label>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <input type="range" id="setting-window-height" min="300" max="600" step="10" value="600" style="flex: 1; accent-color: var(--accent);">
+                <span id="setting-window-height-val" style="font-weight: 600; width: 40px; text-align: right;">600px</span>
+            </div>
         </div>
 
         <div class="settings-footer" style="margin-top: 30px; padding-top: 15px; border-top: 1px solid var(--border-light); display: flex; gap: 15px; justify-content: center; font-size: 13px;">

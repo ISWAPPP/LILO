@@ -3,7 +3,9 @@
 /* ============================================================
    DNS FEATURE
    ============================================================ */
-#output { margin-top: 16px; }
+#output {
+    margin-top: 16px;
+}
 
 .results-container {
     display: flex;
@@ -87,7 +89,8 @@
     margin-top: 10px;
 }
 
-.upload-zone:hover, .upload-zone:focus-within {
+.upload-zone:hover,
+.upload-zone:focus-within {
     border-color: var(--accent);
     background: var(--bg-tertiary);
 }
@@ -293,6 +296,10 @@
     color: var(--text-main);
     cursor: pointer;
     line-height: 1.4;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
 }
 
 /* Actions */
@@ -324,10 +331,23 @@
     transition: all 0.2s;
 }
 
-.note-edit-btn:hover { color: var(--accent); background: var(--bg-tertiary); }
-.note-delete-btn:hover { color: var(--error-text); background: var(--error-bg); }
-.note-save-btn { color: var(--success-text); }
-.note-save-btn:hover { background: var(--success-bg); }
+.note-edit-btn:hover {
+    color: var(--accent);
+    background: var(--bg-tertiary);
+}
+
+.note-delete-btn:hover {
+    color: var(--error-text);
+    background: var(--error-bg);
+}
+
+.note-save-btn {
+    color: var(--success-text);
+}
+
+.note-save-btn:hover {
+    background: var(--success-bg);
+}
 
 /* Editing mode */
 .note-item.editing {
@@ -344,4 +364,108 @@
     font-size: 13px;
     resize: vertical;
     font-family: inherit;
+}
+
+/* Zen Browser Style Theme Palette */
+.zen-mode-toggles {
+    display: flex;
+    gap: 5px;
+    background: var(--bg-sec);
+    padding: 3px;
+    border-radius: 8px;
+    border: 1px solid var(--border-light);
+}
+
+.zen-mode-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, transform 0.1s;
+    color: var(--text-main);
+    padding: 0;
+}
+
+.zen-mode-btn:hover {
+    background: var(--bg-tertiary);
+}
+
+.zen-mode-btn.active {
+    background: var(--bg-main);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transform: scale(1.05);
+}
+
+.zen-palette-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-sec);
+    padding: 12px 8px;
+    border-radius: 12px;
+    border: 1px solid var(--border-light);
+    position: relative;
+}
+
+.zen-scroll-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 32px;
+    padding: 0;
+    transition: color 0.2s, transform 0.1s;
+    flex-shrink: 0;
+}
+
+.zen-scroll-btn:hover {
+    color: var(--text-main);
+    transform: scale(1.1);
+}
+
+.theme-palette.zen-scroll-area {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 12px 6px;
+    flex: 1;
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.theme-palette.zen-scroll-area::-webkit-scrollbar {
+    display: none;
+}
+
+.theme-swatch {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 0 0 2px transparent, 0 2px 4px rgba(0,0,0,0.1);
+    position: relative;
+    flex-shrink: 0;
+}
+
+.theme-swatch:hover {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 2px var(--border-light), 0 4px 8px rgba(0,0,0,0.15);
+}
+
+.theme-swatch.active {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 3px var(--bg-sec), 0 0 0 5px var(--text-main);
 }

@@ -5,6 +5,13 @@ export const Theme = {
     forest: 'forest',
     paper: 'paper',
     sea: 'sea',
+    sunset: 'sunset',
+    cyberpunk: 'cyberpunk',
+    coffee: 'coffee',
+    matcha: 'matcha',
+    peach: 'peach',
+    lavender: 'lavender',
+    nord: 'nord',
     auto: 'auto'
   },
 

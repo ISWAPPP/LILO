@@ -43,6 +43,9 @@ export const I18n = {
       'settings_theme_forest': 'Ліс',
       'settings_theme_paper': 'Папір',
       'settings_theme_sea': 'Море',
+      'settings_theme_sunset': 'Захід сонця',
+      'settings_theme_cyberpunk': 'Кіберпанк',
+      'settings_theme_coffee': 'Кава',
       'settings_save': 'Зберегти'
     },
     en: {
@@ -86,6 +89,9 @@ export const I18n = {
       'settings_theme_forest': 'Forest',
       'settings_theme_paper': 'Paper',
       'settings_theme_sea': 'Sea',
+      'settings_theme_sunset': 'Sunset',
+      'settings_theme_cyberpunk': 'Cyberpunk',
+      'settings_theme_coffee': 'Coffee',
       'settings_save': 'Save'
     }
   },
@@ -116,11 +122,19 @@ export const I18n = {
         } else if (el.tagName === 'BUTTON' && el.querySelector('span')) {
             // Keep the icon, change the text
             const icon = el.querySelector('span');
-            el.innerHTML = '';
+            el.textContent = '';
             el.appendChild(icon);
             el.appendChild(document.createTextNode(' ' + this.t(key)));
         } else {
-          el.innerHTML = this.t(key);
+          const text = this.t(key);
+          if (text.includes('<')) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(text, 'text/html');
+            el.textContent = '';
+            el.append(...doc.body.childNodes);
+          } else {
+            el.textContent = text;
+          }
         }
       }
     });

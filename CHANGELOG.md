@@ -1,5 +1,30 @@
 # Changelog — LILO Tools
 
+## [0.9.2] — 2026-05-04
+
+### Security
+- **XSS Protection**: Fixed a "DOM text reinterpreted as HTML" vulnerability in the i18n module. Replaced unsafe `innerHTML` assignments with a robust logic using `DOMParser` for HTML strings and `textContent` for plain text.
+
+## [0.9.1] — 2026-05-03
+
+### Added
+- **Zen Browser UI Replication**: Completely redesigned the theme selection interface to match the Zen Browser "Edit Theme" palette.
+- **Enhanced Palette Picker**: Introduced a horizontal scrolling color swatch gallery with dedicated mode toggles (System, Light, Dark).
+- **Expanded Theme Library**: Added 11 unique color palettes including Matcha, Peach, Lavender, and Nord.
+
+### Fixed
+- **UI Layout**: Increased padding in the theme palette to prevent clipping of selected swatches.
+- **Content Security Policy (CSP)**: Resolved a critical error in Chrome where inline scripts were blocked. Moved theme detection logic to a separate file (`core/theme-init.js`).
+
+## [0.8] — 2026-05-03
+
+### Added
+- **Window Height Setting**: Added a slider in the settings tab to control the maximum height of the extension window.
+
+### Fixed
+- **Theme Override Bug**: Fixed an issue where the dark theme CSS variables would unintentionally override custom themes (like Forest, Paper, Sea) when the system preferred dark mode.
+- **Notes UI**: Notes now visually truncate to display only the first two lines to keep the list compact.
+
 ## [0.7] — 2026-05-01
 
 ### Added
