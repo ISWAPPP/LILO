@@ -128,10 +128,22 @@ export const I18n = {
         } else {
           const text = this.t(key);
           if (text.includes('<')) {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(text, 'text/html');
             el.textContent = '';
-            el.append(...doc.body.childNodes);
+            const regex = /<([a-z]+)>(.*?)<\/\1>/gi;
+            let lastIndex = 0;
+            let match;
+            while ((match = regex.exec(text)) !== null) {
+              if (match.index > lastIndex) {
+                el.appendChild(document.createTextNode(text.substring(lastIndex, match.index)));
+              }
+              const node = document.createElement(match[1]);
+              node.textContent = match[2];
+              el.appendChild(node);
+              lastIndex = regex.lastIndex;
+            }
+            if (lastIndex < text.length) {
+              el.appendChild(document.createTextNode(text.substring(lastIndex)));
+            }
           } else {
             el.textContent = text;
           }
