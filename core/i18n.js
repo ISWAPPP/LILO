@@ -16,7 +16,8 @@ export const I18n = {
       'dns_error_invalid': '⚠️ Некоректний домен або IP',
       'dns_error_network': '❌ Помилка з\'єднання',
       'pics_warning': '⚠️ Зображення зберігаються на сторонніх серверах. Не поширюйте приватну інформацію!',
-      'pics_paste': 'Натисніть <b>Ctrl + V</b> щоб вставити скріншот',
+      'pics_paste_prefix': 'Натисніть ',
+      'pics_paste_suffix': ' щоб вставити скріншот',
       'pics_auto': 'Зображення буде завантажено автоматично',
       'passgen_placeholder': '...',
       'passgen_tooltip': 'Натисніть щоб скопіювати',
@@ -62,7 +63,8 @@ export const I18n = {
       'dns_error_invalid': '⚠️ Invalid domain or IP',
       'dns_error_network': '❌ Connection error',
       'pics_warning': '⚠️ Images are stored on third-party servers. Do not share private information!',
-      'pics_paste': 'Press <b>Ctrl + V</b> to paste screenshot',
+      'pics_paste_prefix': 'Press ',
+      'pics_paste_suffix': ' to paste screenshot',
       'pics_auto': 'Image will be uploaded automatically',
       'passgen_placeholder': '...',
       'passgen_tooltip': 'Click to copy',
@@ -126,27 +128,7 @@ export const I18n = {
             el.appendChild(icon);
             el.appendChild(document.createTextNode(' ' + this.t(key)));
         } else {
-          const text = this.t(key);
-          if (text.includes('<')) {
-            el.textContent = '';
-            const regex = /<([a-z]+)>(.*?)<\/\1>/gi;
-            let lastIndex = 0;
-            let match;
-            while ((match = regex.exec(text)) !== null) {
-              if (match.index > lastIndex) {
-                el.appendChild(document.createTextNode(text.substring(lastIndex, match.index)));
-              }
-              const node = document.createElement(match[1]);
-              node.textContent = match[2];
-              el.appendChild(node);
-              lastIndex = regex.lastIndex;
-            }
-            if (lastIndex < text.length) {
-              el.appendChild(document.createTextNode(text.substring(lastIndex)));
-            }
-          } else {
-            el.textContent = text;
-          }
+          el.textContent = this.t(key);
         }
       }
     });
