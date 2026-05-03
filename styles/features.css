@@ -365,3 +365,31 @@
     resize: vertical;
     font-family: inherit;
 }
+
+/* Zen Browser Style Theme Palette */
+.theme-palette {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(32px, 1fr));
+    gap: 10px;
+    padding: 8px 0;
+}
+
+.theme-swatch {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 0 0 2px transparent, 0 2px 4px rgba(0,0,0,0.1);
+    position: relative;
+}
+
+.theme-swatch:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 2px var(--border-light), 0 4px 6px rgba(0,0,0,0.15);
+}
+
+.theme-swatch.active {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 2px var(--bg-main), 0 0 0 4px var(--accent);
+}

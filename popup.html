@@ -104,17 +104,17 @@
 
         <div class="settings-group" style="margin-bottom: 20px;">
             <label for="setting-theme" data-i18n="settings_theme" style="display: block; font-weight: 600; margin-bottom: 8px;">Тема оформлення</label>
-            <select id="setting-theme" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid var(--border-light); background: var(--bg-main); color: var(--text-main);">
-                <option value="auto" data-i18n="settings_theme_auto">Автоматично (браузер)</option>
-                <option value="light" data-i18n="settings_theme_light">Світла</option>
-                <option value="dark" data-i18n="settings_theme_dark">Темна</option>
-                <option value="forest" data-i18n="settings_theme_forest">Ліс</option>
-                <option value="paper" data-i18n="settings_theme_paper">Папір</option>
-                <option value="sea" data-i18n="settings_theme_sea">Море</option>
-                <option value="sunset" data-i18n="settings_theme_sunset">Захід сонця</option>
-                <option value="cyberpunk" data-i18n="settings_theme_cyberpunk">Кіберпанк</option>
-                <option value="coffee" data-i18n="settings_theme_coffee">Кава</option>
-            </select>
+            <div class="theme-palette" id="setting-theme-palette">
+                <div class="theme-swatch" data-value="auto" data-i18n-title="settings_theme_auto" title="Автоматично (браузер)" style="background: linear-gradient(135deg, #ffffff 50%, #0f172a 50%);"></div>
+                <div class="theme-swatch" data-value="light" data-i18n-title="settings_theme_light" title="Світла" style="background: #ffffff;"></div>
+                <div class="theme-swatch" data-value="dark" data-i18n-title="settings_theme_dark" title="Темна" style="background: #0f172a;"></div>
+                <div class="theme-swatch" data-value="forest" data-i18n-title="settings_theme_forest" title="Ліс" style="background: #141d14;"></div>
+                <div class="theme-swatch" data-value="paper" data-i18n-title="settings_theme_paper" title="Папір" style="background: #fcfaf2;"></div>
+                <div class="theme-swatch" data-value="sea" data-i18n-title="settings_theme_sea" title="Море" style="background: #04121d;"></div>
+                <div class="theme-swatch" data-value="sunset" data-i18n-title="settings_theme_sunset" title="Захід сонця" style="background: #2b1d24;"></div>
+                <div class="theme-swatch" data-value="cyberpunk" data-i18n-title="settings_theme_cyberpunk" title="Кіберпанк" style="background: #0d0221;"></div>
+                <div class="theme-swatch" data-value="coffee" data-i18n-title="settings_theme_coffee" title="Кава" style="background: #3e2723;"></div>
+            </div>
         </div>
 
         <div class="settings-group" style="margin-bottom: 20px;">
