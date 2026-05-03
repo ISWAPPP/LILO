@@ -1,5 +1,10 @@
 # Changelog — LILO Tools
 
+## [0.9.2] — 2026-05-04
+
+### Security
+- **XSS Protection**: Fixed a "DOM text reinterpreted as HTML" vulnerability in the i18n module. Replaced unsafe `innerHTML` assignments with a robust logic using `DOMParser` for HTML strings and `textContent` for plain text.
+
 ## [0.9.1] — 2026-05-03
 
 ### Added

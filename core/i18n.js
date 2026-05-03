@@ -122,11 +122,19 @@ export const I18n = {
         } else if (el.tagName === 'BUTTON' && el.querySelector('span')) {
             // Keep the icon, change the text
             const icon = el.querySelector('span');
-            el.innerHTML = '';
+            el.textContent = '';
             el.appendChild(icon);
             el.appendChild(document.createTextNode(' ' + this.t(key)));
         } else {
-          el.innerHTML = this.t(key);
+          const text = this.t(key);
+          if (text.includes('<')) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(text, 'text/html');
+            el.textContent = '';
+            el.append(...doc.body.childNodes);
+          } else {
+            el.textContent = text;
+          }
         }
       }
     });
