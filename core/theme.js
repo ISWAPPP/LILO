@@ -8,6 +8,10 @@ export const Theme = {
     sunset: 'sunset',
     cyberpunk: 'cyberpunk',
     coffee: 'coffee',
+    matcha: 'matcha',
+    peach: 'peach',
+    lavender: 'lavender',
+    nord: 'nord',
     auto: 'auto'
   },
 

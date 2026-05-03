@@ -16,15 +16,36 @@ export function initSettingsFeature() {
       
       // Theme Palette logic
       const themeSwatches = document.querySelectorAll('.theme-swatch');
+      const modeBtns = document.querySelectorAll('.zen-mode-btn');
       let currentTheme = settings.theme || 'auto';
       
       const updateThemeActiveState = (themeValue) => {
         themeSwatches.forEach(swatch => {
           swatch.classList.toggle('active', swatch.dataset.value === themeValue);
         });
+        modeBtns.forEach(btn => {
+          btn.classList.toggle('active', btn.dataset.value === themeValue);
+        });
       };
       
       updateThemeActiveState(currentTheme);
+
+      // Horizontal scroll logic for Zen palette
+      const paletteScroll = document.getElementById('setting-theme-palette');
+      const btnScrollLeft = document.getElementById('zen-scroll-left');
+      const btnScrollRight = document.getElementById('zen-scroll-right');
+
+      if (btnScrollLeft && paletteScroll) {
+        btnScrollLeft.addEventListener('click', () => {
+          paletteScroll.scrollBy({ left: -120, behavior: 'smooth' });
+        });
+      }
+      
+      if (btnScrollRight && paletteScroll) {
+        btnScrollRight.addEventListener('click', () => {
+          paletteScroll.scrollBy({ left: 120, behavior: 'smooth' });
+        });
+      }
 
       if (langSelect) langSelect.value = settings.language;
       if (startupSelect) startupSelect.value = settings.startupTab;
@@ -62,7 +83,16 @@ export function initSettingsFeature() {
       
       themeSwatches.forEach(swatch => {
         swatch.addEventListener('click', (e) => {
-          const newTheme = e.target.dataset.value;
+          const newTheme = e.currentTarget.dataset.value;
+          currentTheme = newTheme;
+          updateThemeActiveState(newTheme);
+          handleSave({ theme: newTheme });
+        });
+      });
+
+      modeBtns.forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const newTheme = e.currentTarget.dataset.value;
           currentTheme = newTheme;
           updateThemeActiveState(newTheme);
           handleSave({ theme: newTheme });

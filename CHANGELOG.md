@@ -1,14 +1,19 @@
 # Changelog — LILO Tools
 
-## [0.8.1] — 2026-05-03
+## [0.9.1] — 2026-05-03
+
+### Added
+- **Zen Browser UI Replication**: Completely redesigned the theme selection interface to match the Zen Browser "Edit Theme" palette.
+- **Enhanced Palette Picker**: Introduced a horizontal scrolling color swatch gallery with dedicated mode toggles (System, Light, Dark).
+- **Expanded Theme Library**: Added 11 unique color palettes including Matcha, Peach, Lavender, and Nord.
 
 ### Fixed
+- **UI Layout**: Increased padding in the theme palette to prevent clipping of selected swatches.
 - **Content Security Policy (CSP)**: Resolved a critical error in Chrome where inline scripts were blocked. Moved theme detection logic to a separate file (`core/theme-init.js`).
 
 ## [0.8] — 2026-05-03
 
 ### Added
-- **New Themes**: Added three new custom color palettes: Sunset, Cyberpunk, and Coffee.
 - **Window Height Setting**: Added a slider in the settings tab to control the maximum height of the extension window.
 
 ### Fixed
