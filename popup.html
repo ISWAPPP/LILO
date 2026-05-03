@@ -3,19 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>LILO DNS & Tools</title>
-    <script>
-        // Synchronous theme detection to prevent flashing
-        (function() {
-            const theme = localStorage.getItem('lilo_theme_cache') || 'auto';
-            let actualTheme = theme;
-            if (theme === 'auto') {
-                actualTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-            }
-            document.documentElement.classList.add('theme-' + actualTheme);
-            document.documentElement.setAttribute('data-theme', actualTheme);
-            document.documentElement.setAttribute('data-theme-setting', theme);
-        })();
-    </script>
+    <script src="core/theme-init.js"></script>
     <link rel="stylesheet" href="styles/base.css">
     <link rel="stylesheet" href="styles/components.css">
     <link rel="stylesheet" href="styles/features.css">

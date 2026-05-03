@@ -3,7 +3,9 @@
 /* ============================================================
    DNS FEATURE
    ============================================================ */
-#output { margin-top: 16px; }
+#output {
+    margin-top: 16px;
+}
 
 .results-container {
     display: flex;
@@ -87,7 +89,8 @@
     margin-top: 10px;
 }
 
-.upload-zone:hover, .upload-zone:focus-within {
+.upload-zone:hover,
+.upload-zone:focus-within {
     border-color: var(--accent);
     background: var(--bg-tertiary);
 }
@@ -328,10 +331,23 @@
     transition: all 0.2s;
 }
 
-.note-edit-btn:hover { color: var(--accent); background: var(--bg-tertiary); }
-.note-delete-btn:hover { color: var(--error-text); background: var(--error-bg); }
-.note-save-btn { color: var(--success-text); }
-.note-save-btn:hover { background: var(--success-bg); }
+.note-edit-btn:hover {
+    color: var(--accent);
+    background: var(--bg-tertiary);
+}
+
+.note-delete-btn:hover {
+    color: var(--error-text);
+    background: var(--error-bg);
+}
+
+.note-save-btn {
+    color: var(--success-text);
+}
+
+.note-save-btn:hover {
+    background: var(--success-bg);
+}
 
 /* Editing mode */
 .note-item.editing {

@@ -1,5 +1,10 @@
 # Changelog — LILO Tools
 
+## [0.8.1] — 2026-05-03
+
+### Fixed
+- **Content Security Policy (CSP)**: Resolved a critical error in Chrome where inline scripts were blocked. Moved theme detection logic to a separate file (`core/theme-init.js`).
+
 ## [0.8] — 2026-05-03
 
 ### Added
