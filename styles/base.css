@@ -21,23 +21,7 @@
     --radius-lg: 6px;
 }
 
-@media (prefers-color-scheme: dark) {
-    :root:not([data-theme-setting="light"]) {
-        --bg-main: #0f172a;
-        --bg-sec: #1e293b;
-        --bg-tertiary: #334155;
-        --text-main: #f8fafc;
-        --text-muted: #94a3b8;
-        --border-light: #334155;
-        --border-focus: #3b82f6;
-        --accent: #3b82f6;
-        --accent-hover: #60a5fa;
-        --success-bg: rgba(34, 197, 94, 0.15);
-        --success-text: #4ade80;
-        --error-bg: rgba(239, 68, 68, 0.15);
-        --error-text: #f87171;
-    }
-}
+/* Media query removed to fix theme override bug */
 
 .theme-dark {
     --bg-main: #0f172a;
@@ -103,6 +87,54 @@
     --error-text: #fb7185;
 }
 
+.theme-sunset {
+    --bg-main: #2b1d24;
+    --bg-sec: #3b2831;
+    --bg-tertiary: #4a323d;
+    --text-main: #fde4e4;
+    --text-muted: #e49b9b;
+    --border-light: #583c48;
+    --border-focus: #ff7e67;
+    --accent: #ff7e67;
+    --accent-hover: #ff6045;
+    --success-bg: rgba(74, 222, 128, 0.15);
+    --success-text: #4ade80;
+    --error-bg: rgba(248, 113, 113, 0.15);
+    --error-text: #f87171;
+}
+
+.theme-cyberpunk {
+    --bg-main: #0d0221;
+    --bg-sec: #130331;
+    --bg-tertiary: #190541;
+    --text-main: #00ffcc;
+    --text-muted: #00ccaa;
+    --border-light: #260a5c;
+    --border-focus: #ff00ff;
+    --accent: #ff00ff;
+    --accent-hover: #cc00cc;
+    --success-bg: rgba(0, 255, 204, 0.15);
+    --success-text: #00ffcc;
+    --error-bg: rgba(255, 0, 255, 0.15);
+    --error-text: #ff00ff;
+}
+
+.theme-coffee {
+    --bg-main: #3e2723;
+    --bg-sec: #4e342e;
+    --bg-tertiary: #5d4037;
+    --text-main: #d7ccc8;
+    --text-muted: #bcaaa4;
+    --border-light: #795548;
+    --border-focus: #ffb300;
+    --accent: #ffb300;
+    --accent-hover: #ffa000;
+    --success-bg: rgba(74, 222, 128, 0.15);
+    --success-text: #4ade80;
+    --error-bg: rgba(248, 113, 113, 0.15);
+    --error-text: #f87171;
+}
+
 ::-webkit-scrollbar {
     display: none;
 }
@@ -117,6 +149,8 @@ body {
     user-select: none;
     -webkit-user-select: none;
     transition: background-color 0.2s, color 0.2s;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 h2, h3 {

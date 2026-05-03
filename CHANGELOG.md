@@ -1,5 +1,15 @@
 # Changelog — LILO Tools
 
+## [0.8] — 2026-05-03
+
+### Added
+- **New Themes**: Added three new custom color palettes: Sunset, Cyberpunk, and Coffee.
+- **Window Height Setting**: Added a slider in the settings tab to control the maximum height of the extension window.
+
+### Fixed
+- **Theme Override Bug**: Fixed an issue where the dark theme CSS variables would unintentionally override custom themes (like Forest, Paper, Sea) when the system preferred dark mode.
+- **Notes UI**: Notes now visually truncate to display only the first two lines to keep the list compact.
+
 ## [0.7] — 2026-05-01
 
 ### Added

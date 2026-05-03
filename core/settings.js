@@ -4,7 +4,8 @@ export const Settings = {
     theme: 'auto',
     startupTab: 'last',
     picsUnlocked: false,
-    dnsProvider: 'google'
+    dnsProvider: 'google',
+    windowHeight: 600
   },
 
   async load() {

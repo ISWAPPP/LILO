@@ -5,6 +5,9 @@ export const Theme = {
     forest: 'forest',
     paper: 'paper',
     sea: 'sea',
+    sunset: 'sunset',
+    cyberpunk: 'cyberpunk',
+    coffee: 'coffee',
     auto: 'auto'
   },
 

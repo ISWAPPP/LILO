@@ -6,12 +6,12 @@
 
 - **DNS Checker**: Quick analysis of DNS records (A, MX, TXT, NS) with automatic IP geolocation and MX host resolution.
 - **Image Upload**: Instant screenshot uploading from clipboard to third-party hosting (PICS) with a 10MB limit.
-- **Notes**: Convenient storage for text snippets directly in your browser.
+- **Notes**: Convenient storage for text snippets directly in your browser, now truncated to two lines for a compact view.
 - **Password Generator**: Create secure, cryptographically strong passwords with one-click copying.
-- **Multi-Theme UI**: Choose between Light, Dark, Forest, Paper, and Sea themes, or use Auto-mode.
+- **Multi-Theme UI**: Choose between Light, Dark, Forest, Paper, Sea, Sunset, Cyberpunk, and Coffee themes, or use Auto-mode.
 - **Localization**: Full support for English and Ukrainian languages.
 - **Smart Copying**: Click-to-copy results that intelligently exclude visual metadata like geolocation.
-- **Flexible Settings**: Choose your preferred language, startup tab, theme, and DNS provider.
+- **Flexible Settings**: Choose your preferred language, startup tab, theme, DNS provider, and customize the extension's window height.
 - **High Performance**: Optimized startup with synchronous theme detection to prevent UI flickering.
 
 ## 🛠 Technologies
@@ -25,7 +25,8 @@
 
 - **Startup Tab**: You can choose which tab opens by default — the last opened one or a specific fixed tab.
 - **DNS Provider**: Toggle between Google (8.8.8.8) and Cloudflare (1.1.1.1).
-- **Custom Themes**: A variety of eye-friendly themes (Light, Dark, Forest, Paper, Sea) to suit your environment.
+- **Custom Themes**: A variety of eye-friendly themes (Light, Dark, Forest, Paper, Sea, Sunset, Cyberpunk, Coffee) to suit your environment.
+- **Window Height**: Easily adjust the height of the popup directly in settings.
 - **Secret PICS Tab**: By default, the image upload tab is hidden.
   - To **enable** it: type `GETPICS` in the note input field and click +.
   - To **disable** it: type `NOPICS` in the note input field and click +.

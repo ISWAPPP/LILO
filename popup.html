@@ -123,6 +123,9 @@
                 <option value="forest" data-i18n="settings_theme_forest">Ліс</option>
                 <option value="paper" data-i18n="settings_theme_paper">Папір</option>
                 <option value="sea" data-i18n="settings_theme_sea">Море</option>
+                <option value="sunset" data-i18n="settings_theme_sunset">Захід сонця</option>
+                <option value="cyberpunk" data-i18n="settings_theme_cyberpunk">Кіберпанк</option>
+                <option value="coffee" data-i18n="settings_theme_coffee">Кава</option>
             </select>
         </div>
 
@@ -142,6 +145,14 @@
                 <option value="google" data-i18n="settings_dns_google">Google (8.8.8.8)</option>
                 <option value="cloudflare" data-i18n="settings_dns_cloudflare">Cloudflare (1.1.1.1)</option>
             </select>
+        </div>
+
+        <div class="settings-group" style="margin-bottom: 20px;">
+            <label for="setting-window-height" style="display: block; font-weight: 600; margin-bottom: 8px;">Максимальна висота вікна (px)</label>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <input type="range" id="setting-window-height" min="300" max="600" step="10" value="600" style="flex: 1; accent-color: var(--accent);">
+                <span id="setting-window-height-val" style="font-weight: 600; width: 40px; text-align: right;">600px</span>
+            </div>
         </div>
 
         <div class="settings-footer" style="margin-top: 30px; padding-top: 15px; border-top: 1px solid var(--border-light); display: flex; gap: 15px; justify-content: center; font-size: 13px;">
