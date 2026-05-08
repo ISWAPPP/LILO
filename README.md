@@ -22,15 +22,12 @@
 - **CSS3 (Custom Properties, Flexbox, Transitions)**
 - **Chrome Storage API**
 
-## ⚙️ Settings & Secrets
+## ⚙️ Settings
 
 - **Startup Tab**: You can choose which tab opens by default — the last opened one or a specific fixed tab.
 - **DNS Provider**: Toggle between Google (8.8.8.8) and Cloudflare (1.1.1.1).
-- **Zen Color Palette**: Pick from a wide range of eye-friendly themes (Matcha, Peach, Lavender, Nord, Forest, Paper, Sea, Sunset, Cyberpunk, Coffee) using the new interactive switcher.
+- **Zen Color Palette**: Pick from a wide range of eye-friendly themes ordered from light to dark (Paper, Peach, Matcha, Lavender, Nord, Sunset, Coffee, Forest, Cyberpunk, Sea) using the new interactive switcher.
 - **Window Height**: Easily adjust the height of the popup directly in settings.
-- **Secret PICS Tab**: By default, the image upload tab is hidden.
-  - To **enable** it: type `GETPICS` in the note input field and click +.
-  - To **disable** it: type `NOPICS` in the note input field and click +.
 
 ## 📦 Installation
 

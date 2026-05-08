@@ -2,6 +2,8 @@ import { Settings } from '../../core/settings.js';
 import { I18n } from '../../core/i18n.js';
 import { TabManager } from '../../core/tabs.js';
 import { Theme } from '../../core/theme.js';
+import { Utils } from '../../core/utils.js';
+import { Config } from '../../config.js';
 
 export function initSettingsFeature() {
   TabManager.register('settings', {
@@ -76,6 +78,8 @@ export function initSettingsFeature() {
         // Update height
         document.documentElement.style.setProperty('--cached-height', newSettings.windowHeight + 'px');
         localStorage.setItem('lilo_height_cache', newSettings.windowHeight);
+        
+        Utils.showToast(I18n.t('toast_saved'));
       };
 
       langSelect?.addEventListener('change', () => handleSave());
@@ -105,6 +109,63 @@ export function initSettingsFeature() {
         document.documentElement.style.setProperty('--cached-height', heightSlider.value + 'px');
       });
       heightSlider?.addEventListener('change', () => handleSave());
+
+      // Data Management
+      const btnExport = document.getElementById('btn-export-data');
+      const btnImport = document.getElementById('btn-import-data');
+      const btnReset = document.getElementById('btn-reset-settings');
+      const btnClear = document.getElementById('btn-clear-data');
+      const fileImport = document.getElementById('file-import');
+
+      btnExport?.addEventListener('click', async () => {
+        const data = {};
+        await new Promise(r => chrome.storage.local.get(null, res => { Object.assign(data, res); r(); }));
+        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `lilo_backup_${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        Utils.showToast(I18n.t('toast_exported'));
+      });
+
+      btnImport?.addEventListener('click', () => {
+        fileImport?.click();
+      });
+
+      fileImport?.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = async (event) => {
+          try {
+            const data = JSON.parse(event.target.result);
+            if (typeof data !== 'object') throw new Error('Invalid format');
+            await new Promise(r => chrome.storage.local.set(data, r));
+            Utils.showToast(I18n.t('toast_imported'));
+            setTimeout(() => location.reload(), 1000);
+          } catch (err) {
+            Utils.showToast('Error importing data');
+          }
+        };
+        reader.readAsText(file);
+      });
+
+      btnReset?.addEventListener('click', async () => {
+        if (!confirm('Ви впевнені, що хочете скинути налаштування інтерфейсу?')) return;
+        await new Promise(r => chrome.storage.local.remove('lilo_settings', r));
+        Utils.showToast(I18n.t('toast_reset'));
+        setTimeout(() => location.reload(), 800);
+      });
+
+      btnClear?.addEventListener('click', async () => {
+        if (!confirm('УВАГА: Це видалить ВСІ ваші нотатки та налаштування. Ви впевнені?')) return;
+        await new Promise(r => chrome.storage.local.clear(r));
+        localStorage.clear();
+        Utils.showToast(I18n.t('toast_cleared'));
+        setTimeout(() => location.reload(), 800);
+      });
     }
   });
 }

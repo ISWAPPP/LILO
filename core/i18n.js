@@ -47,7 +47,17 @@ export const I18n = {
       'settings_theme_sunset': 'Захід сонця',
       'settings_theme_cyberpunk': 'Кіберпанк',
       'settings_theme_coffee': 'Кава',
-      'settings_save': 'Зберегти'
+      'settings_save': 'Зберегти',
+      'settings_data_title': 'Управління даними',
+      'settings_btn_export': 'Експорт',
+      'settings_btn_import': 'Імпорт',
+      'settings_btn_reset': 'Скинути UI',
+      'settings_btn_clear': 'Очистити все',
+      'toast_saved': 'Налаштування збережено!',
+      'toast_exported': 'Дані успішно експортовано',
+      'toast_imported': 'Дані імпортовано. Перезапуск...',
+      'toast_cleared': 'Всі дані очищено!',
+      'toast_reset': 'Налаштування скинуто'
     },
     en: {
       'tab_dns': 'DNS',
@@ -94,7 +104,17 @@ export const I18n = {
       'settings_theme_sunset': 'Sunset',
       'settings_theme_cyberpunk': 'Cyberpunk',
       'settings_theme_coffee': 'Coffee',
-      'settings_save': 'Save'
+      'settings_save': 'Save',
+      'settings_data_title': 'Data Management',
+      'settings_btn_export': 'Export',
+      'settings_btn_import': 'Import',
+      'settings_btn_reset': 'Reset UI',
+      'settings_btn_clear': 'Clear All',
+      'toast_saved': 'Settings saved!',
+      'toast_exported': 'Data exported successfully',
+      'toast_imported': 'Data imported. Restarting...',
+      'toast_cleared': 'All data cleared!',
+      'toast_reset': 'Settings reset'
     }
   },
 

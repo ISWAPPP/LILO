@@ -70,34 +70,6 @@ async function addNote(text) {
   const trimmed = text.trim();
   if (!trimmed) return;
 
-  if (trimmed === 'GETPICS') {
-    const settings = await Settings.load();
-    if (!settings.picsUnlocked) {
-      await Settings.save({ ...settings, picsUnlocked: true });
-      const btn = document.getElementById('tab-btn-pics');
-      if (btn) btn.style.display = '';
-      const opt = document.getElementById('setting-startup-pics');
-      if (opt) opt.style.display = '';
-    }
-    return;
-  }
-
-  if (trimmed === 'NOPICS') {
-    const settings = await Settings.load();
-    if (settings.picsUnlocked) {
-      await Settings.save({ ...settings, picsUnlocked: false });
-      const btn = document.getElementById('tab-btn-pics');
-      if (btn) btn.style.display = 'none';
-      const opt = document.getElementById('setting-startup-pics');
-      if (opt) opt.style.display = 'none';
-      
-      if (document.getElementById('pics-tab')?.classList.contains('active')) {
-        TabManager.switchTo('dns');
-      }
-    }
-    return;
-  }
-
   notes.unshift({ id: crypto.randomUUID(), text: trimmed });
   await saveNotes(notes);
   renderNotes();
@@ -205,17 +177,51 @@ function setupNoteEvents() {
 export function initNotesFeature() {
   TabManager.register('notes', {
     async init() {
+      // Load saved passgen settings
+      const settings = await Settings.load();
+      const pg = settings.passgen || { lower: true, upper: true, numbers: true, symbols: false, length: 16 };
+      
+      const elLower = document.getElementById('opt-lower');
+      const elUpper = document.getElementById('opt-upper');
+      const elNum = document.getElementById('opt-numbers');
+      const elSym = document.getElementById('opt-symbols');
+      const lengthSlider = document.getElementById('passgen-length');
+      const lengthVal = document.getElementById('passgen-length-val');
+
+      if (elLower) elLower.checked = pg.lower;
+      if (elUpper) elUpper.checked = pg.upper;
+      if (elNum) elNum.checked = pg.numbers;
+      if (elSym) elSym.checked = pg.symbols;
+      if (lengthSlider) lengthSlider.value = pg.length;
+      if (lengthVal) lengthVal.textContent = pg.length;
+
+      const savePassgenSettings = async () => {
+        const current = await Settings.load();
+        await Settings.save({
+          ...current,
+          passgen: {
+            lower: elLower?.checked,
+            upper: elUpper?.checked,
+            numbers: elNum?.checked,
+            symbols: elSym?.checked,
+            length: parseInt(lengthSlider?.value) || 16
+          }
+        });
+      };
+
       // Password generator events
       const passgenOptions = ['opt-lower', 'opt-upper', 'opt-numbers', 'opt-symbols'];
       passgenOptions.forEach(optId => {
-        document.getElementById(optId)?.addEventListener('change', refreshPassword);
+        document.getElementById(optId)?.addEventListener('change', () => {
+          savePassgenSettings();
+          refreshPassword();
+        });
       });
 
-      const lengthSlider = document.getElementById('passgen-length');
-      const lengthVal = document.getElementById('passgen-length-val');
       if (lengthSlider) {
         lengthSlider.addEventListener('input', () => {
           if (lengthVal) lengthVal.textContent = lengthSlider.value;
+          savePassgenSettings();
           refreshPassword();
         });
       }

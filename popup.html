@@ -13,7 +13,7 @@
     <!-- Navigation tabs (DNS, PICS, NOTES) -->
     <div class="tabs-header">
         <button class="tab-link active" data-tab="dns" data-i18n="tab_dns">DNS</button>
-        <button class="tab-link" data-tab="pics" id="tab-btn-pics" data-i18n="tab_pics" style="display: none;">PICS</button>
+        <button class="tab-link" data-tab="pics" id="tab-btn-pics" data-i18n="tab_pics">PICS</button>
         <button class="tab-link" data-tab="notes" data-i18n="tab_notes">NOTES</button>
         <button class="tab-link" data-tab="settings" data-i18n-title="tab_settings" style="flex: 0 0 auto; width: 34px; font-size: 16px; padding: 0;" title="Налаштування">⚙️</button>
     </div>
@@ -115,16 +115,16 @@
             <div class="zen-palette-container">
                 <button class="zen-scroll-btn left" id="zen-scroll-left">‹</button>
                 <div class="theme-palette zen-scroll-area" id="setting-theme-palette">
-                    <div class="theme-swatch" data-value="forest" data-i18n-title="settings_theme_forest" title="Ліс" style="background: #141d14;"></div>
                     <div class="theme-swatch" data-value="paper" data-i18n-title="settings_theme_paper" title="Папір" style="background: #fcfaf2; border: 1px solid var(--border-light) !important;"></div>
-                    <div class="theme-swatch" data-value="sea" data-i18n-title="settings_theme_sea" title="Море" style="background: #04121d;"></div>
-                    <div class="theme-swatch" data-value="sunset" data-i18n-title="settings_theme_sunset" title="Захід сонця" style="background: #2b1d24;"></div>
-                    <div class="theme-swatch" data-value="cyberpunk" data-i18n-title="settings_theme_cyberpunk" title="Кіберпанк" style="background: #0d0221;"></div>
-                    <div class="theme-swatch" data-value="coffee" data-i18n-title="settings_theme_coffee" title="Кава" style="background: #3e2723;"></div>
-                    <div class="theme-swatch" data-value="matcha" data-i18n-title="settings_theme_matcha" title="Матча" style="background: #f3f7f2; border: 1px solid var(--border-light) !important;"></div>
                     <div class="theme-swatch" data-value="peach" data-i18n-title="settings_theme_peach" title="Персик" style="background: #fff5f2; border: 1px solid var(--border-light) !important;"></div>
+                    <div class="theme-swatch" data-value="matcha" data-i18n-title="settings_theme_matcha" title="Матча" style="background: #f3f7f2; border: 1px solid var(--border-light) !important;"></div>
                     <div class="theme-swatch" data-value="lavender" data-i18n-title="settings_theme_lavender" title="Лаванда" style="background: #f8f7ff; border: 1px solid var(--border-light) !important;"></div>
                     <div class="theme-swatch" data-value="nord" data-i18n-title="settings_theme_nord" title="Nord" style="background: #2e3440;"></div>
+                    <div class="theme-swatch" data-value="sunset" data-i18n-title="settings_theme_sunset" title="Захід сонця" style="background: #2b1d24;"></div>
+                    <div class="theme-swatch" data-value="coffee" data-i18n-title="settings_theme_coffee" title="Кава" style="background: #3e2723;"></div>
+                    <div class="theme-swatch" data-value="forest" data-i18n-title="settings_theme_forest" title="Ліс" style="background: #141d14;"></div>
+                    <div class="theme-swatch" data-value="cyberpunk" data-i18n-title="settings_theme_cyberpunk" title="Кіберпанк" style="background: #0d0221;"></div>
+                    <div class="theme-swatch" data-value="sea" data-i18n-title="settings_theme_sea" title="Море" style="background: #04121d;"></div>
                 </div>
                 <button class="zen-scroll-btn right" id="zen-scroll-right">›</button>
             </div>
@@ -135,7 +135,7 @@
             <select id="setting-startup-tab" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid var(--border-light); background: var(--bg-main); color: var(--text-main);">
                 <option value="last" data-i18n="settings_startup_last">Остання відкрита</option>
                 <option value="dns" data-i18n="settings_startup_dns">DNS</option>
-                <option value="pics" data-i18n="settings_startup_pics" id="setting-startup-pics" style="display: none;">PICS</option>
+                <option value="pics" data-i18n="settings_startup_pics" id="setting-startup-pics">PICS</option>
                 <option value="notes" data-i18n="settings_startup_notes">NOTES</option>
             </select>
         </div>
@@ -156,6 +156,17 @@
             </div>
         </div>
 
+        <div class="settings-group" style="margin-bottom: 20px; border-top: 1px solid var(--border-light); padding-top: 20px;">
+            <h3 style="margin-bottom: 12px;" data-i18n="settings_data_title">Управління даними</h3>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                <button id="btn-export-data" style="border-radius: var(--radius-md); border-left: 1px solid var(--border-light);" data-i18n="settings_btn_export">📥 Експорт</button>
+                <button id="btn-import-data" style="border-radius: var(--radius-md); border-left: 1px solid var(--border-light);" data-i18n="settings_btn_import">📤 Імпорт</button>
+                <button id="btn-reset-settings" style="border-radius: var(--radius-md); border-left: 1px solid var(--border-light); color: var(--text-muted);" data-i18n="settings_btn_reset">🔄 Скинути UI</button>
+                <button id="btn-clear-data" style="border-radius: var(--radius-md); border-left: 1px solid var(--border-light); color: var(--error-text); border-color: var(--error-bg); background: var(--error-bg);" data-i18n="settings_btn_clear">🗑️ Очистити все</button>
+            </div>
+            <input type="file" id="file-import" accept=".json" style="display: none;">
+        </div>
+
         <div class="settings-footer" style="margin-top: 30px; padding-top: 15px; border-top: 1px solid var(--border-light); display: flex; gap: 15px; justify-content: center; font-size: 13px;">
             <a href="https://feedback.iswappp.com/lilo-extension" target="_blank" style="color: var(--accent-main); text-decoration: none; display: flex; align-items: center; gap: 5px;">
                 <span>💬</span> Feedback
@@ -166,6 +177,7 @@
             </a>
         </div>
     </div>
+    <div id="toast-container"></div>
 
 </body>
 </html>

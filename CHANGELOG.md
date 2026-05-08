@@ -3,9 +3,15 @@
 ## [0.9.3] — 2026-05-08
 
 ### Added
+- **Password Generator Preferences**: The extension now remembers your preferred password length and character set configurations across sessions.
+- **Data Management Hub**: Introduced a new settings section to Export, Import, Reset, and Clear all extension data (including notes and preferences).
+- **Toast Notifications**: Added non-intrusive popup notifications to provide feedback for saving, exporting, and clearing data.
 - **Window Height Caching**: Implemented startup height caching (`lilo_height_cache`) via a CSS variable `--cached-height` to completely eliminate layout shift (flickering) during popup initialization.
 
 ### Improved
+- **Organized Theme Palette**: Sorted the Zen palette color swatches into a beautiful, flowing gradient from lightest (left) to darkest (right) for a more premium visual flow.
+- **Removed Secret PICS Commands**: Completely retired the `GETPICS`/`NOPICS` hidden command mechanics. The PICS image upload utility is now fully unlocked and visible by default to all users for better accessibility.
+- **Premium Dropdowns**: Replaced default browser select elements with custom-styled, elegant dropdown menus matching the theme.
 - **Robust Domain Cleaning**: Enhanced domain sanitization to strip port numbers (e.g., `domain:8080`), preventing invalid DNS lookup errors.
 - **Stricter IPv4 Validation**: Implemented a stricter regex in `isValidIP` to eliminate invalid IP ranges.
 - **Modern Chrome API Calls**: Refactored `getActiveTabDomain` to natively use modern async/await for `chrome.tabs.query` instead of Promise wrappers.
