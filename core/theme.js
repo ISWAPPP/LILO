@@ -12,6 +12,14 @@ export const Theme = {
     peach: 'peach',
     lavender: 'lavender',
     nord: 'nord',
+    mint: 'mint',
+    rose: 'rose',
+    sakura: 'sakura',
+    'solarized-light': 'solarized-light',
+    'solarized-dark': 'solarized-dark',
+    dracula: 'dracula',
+    gruvbox: 'gruvbox',
+    oceanic: 'oceanic',
     auto: 'auto'
   },
 

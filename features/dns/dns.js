@@ -47,7 +47,7 @@ export function initDnsFeature() {
         const ok = await Utils.copyToClipboard(urls[key]);
         if (ok) {
           const origHTML = btn.innerHTML;
-          btn.innerHTML = '<span>✅</span> Copied';
+          btn.innerHTML = `<span><svg class="icon icon-inline icon-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle;"><polyline points="20 6 9 17 4 12"></polyline></svg></span> ${I18n.t('copied')}`;
           setTimeout(() => btn.innerHTML = origHTML, 1000);
         }
       };
@@ -77,6 +77,12 @@ export function initDnsFeature() {
 
     btn.disabled = true;
     output.innerHTML = DnsRenderer.loader();
+ 
+    if (typeof navigator !== 'undefined' && !navigator.onLine) {
+      output.innerHTML = DnsRenderer.error(I18n.t('dns_error_no_internet'));
+      btn.disabled = false;
+      return;
+    }
 
     try {
       if (isIp) {
@@ -85,14 +91,17 @@ export function initDnsFeature() {
         return;
       }
 
-      const [A, MX, TXT, NS] = await Promise.all([
+      const rawResults = await Promise.allSettled([
         Api.dnsQuery(domain, 'A'),
+        Api.dnsQuery(domain, 'AAAA'),
         Api.dnsQuery(domain, 'MX'),
         Api.dnsQuery(domain, 'TXT'),
         Api.dnsQuery(domain, 'NS'),
       ]);
+      const [A, AAAA, MX, TXT, NS] = rawResults.map(r => r.status === 'fulfilled' ? r.value : { Answer: [] });
 
       const ips  = (A.Answer || []).map(r => r.data);
+      const ipv6 = (AAAA.Answer || []).map(r => r.data);
       
       const mxRecords = MX.Answer || [];
       const mxResolved = await Promise.all(mxRecords.map(async r => {
@@ -119,6 +128,7 @@ export function initDnsFeature() {
 
       output.innerHTML = DnsRenderer.results({
         ips,
+        ipv6,
         mx: mxResolved,
         ns: NS.Answer,
         mainGeo

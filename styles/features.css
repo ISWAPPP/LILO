@@ -169,6 +169,34 @@
     border-color: var(--success-text);
 }
 
+/* Password Strength Meter */
+.passgen-strength-meter {
+    height: 100%;
+    width: 0%;
+    transition: all 0.3s ease;
+}
+
+.passgen-strength-meter.weak {
+    width: 25%;
+    background: var(--error-text);
+}
+
+.passgen-strength-meter.medium {
+    width: 50%;
+    background: #f59e0b;
+}
+
+.passgen-strength-meter.strong {
+    width: 75%;
+    background: #84cc16;
+}
+
+.passgen-strength-meter.very-strong {
+    width: 100%;
+    background: var(--success-text);
+    box-shadow: 0 0 5px var(--success-text);
+}
+
 .passgen-options {
     display: flex;
     gap: 16px;
@@ -299,6 +327,7 @@
     display: -webkit-box;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 2;
+    line-clamp: 2;
     overflow: hidden;
 }
 
@@ -314,6 +343,8 @@
     opacity: 1;
 }
 
+.note-move-up-btn,
+.note-move-down-btn,
 .note-edit-btn,
 .note-delete-btn,
 .note-save-btn {
@@ -331,6 +362,8 @@
     transition: all 0.2s;
 }
 
+.note-move-up-btn:hover,
+.note-move-down-btn:hover,
 .note-edit-btn:hover {
     color: var(--accent);
     background: var(--bg-tertiary);
@@ -398,7 +431,7 @@
 
 .zen-mode-btn.active {
     background: var(--bg-main);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
     transform: scale(1.05);
 }
 
@@ -441,8 +474,10 @@
     scroll-behavior: smooth;
     padding: 12px 6px;
     flex: 1;
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
 }
 
 .theme-palette.zen-scroll-area::-webkit-scrollbar {
@@ -455,14 +490,28 @@
     border-radius: 50%;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 0 0 2px transparent, 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 0 0 2px transparent, 0 2px 4px rgba(0, 0, 0, 0.1);
     position: relative;
     flex-shrink: 0;
 }
 
+.theme-swatch::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: var(--swatch-accent);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s;
+}
+
 .theme-swatch:hover {
     transform: scale(1.15);
-    box-shadow: 0 0 0 2px var(--border-light), 0 4px 8px rgba(0,0,0,0.15);
+    box-shadow: 0 0 0 2px var(--border-light), 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
 .theme-swatch.active {

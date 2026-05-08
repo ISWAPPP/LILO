@@ -18,24 +18,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   const settings = await Settings.load();
   await I18n.init(settings.language);
   Theme.init(settings.theme || 'auto');
-  document.body.style.height = (settings.windowHeight || 600) + 'px';
-
-  if (settings.picsUnlocked) {
-    const picsTabBtn = document.getElementById('tab-btn-pics');
-    if (picsTabBtn) picsTabBtn.style.display = ''; // empty removes display:none but flex from css doesn't apply directly to button? It's just a button.
-    const picsSettingOpt = document.getElementById('setting-startup-pics');
-    if (picsSettingOpt) picsSettingOpt.style.display = '';
-  }
+  document.documentElement.style.setProperty('--cached-height', (settings.windowHeight || 600) + 'px');
+  localStorage.setItem('lilo_height_cache', settings.windowHeight || 600);
 
   let initialTab = 'dns';
   if (settings.startupTab === 'last') {
     initialTab = await Settings.getLastTab();
   } else {
     initialTab = settings.startupTab;
-  }
-
-  if (initialTab === 'pics' && !settings.picsUnlocked) {
-    initialTab = 'dns';
   }
 
   TabManager.init(initialTab);

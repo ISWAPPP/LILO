@@ -7,16 +7,13 @@ export const Api = {
   /** Retrieves the domain of the active Chrome tab. */
   async getActiveTabDomain() {
     if (typeof chrome === 'undefined' || !chrome.tabs) return null;
-    return new Promise((resolve) => {
-      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-        if (!tabs?.[0]?.url) return resolve(null);
-        try {
-          const url = new URL(tabs[0].url);
-          if (['http:', 'https:'].includes(url.protocol)) resolve(url.hostname);
-          else resolve(null);
-        } catch { resolve(null); }
-      });
-    });
+    try {
+      const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+      if (!tab?.url) return null;
+      const url = new URL(tab.url);
+      if (['http:', 'https:'].includes(url.protocol)) return url.hostname;
+      return null;
+    } catch { return null; }
   },
 
   /** DNS query via the selected provider (Google or Cloudflare). */
@@ -29,6 +26,7 @@ export const Api = {
         `${baseUrl}?name=${encodeURIComponent(name)}&type=${type}`,
         { headers: { 'accept': 'application/dns-json' } }
       );
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       return await res.json();
     } catch (err) { 
       console.error('DNS query failed:', err);
@@ -39,6 +37,7 @@ export const Api = {
   async getIpGeo(ip) {
     try {
       const res = await fetch(`http://ip-api.com/json/${encodeURIComponent(ip)}?fields=status,message,country,countryCode,regionName,city,isp,org,as,query`);
+      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const data = await res.json();
       if (data.status === 'success') {
         return data;

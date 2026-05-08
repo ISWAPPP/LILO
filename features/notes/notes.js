@@ -51,9 +51,52 @@ function generatePassword() {
   return password;
 }
 
+function calculateStrength(password, opts) {
+  let score = 0;
+  if (password.length >= 6) score += 1;
+  if (password.length >= 10) score += 1;
+  if (password.length >= 14) score += 1;
+  
+  let variety = 0;
+  if (opts.lower) variety++;
+  if (opts.upper) variety++;
+  if (opts.numbers) variety++;
+  if (opts.symbols) variety++;
+  
+  if (variety >= 3) score += 1;
+  if (variety === 4) score += 1;
+
+  const meter = document.getElementById('passgen-strength-meter');
+  if (!meter) return;
+
+  meter.className = 'passgen-strength-meter'; // reset
+  if (password.length === 0) {
+    // do nothing
+  } else if (score <= 2) {
+    meter.classList.add('weak');
+  } else if (score <= 3) {
+    meter.classList.add('medium');
+  } else if (score <= 4) {
+    meter.classList.add('strong');
+  } else {
+    meter.classList.add('very-strong');
+  }
+}
+
 function refreshPassword() {
   const output = document.getElementById('passgen-result');
-  if (output) output.value = generatePassword();
+  if (output) {
+    const pass = generatePassword();
+    output.value = pass;
+    
+    const opts = {
+      lower: document.getElementById('opt-lower')?.checked,
+      upper: document.getElementById('opt-upper')?.checked,
+      numbers: document.getElementById('opt-numbers')?.checked,
+      symbols: document.getElementById('opt-symbols')?.checked,
+    };
+    calculateStrength(pass, opts);
+  }
 }
 
 // ==================== NOTES LOGIC ====================
@@ -70,34 +113,6 @@ async function addNote(text) {
   const trimmed = text.trim();
   if (!trimmed) return;
 
-  if (trimmed === 'GETPICS') {
-    const settings = await Settings.load();
-    if (!settings.picsUnlocked) {
-      await Settings.save({ ...settings, picsUnlocked: true });
-      const btn = document.getElementById('tab-btn-pics');
-      if (btn) btn.style.display = '';
-      const opt = document.getElementById('setting-startup-pics');
-      if (opt) opt.style.display = '';
-    }
-    return;
-  }
-
-  if (trimmed === 'NOPICS') {
-    const settings = await Settings.load();
-    if (settings.picsUnlocked) {
-      await Settings.save({ ...settings, picsUnlocked: false });
-      const btn = document.getElementById('tab-btn-pics');
-      if (btn) btn.style.display = 'none';
-      const opt = document.getElementById('setting-startup-pics');
-      if (opt) opt.style.display = 'none';
-      
-      if (document.getElementById('pics-tab')?.classList.contains('active')) {
-        TabManager.switchTo('dns');
-      }
-    }
-    return;
-  }
-
   notes.unshift({ id: crypto.randomUUID(), text: trimmed });
   await saveNotes(notes);
   renderNotes();
@@ -109,16 +124,37 @@ async function deleteNote(id) {
   renderNotes();
 }
 
-async function updateNote(id, newText) {
+async function updateNoteWithColor(id, newText, color) {
   if (!newText.trim()) {
     // Empty text = deletion
     notes = notes.filter(n => n.id !== id);
   } else {
     const note = notes.find(n => n.id === id);
-    if (note) note.text = newText.trim();
+    if (note) {
+      note.text = newText.trim();
+      note.color = color;
+    }
   }
   await saveNotes(notes);
   renderNotes();
+}
+
+async function moveNoteUp(id) {
+  const index = notes.findIndex(n => n.id === id);
+  if (index > 0) {
+    [notes[index - 1], notes[index]] = [notes[index], notes[index - 1]];
+    await saveNotes(notes);
+    renderNotes();
+  }
+}
+
+async function moveNoteDown(id) {
+  const index = notes.findIndex(n => n.id === id);
+  if (index < notes.length - 1) {
+    [notes[index + 1], notes[index]] = [notes[index], notes[index + 1]];
+    await saveNotes(notes);
+    renderNotes();
+  }
 }
 
 async function copyNote(id) {
@@ -176,10 +212,32 @@ function setupNoteEvents() {
       return;
     }
 
+    // Color swatch click
+    if (e.target.closest('.color-swatch')) {
+      const swatch = e.target.closest('.color-swatch');
+      const color = swatch.dataset.color;
+      item.style.backgroundColor = color;
+      item.dataset.selectedColor = color;
+      return;
+    }
+
+    // Move Up
+    if (e.target.closest('.note-move-up-btn')) {
+      moveNoteUp(id);
+      return;
+    }
+
+    // Move Down
+    if (e.target.closest('.note-move-down-btn')) {
+      moveNoteDown(id);
+      return;
+    }
+
     // Save button
     if (e.target.closest('.note-save-btn')) {
       const input = item.querySelector('.note-edit-input');
-      updateNote(id, input?.value || '');
+      const color = item.dataset.selectedColor !== undefined ? item.dataset.selectedColor : (notes.find(n => n.id === id)?.color || '');
+      updateNoteWithColor(id, input?.value || '', color);
       return;
     }
 
@@ -195,7 +253,8 @@ function setupNoteEvents() {
       e.preventDefault(); // Prevent adding new line
       const item = e.target.closest('.note-item');
       const id = item?.dataset.id;
-      updateNote(id, e.target.value || '');
+      const color = item?.dataset.selectedColor !== undefined ? item.dataset.selectedColor : (notes.find(n => n.id === id)?.color || '');
+      updateNoteWithColor(id, e.target.value || '', color);
     }
   });
 }
@@ -205,17 +264,51 @@ function setupNoteEvents() {
 export function initNotesFeature() {
   TabManager.register('notes', {
     async init() {
+      // Load saved passgen settings
+      const settings = await Settings.load();
+      const pg = settings.passgen || { lower: true, upper: true, numbers: true, symbols: false, length: 16 };
+      
+      const elLower = document.getElementById('opt-lower');
+      const elUpper = document.getElementById('opt-upper');
+      const elNum = document.getElementById('opt-numbers');
+      const elSym = document.getElementById('opt-symbols');
+      const lengthSlider = document.getElementById('passgen-length');
+      const lengthVal = document.getElementById('passgen-length-val');
+
+      if (elLower) elLower.checked = pg.lower;
+      if (elUpper) elUpper.checked = pg.upper;
+      if (elNum) elNum.checked = pg.numbers;
+      if (elSym) elSym.checked = pg.symbols;
+      if (lengthSlider) lengthSlider.value = pg.length;
+      if (lengthVal) lengthVal.textContent = pg.length;
+
+      const savePassgenSettings = async () => {
+        const current = await Settings.load();
+        await Settings.save({
+          ...current,
+          passgen: {
+            lower: elLower?.checked,
+            upper: elUpper?.checked,
+            numbers: elNum?.checked,
+            symbols: elSym?.checked,
+            length: parseInt(lengthSlider?.value) || 16
+          }
+        });
+      };
+
       // Password generator events
       const passgenOptions = ['opt-lower', 'opt-upper', 'opt-numbers', 'opt-symbols'];
       passgenOptions.forEach(optId => {
-        document.getElementById(optId)?.addEventListener('change', refreshPassword);
+        document.getElementById(optId)?.addEventListener('change', () => {
+          savePassgenSettings();
+          refreshPassword();
+        });
       });
 
-      const lengthSlider = document.getElementById('passgen-length');
-      const lengthVal = document.getElementById('passgen-length-val');
       if (lengthSlider) {
         lengthSlider.addEventListener('input', () => {
           if (lengthVal) lengthVal.textContent = lengthSlider.value;
+          savePassgenSettings();
           refreshPassword();
         });
       }

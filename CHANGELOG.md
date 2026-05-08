@@ -1,4 +1,53 @@
 # Changelog — LILO Tools
+ 
+## [0.9.6] — 2026-05-09
+ 
+### Improved
+- **Modern Minimalist SVGs**: Replaced all interface emojis (gear, lock, globe, profile, warnings, clipboard, arrows, sparkles, sun, moon, trash, etc.) with elegant, lightweight inline SVG vector icons that perfectly scale and adapt to all 18 theme palettes.
+- **Enhanced Alignments**: Programmed perfect flex-alignment for warning symbols, labels, and text across tabs to ensure a completely symmetric, premium user experience.
+ 
+## [0.9.5] — 2026-05-08
+ 
+### Added
+- **Expanded Theme Library**: Added 4 more modern premium themes (Sakura, Solarized Light, Solarized Dark, and Oceanic), bringing the total selection of highly curated UI palettes to 18.
+- **Visual Swatch Accent Indicator**: Integrated a small, elegant colored dot inside each theme swatch circle displaying its unique primary accent color for a quick visual preview of the combined palette.
+ 
+### Fixed
+- **Complete Internationalization (I18n) Compliance**: Replaced all remaining hardcoded Ukrainian strings across modules (including settings confirm modals, clipboard copy badges, placeholder inputs, list empty messages, and drag-and-drop/offline warning text) with fully translated equivalents.
+- **UI Contrast Optimization**: Replaced hardcoded white text for the primary DIG button with a dynamic `--accent-text` color custom-property to guarantee perfect readability and high contrast on both light-background and bright-background themes (e.g., Forest, Cyberpunk, Sea).
+ 
+## [0.9.4] — 2026-05-08
+
+### Added
+- **PICS Drag & Drop & Upload History**: You can now drop image files directly into the upload area or click to open the file picker. Added a local image preview during uploads, and a grid showing the 5 most recently uploaded images (clicking them copies their URL instantly).
+- **Password Strength Meter**: A colored dynamic visual meter evaluates password complexity in real-time under the generator output.
+- **Note Customization**: Notes can now be reordered with sleek SVG arrows (▲/▼) and highlighted with 5 lovely pastel background colors. The text and icons dynamically adjust to dark-grey on colored notes for maximum readability.
+- **Fast Tab Shortcuts**: Navigate between extension panels instantly with `Alt+1` (DNS), `Alt+2` (PICS), `Alt+3` (NOTES), and `Alt+4` (Settings).
+- **IPv6 DNS Lookup**: Domain checks now query `AAAA` records in parallel and output them cleanly in their own IPv6 results block.
+- **Offline Resilience**: Instant `navigator.onLine` verification cuts network requests early if offline, showing helpful warning messages instead of loading endlessly.
+
+### Improved
+- **Sliding Tab Accent**: Implemented a smooth sliding background animation behind active tabs.
+- **Clean Button Grids**: Redesigned the data management buttons in settings into structured rows.
+- **Full Localization**: The shortcut navigation guides and the PICS upload history sections now dynamically adjust to your language settings.
+
+## [0.9.3] — 2026-05-08
+
+### Added
+- **Password Generator Preferences**: The extension now remembers your preferred password length and character set configurations across sessions.
+- **Data Management Hub**: Introduced a new settings section to Export, Import, Reset, and Clear all extension data (including notes and preferences).
+- **Toast Notifications**: Added non-intrusive popup notifications to provide feedback for saving, exporting, and clearing data.
+- **Window Height Caching**: Implemented startup height caching (`lilo_height_cache`) via a CSS variable `--cached-height` to completely eliminate layout shift (flickering) during popup initialization.
+
+### Improved
+- **Organized Theme Palette**: Sorted the Zen palette color swatches into a beautiful, flowing gradient from lightest (left) to darkest (right) for a more premium visual flow.
+- **Removed Secret PICS Commands**: Completely retired the `GETPICS`/`NOPICS` hidden command mechanics. The PICS image upload utility is now fully unlocked and visible by default to all users for better accessibility.
+- **Premium Dropdowns**: Replaced default browser select elements with custom-styled, elegant dropdown menus matching the theme.
+- **Robust Domain Cleaning**: Enhanced domain sanitization to strip port numbers (e.g., `domain:8080`), preventing invalid DNS lookup errors.
+- **Stricter IPv4 Validation**: Implemented a stricter regex in `isValidIP` to eliminate invalid IP ranges.
+- **Modern Chrome API Calls**: Refactored `getActiveTabDomain` to natively use modern async/await for `chrome.tabs.query` instead of Promise wrappers.
+- **Enhanced DNS Resilience**: Replaced `Promise.all` with `Promise.allSettled` for batch DNS queries, ensuring a partial record failure (e.g., TXT record) does not block the entire lookup.
+- **API Error Handling**: Added HTTP status checks in `fetch` calls to gracefully handle non-JSON or server error responses.
 
 ## [0.9.2] — 2026-05-04
 

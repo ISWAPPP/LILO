@@ -3,9 +3,9 @@ export const Settings = {
     language: 'auto',
     theme: 'auto',
     startupTab: 'last',
-    picsUnlocked: false,
     dnsProvider: 'google',
-    windowHeight: 600
+    windowHeight: 600,
+    passgen: { lower: true, upper: true, numbers: true, symbols: false, length: 16 }
   },
 
   async load() {

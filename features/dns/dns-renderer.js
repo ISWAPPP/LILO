@@ -4,7 +4,7 @@ import { Utils } from '../../core/utils.js';
 
 export const DnsRenderer = {
   /** Full block of DNS check results. */
-  results({ ips, mx, ns, mainGeo }) {
+  results({ ips, ipv6, mx, ns, mainGeo }) {
     let html = `<div class="results-container animate-fade-in-up">`;
     let ipContent = ips.join('<br>');
     if (mainGeo && ips.length > 0) {
@@ -13,6 +13,10 @@ export const DnsRenderer = {
     }
 
     html += this.row('IP (A)', ipContent);
+    
+    if (ipv6 && ipv6.length > 0) {
+      html += this.row('IPv6', ipv6.join('<br>'));
+    }
 
     html += this.row('MX', this.formatMX(mx));
     html += this.row('NS', (ns || []).map(r => Utils.escapeHTML(r.data)).join('<br>'));
@@ -66,6 +70,10 @@ export const DnsRenderer = {
   },
 
   error(msg) {
-    return `<div class="msg error">${msg}</div>`;
+    return `
+      <div class="msg error" style="display: flex; align-items: center; justify-content: center; gap: 6px;">
+        <svg class="icon icon-error" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; flex-shrink: 0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        <span>${msg}</span>
+      </div>`;
   },
 };
