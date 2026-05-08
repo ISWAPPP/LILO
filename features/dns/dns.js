@@ -78,6 +78,12 @@ export function initDnsFeature() {
     btn.disabled = true;
     output.innerHTML = DnsRenderer.loader();
 
+    if (typeof navigator !== 'undefined' && !navigator.onLine) {
+      output.innerHTML = DnsRenderer.error('Відсутнє з\'єднання з інтернетом');
+      btn.disabled = false;
+      return;
+    }
+
     try {
       if (isIp) {
         const geo = await Api.getIpGeo(domain);
@@ -87,13 +93,15 @@ export function initDnsFeature() {
 
       const rawResults = await Promise.allSettled([
         Api.dnsQuery(domain, 'A'),
+        Api.dnsQuery(domain, 'AAAA'),
         Api.dnsQuery(domain, 'MX'),
         Api.dnsQuery(domain, 'TXT'),
         Api.dnsQuery(domain, 'NS'),
       ]);
-      const [A, MX, TXT, NS] = rawResults.map(r => r.status === 'fulfilled' ? r.value : { Answer: [] });
+      const [A, AAAA, MX, TXT, NS] = rawResults.map(r => r.status === 'fulfilled' ? r.value : { Answer: [] });
 
       const ips  = (A.Answer || []).map(r => r.data);
+      const ipv6 = (AAAA.Answer || []).map(r => r.data);
       
       const mxRecords = MX.Answer || [];
       const mxResolved = await Promise.all(mxRecords.map(async r => {
@@ -120,6 +128,7 @@ export function initDnsFeature() {
 
       output.innerHTML = DnsRenderer.results({
         ips,
+        ipv6,
         mx: mxResolved,
         ns: NS.Answer,
         mainGeo

@@ -1,5 +1,20 @@
 # Changelog — LILO Tools
 
+## [0.9.4] — 2026-05-08
+
+### Added
+- **PICS Drag & Drop & Upload History**: You can now drop image files directly into the upload area or click to open the file picker. Added a local image preview during uploads, and a grid showing the 5 most recently uploaded images (clicking them copies their URL instantly).
+- **Password Strength Meter**: A colored dynamic visual meter evaluates password complexity in real-time under the generator output.
+- **Note Customization**: Notes can now be reordered with sleek SVG arrows (▲/▼) and highlighted with 5 lovely pastel background colors. The text and icons dynamically adjust to dark-grey on colored notes for maximum readability.
+- **Fast Tab Shortcuts**: Navigate between extension panels instantly with `Alt+1` (DNS), `Alt+2` (PICS), `Alt+3` (NOTES), and `Alt+4` (Settings).
+- **IPv6 DNS Lookup**: Domain checks now query `AAAA` records in parallel and output them cleanly in their own IPv6 results block.
+- **Offline Resilience**: Instant `navigator.onLine` verification cuts network requests early if offline, showing helpful warning messages instead of loading endlessly.
+
+### Improved
+- **Sliding Tab Accent**: Implemented a smooth sliding background animation behind active tabs.
+- **Clean Button Grids**: Redesigned the data management buttons in settings into structured rows.
+- **Full Localization**: The shortcut navigation guides and the PICS upload history sections now dynamically adjust to your language settings.
+
 ## [0.9.3] — 2026-05-08
 
 ### Added

@@ -16,6 +16,7 @@
         <button class="tab-link" data-tab="pics" id="tab-btn-pics" data-i18n="tab_pics">PICS</button>
         <button class="tab-link" data-tab="notes" data-i18n="tab_notes">NOTES</button>
         <button class="tab-link" data-tab="settings" data-i18n-title="tab_settings" style="flex: 0 0 auto; width: 34px; font-size: 16px; padding: 0;" title="Налаштування">⚙️</button>
+        <div class="tab-slider" id="tab-slider"></div>
     </div>
 
     <!-- ===== DNS TAB ===== -->
@@ -51,10 +52,12 @@
         </div>
         <div class="upload-zone" id="upload_zone">
             <div class="upload-icon">📋</div>
-            <p><span data-i18n="pics_paste_prefix">Натисніть </span><b>Ctrl + V</b><span data-i18n="pics_paste_suffix"> щоб вставити скріншот</span></p>
+            <p><span data-i18n="pics_paste_prefix">Натисніть </span><b>Ctrl + V</b><span data-i18n="pics_paste_suffix"> або перетягніть сюди</span></p>
             <small data-i18n="pics_auto">Зображення буде завантажено автоматично</small>
+            <input type="file" id="pics-file-input" accept="image/*" style="display: none;">
         </div>
         <div id="pics-output"></div>
+        <div id="pics-history-container" class="pics-history-container" style="margin-top: 15px;"></div>
     </div>
 
     <!-- ===== NOTES TAB ===== -->
@@ -64,6 +67,9 @@
             <div class="passgen-output">
                 <input type="text" id="passgen-result" readonly placeholder="..." data-i18n="passgen_placeholder" title="Натисніть щоб скопіювати" data-i18n-title="passgen_tooltip">
                 <button id="passgen-refresh" title="Згенерувати новий" data-i18n-title="passgen_refresh">🔄</button>
+            </div>
+            <div class="passgen-strength-container" style="margin-bottom: 12px; height: 4px; background: var(--bg-main); border-radius: 2px; overflow: hidden;">
+                <div id="passgen-strength-meter" class="passgen-strength-meter"></div>
             </div>
             <div class="passgen-options" style="display: flex; align-items: center; gap: 15px; flex-wrap: nowrap; margin-bottom: 0;">
                 <div style="display: flex; gap: 10px; flex-shrink: 0;">
@@ -93,6 +99,10 @@
     <div id="settings-tab" class="tab-content">
         <h3 data-i18n="settings_title" style="margin-bottom: 15px; border-bottom: 1px solid var(--border-light); padding-bottom: 8px;">Налаштування</h3>
         
+        <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 15px; background: var(--bg-sec); padding: 8px; border-radius: 4px; border: 1px dashed var(--border-light);">
+            💡 <b data-i18n="settings_shortcuts_title">Швидка навігація:</b> <span data-i18n="settings_shortcuts_desc">Використовуйте Alt+1 (DNS), Alt+2 (PICS), Alt+3 (NOTES) або Alt+4 (Налаштування).</span>
+        </div>
+
         <div class="settings-group" style="margin-bottom: 20px;">
             <label for="setting-language" data-i18n="settings_lang" style="display: block; font-weight: 600; margin-bottom: 8px;">Мова інтерфейсу</label>
             <select id="setting-language" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid var(--border-light); background: var(--bg-main); color: var(--text-main);">
@@ -158,11 +168,11 @@
 
         <div class="settings-group" style="margin-bottom: 20px; border-top: 1px solid var(--border-light); padding-top: 20px;">
             <h3 style="margin-bottom: 12px;" data-i18n="settings_data_title">Управління даними</h3>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <button id="btn-export-data" style="border-radius: var(--radius-md); border-left: 1px solid var(--border-light);" data-i18n="settings_btn_export">📥 Експорт</button>
-                <button id="btn-import-data" style="border-radius: var(--radius-md); border-left: 1px solid var(--border-light);" data-i18n="settings_btn_import">📤 Імпорт</button>
-                <button id="btn-reset-settings" style="border-radius: var(--radius-md); border-left: 1px solid var(--border-light); color: var(--text-muted);" data-i18n="settings_btn_reset">🔄 Скинути UI</button>
-                <button id="btn-clear-data" style="border-radius: var(--radius-md); border-left: 1px solid var(--border-light); color: var(--error-text); border-color: var(--error-bg); background: var(--error-bg);" data-i18n="settings_btn_clear">🗑️ Очистити все</button>
+            <div style="display: flex; gap: 8px;">
+                <button id="btn-export-data" style="flex: 1; height: 36px; padding: 0; border-radius: var(--radius-md); font-size: 16px; border-left: 1px solid var(--border-light);" title="Export Data" data-i18n-title="settings_tooltip_export">📥</button>
+                <button id="btn-import-data" style="flex: 1; height: 36px; padding: 0; border-radius: var(--radius-md); font-size: 16px; border-left: 1px solid var(--border-light);" title="Import Data" data-i18n-title="settings_tooltip_import">📤</button>
+                <button id="btn-reset-settings" style="flex: 1; height: 36px; padding: 0; border-radius: var(--radius-md); font-size: 16px; border-left: 1px solid var(--border-light); color: var(--text-muted);" title="Reset UI" data-i18n-title="settings_tooltip_reset">🔄</button>
+                <button id="btn-clear-data" style="flex: 1; height: 36px; padding: 0; border-radius: var(--radius-md); font-size: 16px; border-left: 1px solid var(--border-light); color: var(--error-text); border-color: var(--error-bg); background: var(--error-bg);" title="Clear All Data" data-i18n-title="settings_tooltip_clear">🗑️</button>
             </div>
             <input type="file" id="file-import" accept=".json" style="display: none;">
         </div>

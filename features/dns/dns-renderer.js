@@ -4,7 +4,7 @@ import { Utils } from '../../core/utils.js';
 
 export const DnsRenderer = {
   /** Full block of DNS check results. */
-  results({ ips, mx, ns, mainGeo }) {
+  results({ ips, ipv6, mx, ns, mainGeo }) {
     let html = `<div class="results-container animate-fade-in-up">`;
     let ipContent = ips.join('<br>');
     if (mainGeo && ips.length > 0) {
@@ -13,6 +13,10 @@ export const DnsRenderer = {
     }
 
     html += this.row('IP (A)', ipContent);
+    
+    if (ipv6 && ipv6.length > 0) {
+      html += this.row('IPv6', ipv6.join('<br>'));
+    }
 
     html += this.row('MX', this.formatMX(mx));
     html += this.row('NS', (ns || []).map(r => Utils.escapeHTML(r.data)).join('<br>'));

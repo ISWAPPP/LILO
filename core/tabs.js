@@ -21,6 +21,15 @@ export const TabManager = {
       btn.addEventListener('click', () => this.switchTo(btn.dataset.tab));
     });
 
+    document.addEventListener('keydown', (e) => {
+      if (e.altKey && !e.shiftKey && !e.ctrlKey) {
+        if (e.key === '1') this.switchTo('dns');
+        else if (e.key === '2') this.switchTo('pics');
+        else if (e.key === '3') this.switchTo('notes');
+        else if (e.key === '4') this.switchTo('settings');
+      }
+    });
+
     // Initialize all registered features
     for (const [, handler] of registry) {
       handler.init?.();
@@ -49,7 +58,16 @@ export const TabManager = {
     // Switch UI
     document.querySelectorAll('.tab-link, .tab-content')
       .forEach(el => el.classList.remove('active'));
-    document.querySelector(`[data-tab="${name}"]`)?.classList.add('active');
+    
+    const newBtn = document.querySelector(`[data-tab="${name}"]`);
+    newBtn?.classList.add('active');
+    
+    const slider = document.getElementById('tab-slider');
+    if (slider && newBtn) {
+      slider.style.width = `${newBtn.offsetWidth}px`;
+      slider.style.left = `${newBtn.offsetLeft}px`;
+    }
+
     document.getElementById(`${name}-tab`)?.classList.add('active');
 
     activeTab = name;
