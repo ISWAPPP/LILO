@@ -85,12 +85,13 @@ export function initDnsFeature() {
         return;
       }
 
-      const [A, MX, TXT, NS] = await Promise.all([
+      const rawResults = await Promise.allSettled([
         Api.dnsQuery(domain, 'A'),
         Api.dnsQuery(domain, 'MX'),
         Api.dnsQuery(domain, 'TXT'),
         Api.dnsQuery(domain, 'NS'),
       ]);
+      const [A, MX, TXT, NS] = rawResults.map(r => r.status === 'fulfilled' ? r.value : { Answer: [] });
 
       const ips  = (A.Answer || []).map(r => r.data);
       

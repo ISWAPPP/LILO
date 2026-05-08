@@ -6,7 +6,7 @@ export const Utils = {
   },
 
   isValidIP(ip) {
-    return /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/.test(ip);
+    return /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/.test(ip);
   },
 
   getFlagEmoji(countryCode) {
@@ -33,7 +33,7 @@ export const Utils = {
   },
 
   cleanDomain(input) {
-    return input.trim().toLowerCase().replace(/^(https?:\/\/)?(www\.)?/, '').split('/')[0];
+    return input.trim().toLowerCase().replace(/^(https?:\/\/)?(www\.)?/, '').split('/')[0].split(':')[0];
   },
 
   async copyToClipboard(text) {

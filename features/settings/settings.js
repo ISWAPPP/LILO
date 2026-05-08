@@ -74,7 +74,8 @@ export function initSettingsFeature() {
         Theme.apply(newSettings.theme);
         
         // Update height
-        document.body.style.height = newSettings.windowHeight + 'px';
+        document.documentElement.style.setProperty('--cached-height', newSettings.windowHeight + 'px');
+        localStorage.setItem('lilo_height_cache', newSettings.windowHeight);
       };
 
       langSelect?.addEventListener('change', () => handleSave());
@@ -101,7 +102,7 @@ export function initSettingsFeature() {
       
       heightSlider?.addEventListener('input', () => {
         if (heightVal) heightVal.textContent = heightSlider.value + 'px';
-        document.body.style.height = heightSlider.value + 'px';
+        document.documentElement.style.setProperty('--cached-height', heightSlider.value + 'px');
       });
       heightSlider?.addEventListener('change', () => handleSave());
     }

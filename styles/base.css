@@ -215,6 +215,7 @@ body {
     transition: background-color 0.2s, color 0.2s;
     overflow-y: auto;
     overflow-x: hidden;
+    height: var(--cached-height, 600px);
 }
 
 h2, h3 {

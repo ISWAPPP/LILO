@@ -1,5 +1,17 @@
 # Changelog — LILO Tools
 
+## [0.9.3] — 2026-05-08
+
+### Added
+- **Window Height Caching**: Implemented startup height caching (`lilo_height_cache`) via a CSS variable `--cached-height` to completely eliminate layout shift (flickering) during popup initialization.
+
+### Improved
+- **Robust Domain Cleaning**: Enhanced domain sanitization to strip port numbers (e.g., `domain:8080`), preventing invalid DNS lookup errors.
+- **Stricter IPv4 Validation**: Implemented a stricter regex in `isValidIP` to eliminate invalid IP ranges.
+- **Modern Chrome API Calls**: Refactored `getActiveTabDomain` to natively use modern async/await for `chrome.tabs.query` instead of Promise wrappers.
+- **Enhanced DNS Resilience**: Replaced `Promise.all` with `Promise.allSettled` for batch DNS queries, ensuring a partial record failure (e.g., TXT record) does not block the entire lookup.
+- **API Error Handling**: Added HTTP status checks in `fetch` calls to gracefully handle non-JSON or server error responses.
+
 ## [0.9.2] — 2026-05-04
 
 ### Security
