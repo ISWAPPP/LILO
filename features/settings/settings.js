@@ -146,21 +146,21 @@ export function initSettingsFeature() {
             Utils.showToast(I18n.t('toast_imported'));
             setTimeout(() => location.reload(), 1000);
           } catch (err) {
-            Utils.showToast('Error importing data');
+            Utils.showToast(I18n.t('toast_import_error'));
           }
         };
         reader.readAsText(file);
       });
-
+ 
       btnReset?.addEventListener('click', async () => {
-        if (!confirm('Ви впевнені, що хочете скинути налаштування інтерфейсу?')) return;
+        if (!confirm(I18n.t('settings_confirm_reset'))) return;
         await new Promise(r => chrome.storage.local.remove('lilo_settings', r));
         Utils.showToast(I18n.t('toast_reset'));
         setTimeout(() => location.reload(), 800);
       });
-
+ 
       btnClear?.addEventListener('click', async () => {
-        if (!confirm('УВАГА: Це видалить ВСІ ваші нотатки та налаштування. Ви впевнені?')) return;
+        if (!confirm(I18n.t('settings_confirm_clear'))) return;
         await new Promise(r => chrome.storage.local.clear(r));
         localStorage.clear();
         Utils.showToast(I18n.t('toast_cleared'));

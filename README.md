@@ -9,7 +9,7 @@
 - **Notes & Customization**: Convenient note-taking directly in your browser. Reorder notes with sleek up/down arrows and highlight them with gentle pastel background colors.
 - **Password Generator**: Create secure, cryptographically strong passwords with one-click copying and a dynamic colored complexity strength meter.
 - **Fast Navigation Shortcuts**: Quickly jump between extension tabs using hotkeys: `Alt+1` (DNS), `Alt+2` (PICS), `Alt+3` (NOTES), or `Alt+4` (Settings).
-- **Multi-Theme UI**: Choose between 11+ unique color palettes (Matcha, Peach, Lavender, Nord, etc.) using a modern, horizontal-scrolling palette picker inspired by Zen Browser.
+- **Multi-Theme UI**: Choose between 18 unique premium color palettes (Sakura, Solarized Light, Solarized Dark, Oceanic, etc.) using a modern, horizontal-scrolling palette picker inspired by Zen Browser. Every swatch features an inner accent dot representing the accent color of that theme for better visual understanding.
 - **Localization**: Full support for English and Ukrainian languages across all features.
 - **Smart Copying & Offline Resilience**: Copy results instantly without metadata. Requests check connectivity beforehand using `navigator.onLine` to avoid hanging.
 - **Zen Style Palette**: A convenient theme switcher with dedicated toggles for System/Light/Dark modes and a scrollable color gallery.
@@ -26,7 +26,7 @@
 
 - **Startup Tab**: You can choose which tab opens by default — the last opened one or a specific fixed tab.
 - **DNS Provider**: Toggle between Google (8.8.8.8) and Cloudflare (1.1.1.1).
-- **Zen Color Palette**: Pick from a wide range of eye-friendly themes ordered from light to dark (Paper, Peach, Matcha, Lavender, Nord, Sunset, Coffee, Forest, Cyberpunk, Sea) using the new interactive switcher.
+- **Zen Color Palette**: Pick from a wide range of 18 eye-friendly themes ordered dynamically from light to dark (Paper, Sakura, Mint, Peach, Rose, Matcha, Solarized Light, Lavender, Solarized Dark, Nord, Sunset, Coffee, Gruvbox, Dracula, Oceanic, Forest, Sea, Cyberpunk) using the new interactive switcher.
 - **Window Height**: Easily adjust the height of the popup directly in settings.
 
 ## 📦 Installation

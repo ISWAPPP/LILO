@@ -77,9 +77,9 @@ export function initDnsFeature() {
 
     btn.disabled = true;
     output.innerHTML = DnsRenderer.loader();
-
+ 
     if (typeof navigator !== 'undefined' && !navigator.onLine) {
-      output.innerHTML = DnsRenderer.error('Відсутнє з\'єднання з інтернетом');
+      output.innerHTML = DnsRenderer.error(I18n.t('dns_error_no_internet'));
       btn.disabled = false;
       return;
     }

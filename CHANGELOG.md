@@ -1,5 +1,15 @@
 # Changelog — LILO Tools
-
+ 
+## [0.9.5] — 2026-05-08
+ 
+### Added
+- **Expanded Theme Library**: Added 4 more modern premium themes (Sakura, Solarized Light, Solarized Dark, and Oceanic), bringing the total selection of highly curated UI palettes to 18.
+- **Visual Swatch Accent Indicator**: Integrated a small, elegant colored dot inside each theme swatch circle displaying its unique primary accent color for a quick visual preview of the combined palette.
+ 
+### Fixed
+- **Complete Internationalization (I18n) Compliance**: Replaced all remaining hardcoded Ukrainian strings across modules (including settings confirm modals, clipboard copy badges, placeholder inputs, list empty messages, and drag-and-drop/offline warning text) with fully translated equivalents.
+- **UI Contrast Optimization**: Replaced hardcoded white text for the primary DIG button with a dynamic `--accent-text` color custom-property to guarantee perfect readability and high contrast on both light-background and bright-background themes (e.g., Forest, Cyberpunk, Sea).
+ 
 ## [0.9.4] — 2026-05-08
 
 ### Added

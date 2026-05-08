@@ -1,17 +1,18 @@
 // features/pics/pics.js — PICS tab module (image uploading).
-
+ 
 import { Api } from '../../core/api.js';
 import { Utils } from '../../core/utils.js';
 import { TabManager } from '../../core/tabs.js';
 import { PicsRenderer } from './pics-renderer.js';
-
+import { I18n } from '../../core/i18n.js';
+ 
 export function initPicsFeature() {
   const statusBox = document.getElementById('pics-output');
   const uploadZone = document.getElementById('upload_zone');
   const fileInput = document.getElementById('pics-file-input');
   const historyContainer = document.getElementById('pics-history-container');
   let uploadHistory = [];
-
+ 
   const loadHistory = async () => {
     return new Promise(resolve => {
       chrome.storage.local.get('lilo_pics_history', res => {
@@ -19,30 +20,30 @@ export function initPicsFeature() {
       });
     });
   };
-
+ 
   const saveHistory = async (history) => {
     return new Promise(resolve => {
       chrome.storage.local.set({ lilo_pics_history: history }, resolve);
     });
   };
-
+ 
   const renderHistory = () => {
     if (historyContainer) {
       historyContainer.innerHTML = PicsRenderer.history(uploadHistory);
     }
   };
-
+ 
   const processFile = async (file) => {
     if (!file || !file.type.includes('image')) return;
-
+ 
     if (file.size > 10 * 1024 * 1024) {
-      statusBox.innerHTML = PicsRenderer.error('❌ Файл занадто великий (> 10 МБ)');
+      statusBox.innerHTML = PicsRenderer.error(I18n.t('pics_error_too_large'));
       return;
     }
-
+ 
     // Check offline
     if (typeof navigator !== 'undefined' && !navigator.onLine) {
-       statusBox.innerHTML = PicsRenderer.error('❌ Відсутнє з\'єднання з інтернетом');
+       statusBox.innerHTML = PicsRenderer.error(I18n.t('pics_error_no_internet'));
        return;
     }
 
