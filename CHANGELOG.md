@@ -1,5 +1,11 @@
 # Changelog — LILO Tools
  
+## [0.9.6] — 2026-05-09
+ 
+### Improved
+- **Modern Minimalist SVGs**: Replaced all interface emojis (gear, lock, globe, profile, warnings, clipboard, arrows, sparkles, sun, moon, trash, etc.) with elegant, lightweight inline SVG vector icons that perfectly scale and adapt to all 18 theme palettes.
+- **Enhanced Alignments**: Programmed perfect flex-alignment for warning symbols, labels, and text across tabs to ensure a completely symmetric, premium user experience.
+ 
 ## [0.9.5] — 2026-05-08
  
 ### Added

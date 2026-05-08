@@ -17,7 +17,10 @@ export const PicsRenderer = {
   success(url) {
     return `
       <div class="img-result">
-        <p class="img-success">✅ ${I18n.t('copied')}</p>
+        <p class="img-success" style="display: flex; align-items: center; justify-content: center; gap: 4px; color: var(--success-text);">
+          <svg class="icon icon-inline icon-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span>${I18n.t('copied')}</span>
+        </p>
         <img src="${url}" alt="Uploaded" style="max-height: 250px; object-fit: contain;">
         <input value="${url}" readonly class="img-url-input">
       </div>`;
@@ -25,7 +28,11 @@ export const PicsRenderer = {
  
   error(msg) {
     const errorMsg = msg || I18n.t('pics_error_failed');
-    return `<div class="msg error" style="margin-top: 10px;">${errorMsg}</div>`;
+    return `
+      <div class="msg error" style="margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 6px;">
+        <svg class="icon icon-error" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; flex-shrink: 0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+        <span>${errorMsg}</span>
+      </div>`;
   },
  
   history(items) {

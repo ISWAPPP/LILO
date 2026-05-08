@@ -225,3 +225,43 @@ select:hover {
     from { opacity: 1; transform: translateY(0); }
     to { opacity: 0; transform: translateY(10px); }
 }
+
+/* ===== SVG ICONS ===== */
+svg.icon {
+    width: 14px;
+    height: 14px;
+    vertical-align: middle;
+    flex-shrink: 0;
+    transition: transform 0.2s ease, stroke 0.2s ease, fill 0.2s ease;
+}
+
+svg.icon-inline {
+    display: inline-block;
+    margin-right: 4px;
+    position: relative;
+    top: -1px;
+}
+
+svg.icon-success {
+    stroke: var(--success-text, #10b981);
+}
+
+svg.icon-warning {
+    stroke: var(--error-text, #ef4444);
+}
+
+svg.icon-error {
+    stroke: var(--error-text, #ef4444);
+}
+
+svg.icon-large {
+    width: 32px;
+    height: 32px;
+}
+
+/* Adjustments for buttons with icons */
+.tab-link svg.icon {
+    width: 16px;
+    height: 16px;
+}
+

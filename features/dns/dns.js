@@ -47,7 +47,7 @@ export function initDnsFeature() {
         const ok = await Utils.copyToClipboard(urls[key]);
         if (ok) {
           const origHTML = btn.innerHTML;
-          btn.innerHTML = '<span>✅</span> Copied';
+          btn.innerHTML = `<span><svg class="icon icon-inline icon-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle;"><polyline points="20 6 9 17 4 12"></polyline></svg></span> ${I18n.t('copied')}`;
           setTimeout(() => btn.innerHTML = origHTML, 1000);
         }
       };
