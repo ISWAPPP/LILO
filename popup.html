@@ -183,6 +183,20 @@
         </div>
 
         <div class="settings-group" style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: 600; margin-bottom: 8px;">Запити DNS</label>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; font-size: 13px;">
+                <label style="display: flex; align-items: center; gap: 4px;"><input type="checkbox" id="setting-query-a"> A</label>
+                <label style="display: flex; align-items: center; gap: 4px;"><input type="checkbox" id="setting-query-aaaa"> AAAA</label>
+                <label style="display: flex; align-items: center; gap: 4px;"><input type="checkbox" id="setting-query-mx"> MX</label>
+                <label style="display: flex; align-items: center; gap: 4px;"><input type="checkbox" id="setting-query-ns"> NS</label>
+                <label style="display: flex; align-items: center; gap: 4px;"><input type="checkbox" id="setting-query-txt"> TXT</label>
+                <label style="display: flex; align-items: center; gap: 4px;"><input type="checkbox" id="setting-query-spf"> SPF</label>
+                <label style="display: flex; align-items: center; gap: 4px;"><input type="checkbox" id="setting-query-dkim"> DKIM</label>
+                <label style="display: flex; align-items: center; gap: 4px;"><input type="checkbox" id="setting-query-dmarc"> DMARC</label>
+            </div>
+        </div>
+
+        <div class="settings-group" style="margin-bottom: 20px;">
             <label for="setting-window-height" style="display: block; font-weight: 600; margin-bottom: 8px;">Максимальна висота вікна (px)</label>
             <div style="display: flex; align-items: center; gap: 10px;">
                 <input type="range" id="setting-window-height" min="300" max="600" step="10" value="600" style="flex: 1; accent-color: var(--accent);">

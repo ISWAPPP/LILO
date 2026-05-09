@@ -16,11 +16,12 @@ async function loadNotes() {
   });
 }
 
-async function saveNotes(notes) {
-  return new Promise((resolve) => {
+const _saveNotes = async () => {
+  return new Promise(resolve => {
     chrome.storage.local.set({ [Config.storage.notesKey]: notes }, resolve);
   });
-}
+};
+const saveNotes = Utils.debounce(_saveNotes, 500);
 
 // ==================== PASSWORD GENERATOR ====================
 
@@ -38,13 +39,21 @@ function generatePassword() {
   const length = parseInt(document.getElementById('passgen-length')?.value) || cfg.defaultLength;
   
   let password = '';
-  const array = new Uint8Array(1);
+  const bufferSize = Math.max(length * 2, 64);
+  const array = new Uint8Array(bufferSize);
   const maxValid = 256 - (256 % charset.length);
+  
+  let bufferIndex = 0;
+  crypto.getRandomValues(array);
 
   while (password.length < length) {
-    crypto.getRandomValues(array);
-    if (array[0] < maxValid) {
-      password += charset[array[0] % charset.length];
+    if (bufferIndex >= array.length) {
+      crypto.getRandomValues(array);
+      bufferIndex = 0;
+    }
+    const val = array[bufferIndex++];
+    if (val < maxValid) {
+      password += charset[val % charset.length];
     }
   }
 
@@ -186,6 +195,8 @@ function startEditing(id) {
   if (input) {
     input.focus();
     input.selectionStart = input.value.length;
+    input.style.height = 'auto';
+    input.style.height = (input.scrollHeight + 2) + 'px';
   }
 }
 
@@ -233,6 +244,12 @@ function setupNoteEvents() {
       return;
     }
 
+    // Cancel button
+    if (e.target.closest('.note-cancel-btn')) {
+      renderNotes();
+      return;
+    }
+
     // Save button
     if (e.target.closest('.note-save-btn')) {
       const input = item.querySelector('.note-edit-input');
@@ -248,7 +265,18 @@ function setupNoteEvents() {
     }
   });
 
+  list.addEventListener('input', (e) => {
+    if (e.target.classList.contains('note-edit-input')) {
+      e.target.style.height = 'auto';
+      e.target.style.height = (e.target.scrollHeight + 2) + 'px';
+    }
+  });
+
   list.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && e.target.classList.contains('note-edit-input')) {
+      renderNotes();
+      return;
+    }
     if (e.key === 'Enter' && !e.shiftKey && e.target.classList.contains('note-edit-input')) {
       e.preventDefault(); // Prevent adding new line
       const item = e.target.closest('.note-item');
@@ -333,7 +361,18 @@ export function initNotesFeature() {
 
       addBtn?.addEventListener('click', () => {
         addNote(addInput?.value || '');
-        if (addInput) addInput.value = '';
+        if (addInput) {
+          addInput.value = '';
+          addInput.style.height = ''; // reset to default
+        }
+      });
+
+      addInput?.addEventListener('input', () => {
+        addInput.style.height = 'auto';
+        addInput.style.height = (addInput.scrollHeight + 2) + 'px';
+        if (!addInput.value) {
+           addInput.style.height = ''; // reset to default
+        }
       });
 
       addInput?.addEventListener('keydown', (e) => {
@@ -341,6 +380,7 @@ export function initNotesFeature() {
           e.preventDefault();
           addNote(addInput.value);
           addInput.value = '';
+          addInput.style.height = ''; // reset to default
         }
       });
 
@@ -357,6 +397,7 @@ export function initNotesFeature() {
 
     onActivate() {
       document.getElementById('note-input')?.focus();
+      refreshPassword();
     },
   });
 }

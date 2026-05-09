@@ -1,5 +1,33 @@
 # Changelog — LILO Tools
  
+## [0.9.8] — 2026-05-10
+
+### Added
+- **Configurable DNS Queries**: Introduced checkboxes in the Settings tab enabling users to select which records (`A`, `AAAA`, `MX`, `NS`, `TXT`, `SPF`, `DKIM`, `DMARC`) the extension queries. Unchecked queries are completely bypassed, preventing redundant DoH API network requests.
+- **DKIM Validation Checkmark**: Added dedicated validation for DKIM root TXT records. If configured, a green checkmark (✓) is displayed along with record details; otherwise, a clean helper cross (✕) is shown.
+- **Dedicated SPF Status**: Structured SPF records into their own row inside DNS results with clear validation formatting.
+
+### Improved
+- **Full-Width Notes Layout**: Overhauled Note list item elements to let text span the full 100% width. Action buttons (move, edit, delete) now float absolutely in the top-right corner on hover, using a matching background blend-shadow to overlay gracefully on top of the text.
+
+## [0.9.7] — 2026-05-09
+
+### Added
+- **Dynamic Note Auto-Resizing**: Notes input textareas (both for adding and editing) now automatically stretch and shrink to match the content length. Added `+ 2px` border-box offset to guarantee flicker-free resizing.
+- **Escape Key Cancel Shortcut**: Added keyboard support for note editing—hitting `Escape` instantly cancels note editing and renders the note list.
+- **Cancel Button**: Integrated a modern SVG Cancel (`✕`) button into the note-editing interface.
+- **NOTES Active Refresh**: Switching to the NOTES tab automatically regenerates a new strong password instantly.
+
+### Improved
+- **Robust API Query Timeouts**: Implemented an async `fetchWithTimeout` helper with a timeout of 4000ms/15000ms to prevent infinite loading state spinners if external services hang.
+- **Optimized Crypto Password Generator**: Refactored the secure password generator buffer allocation to request multiple random bytes at once rather than 1 byte sequentially, reducing Cryptography API context-switching overhead.
+- **Secure Configuration Import**: Strengthened data backup reliability by strictly filtering the imported JSON settings schema to only allow authorized keys (`lilo_settings`, `lilo_notes`, etc.), preventing extension memory contamination.
+- **Sleeker PICS Clipboard and Drag/Drop Flow**: Unblocked standard clipboard functions (`Ctrl+C`, `Ctrl+A`) specifically inside text input elements under the PICS tab. Added global window prevention layers on `dragover` and `drop` events to prevent browser window hijacking if files are dropped outside the drop zone.
+
+### Fixed
+- **DNS MX Mail Server Domain Resolving**: Sanitized the trailing dot (`.`) character frequently appended to standard MX record lookups to ensure subsequent A-record resolving queries are completely compatible with DoH providers.
+- **CSS Flexbox Textarea Height Constraint**: Overrode `flex: 1` height priority with `flex: none` on the edit note textarea, unlocking full dynamic height resizing within vertical flex grids.
+
 ## [0.9.6] — 2026-05-09
  
 ### Improved

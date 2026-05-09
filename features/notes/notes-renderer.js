@@ -43,23 +43,33 @@ export const NotesRenderer = {
     return `
       <div class="note-item editing" data-id="${note.id}" style="${bgStyle}">
         <div style="display:flex; flex-direction:column; flex:1; gap:6px;">
-          <textarea class="note-edit-input" placeholder="${I18n.t('notes_edit_placeholder')}" rows="2" style="${textStyle}">${escaped}</textarea>
+          <textarea class="note-edit-input" placeholder="${I18n.t('notes_edit_placeholder')}" rows="1" style="${textStyle}">${escaped}</textarea>
           <div style="display:flex; gap:6px;" class="note-color-picker">
             ${palette}
           </div>
         </div>
-        <button class="note-save-btn" title="${I18n.t('notes_title_save')}">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-        </button>
+        <div style="display:flex; flex-direction:column; gap:4px;">
+          <button class="note-save-btn" title="${I18n.t('notes_title_save')}">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </button>
+          <button class="note-cancel-btn" title="Cancel">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
       </div>`;
   },
  
   /** Full list of notes. */
   notesList(notes) {
-    if (!notes.length) {
-      return `<div class="notes-empty">${I18n.t('notes_empty')}</div>`;
+    if (!notes || notes.length === 0) {
+      return `
+        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 40px 0; color: var(--text-muted); opacity: 0.7;">
+          <svg class="icon icon-large" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width: 48px; height: 48px; margin-bottom: 10px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          <p style="margin:0; font-size: 13px; font-weight: 500;">${I18n.t('notes_empty')}</p>
+        </div>
+      `;
     }
-    return notes.map(n => this.noteItem(n)).join('');
+    return notes.map((n, i) => this.noteItem(n, i, notes.length)).join('');
   },
  
   /** Copy notification. */

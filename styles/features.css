@@ -277,6 +277,11 @@
     background: var(--accent);
     color: white;
     border-color: var(--accent);
+    height: auto;
+}
+
+#note-input {
+    overflow: hidden;
 }
 
 .notes-add button:hover {
@@ -296,7 +301,7 @@
 .note-item {
     display: flex;
     align-items: center;
-    gap: 8px;
+    position: relative;
     padding: 8px 12px;
     border: 1px solid var(--border-light);
     border-radius: var(--radius-md);
@@ -318,6 +323,7 @@
 
 .note-text {
     flex: 1;
+    width: 100%;
     white-space: pre-wrap;
     word-break: break-word;
     font-size: 13px;
@@ -333,10 +339,17 @@
 
 /* Actions */
 .note-actions {
+    position: absolute;
+    right: 4px;
+    top: 4px;
     display: flex;
     gap: 4px;
     opacity: 0;
     transition: opacity 0.2s;
+    background: var(--bg-main);
+    padding: 4px;
+    border-radius: 6px;
+    box-shadow: -5px 0 10px 5px var(--bg-main);
 }
 
 .note-item:hover .note-actions {
@@ -347,7 +360,8 @@
 .note-move-down-btn,
 .note-edit-btn,
 .note-delete-btn,
-.note-save-btn {
+.note-save-btn,
+.note-cancel-btn {
     width: 28px;
     height: 28px;
     padding: 0;
@@ -369,7 +383,8 @@
     background: var(--bg-tertiary);
 }
 
-.note-delete-btn:hover {
+.note-delete-btn:hover,
+.note-cancel-btn:hover {
     color: var(--error-text);
     background: var(--error-bg);
 }
@@ -389,13 +404,15 @@
 }
 
 .note-edit-input {
-    flex: 1;
+    flex: none;
+    width: 100%;
     padding: 6px 10px;
     min-height: 32px;
     border: 1px solid var(--border-light);
     border-radius: 4px;
     font-size: 13px;
-    resize: vertical;
+    resize: none;
+    overflow: hidden;
     font-family: inherit;
 }
 

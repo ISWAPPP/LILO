@@ -9,6 +9,7 @@ import { Config } from '../../config.js';
 import { TabManager } from '../../core/tabs.js';
 import { DnsRenderer } from './dns-renderer.js';
 import { I18n } from '../../core/i18n.js';
+import { Settings } from '../../core/settings.js';
 
 export function initDnsFeature() {
   const input  = document.getElementById('domain_input');
@@ -69,6 +70,10 @@ export function initDnsFeature() {
 
     if (!Utils.isValidDomain(domain) && !isIp) {
       output.innerHTML = DnsRenderer.error(I18n.t('dns_error_invalid'));
+      Object.keys(links).forEach(key => {
+        if (links[key].a) links[key].a.classList.add('disabled');
+        if (links[key].btn) links[key].btn.classList.add('disabled');
+      });
       return;
     }
 
@@ -91,23 +96,29 @@ export function initDnsFeature() {
         return;
       }
 
-      const rawResults = await Promise.allSettled([
-        Api.dnsQuery(domain, 'A'),
-        Api.dnsQuery(domain, 'AAAA'),
-        Api.dnsQuery(domain, 'MX'),
-        Api.dnsQuery(domain, 'TXT'),
-        Api.dnsQuery(domain, 'NS'),
-      ]);
-      const [A, AAAA, MX, TXT, NS] = rawResults.map(r => r.status === 'fulfilled' ? r.value : { Answer: [] });
+      const settings = await Settings.load();
+      const dq = settings.dnsQueries || { a: true, aaaa: false, mx: true, txt: false, spf: false, dkim: false, dmarc: false, ns: true };
+      const needsTxt = dq.txt || dq.spf || dq.dkim;
 
-      const ips  = (A.Answer || []).map(r => r.data);
-      const ipv6 = (AAAA.Answer || []).map(r => r.data);
+      const rawResults = await Promise.allSettled([
+        dq.a ? Api.dnsQuery(domain, 'A') : Promise.resolve({ Answer: null }),
+        dq.aaaa ? Api.dnsQuery(domain, 'AAAA') : Promise.resolve({ Answer: null }),
+        dq.mx ? Api.dnsQuery(domain, 'MX') : Promise.resolve({ Answer: null }),
+        needsTxt ? Api.dnsQuery(domain, 'TXT') : Promise.resolve({ Answer: null }),
+        dq.ns ? Api.dnsQuery(domain, 'NS') : Promise.resolve({ Answer: null }),
+        dq.dmarc ? Api.dnsQuery(`_dmarc.${domain}`, 'TXT') : Promise.resolve({ Answer: null })
+      ]);
+      const [A, AAAA, MX, TXT, NS, DMARC] = rawResults.map(r => r.status === 'fulfilled' ? r.value : { Answer: null });
+
+      const ips  = A.Answer === null ? null : (A.Answer || []).map(r => r.data);
+      const ipv6 = AAAA.Answer === null ? null : (AAAA.Answer || []).map(r => r.data);
       
       const mxRecords = MX.Answer || [];
       const mxResolved = await Promise.all(mxRecords.map(async r => {
         const parts = r.data.split(' ');
-        const target = parts[parts.length - 1]; // last part is the domain
+        let target = parts[parts.length - 1]; // last part is the domain
         if (target) {
+            if (target.endsWith('.')) target = target.slice(0, -1);
             try {
                 const targetA = await Api.dnsQuery(target, 'A');
                 const targetIps = (targetA.Answer || []).map(a => a.data);
@@ -122,16 +133,19 @@ export function initDnsFeature() {
       }));
 
       let mainGeo = null;
-      if (ips.length > 0) {
+      if (ips && ips.length > 0) {
         mainGeo = await Api.getIpGeo(ips[0]);
       }
 
       output.innerHTML = DnsRenderer.results({
         ips,
         ipv6,
-        mx: mxResolved,
-        ns: NS.Answer,
-        mainGeo
+        mx: MX.Answer === null ? null : mxResolved,
+        txt: TXT.Answer === null ? null : (TXT.Answer || []),
+        dmarc: DMARC.Answer === null ? null : (DMARC.Answer || []),
+        ns: NS.Answer === null ? null : (NS.Answer || []),
+        mainGeo,
+        dq
       });
     } catch (err) {
       console.error('DNS check failed:', err);
