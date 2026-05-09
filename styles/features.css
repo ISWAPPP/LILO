@@ -277,6 +277,11 @@
     background: var(--accent);
     color: white;
     border-color: var(--accent);
+    height: auto;
+}
+
+#note-input {
+    overflow: hidden;
 }
 
 .notes-add button:hover {
@@ -296,13 +301,17 @@
 .note-item {
     display: flex;
     align-items: center;
-    gap: 8px;
+    position: relative;
     padding: 8px 12px;
     border: 1px solid var(--border-light);
     border-radius: var(--radius-md);
     margin-bottom: 6px;
-    background: var(--bg-main);
-    transition: all 0.2s;
+    --note-bg: var(--bg-main);
+    --note-text: var(--text-main);
+    --note-btn-hover-bg: var(--bg-tertiary);
+    --note-btn-hover-color: var(--accent);
+    background: var(--note-bg);
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
     animation: fadeIn 0.2s ease;
 }
 
@@ -318,10 +327,11 @@
 
 .note-text {
     flex: 1;
+    width: 100%;
     white-space: pre-wrap;
     word-break: break-word;
     font-size: 13px;
-    color: var(--text-main);
+    color: var(--note-text);
     cursor: pointer;
     line-height: 1.4;
     display: -webkit-box;
@@ -333,10 +343,17 @@
 
 /* Actions */
 .note-actions {
+    position: absolute;
+    right: 4px;
+    top: 4px;
     display: flex;
     gap: 4px;
     opacity: 0;
     transition: opacity 0.2s;
+    background: var(--note-bg);
+    padding: 4px;
+    border-radius: 6px;
+    box-shadow: -5px 0 10px 5px var(--note-bg);
 }
 
 .note-item:hover .note-actions {
@@ -347,14 +364,16 @@
 .note-move-down-btn,
 .note-edit-btn,
 .note-delete-btn,
-.note-save-btn {
+.note-save-btn,
+.note-cancel-btn {
     width: 28px;
     height: 28px;
     padding: 0;
     border: none;
     border-radius: 4px;
     background: transparent;
-    color: var(--text-muted);
+    color: var(--note-text);
+    opacity: 0.7;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -365,13 +384,16 @@
 .note-move-up-btn:hover,
 .note-move-down-btn:hover,
 .note-edit-btn:hover {
-    color: var(--accent);
-    background: var(--bg-tertiary);
+    color: var(--note-btn-hover-color);
+    background: var(--note-btn-hover-bg);
+    opacity: 1;
 }
 
-.note-delete-btn:hover {
+.note-delete-btn:hover,
+.note-cancel-btn:hover {
     color: var(--error-text);
     background: var(--error-bg);
+    opacity: 1;
 }
 
 .note-save-btn {
@@ -380,23 +402,33 @@
 
 .note-save-btn:hover {
     background: var(--success-bg);
+    opacity: 1;
 }
 
 /* Editing mode */
 .note-item.editing {
     border-color: var(--accent);
-    background: var(--bg-sec);
 }
 
 .note-edit-input {
-    flex: 1;
+    flex: none;
+    width: 100%;
     padding: 6px 10px;
     min-height: 32px;
     border: 1px solid var(--border-light);
     border-radius: 4px;
     font-size: 13px;
-    resize: vertical;
+    resize: none;
+    overflow: hidden;
     font-family: inherit;
+    color: var(--note-text);
+    background: var(--note-bg);
+}
+
+.note-edit-input:focus {
+    background: var(--note-bg);
+    outline: none;
+    border-color: var(--accent);
 }
 
 /* Zen Browser Style Theme Palette */

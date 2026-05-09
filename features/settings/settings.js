@@ -15,6 +15,25 @@ export function initSettingsFeature() {
       const dnsSelect = document.getElementById('setting-dns-provider');
       const heightSlider = document.getElementById('setting-window-height');
       const heightVal = document.getElementById('setting-window-height-val');
+
+      const dq = settings.dnsQueries || { a: true, aaaa: false, mx: true, txt: false, spf: false, dkim: false, dmarc: false, ns: true };
+      const qA = document.getElementById('setting-query-a');
+      const qAAAA = document.getElementById('setting-query-aaaa');
+      const qMX = document.getElementById('setting-query-mx');
+      const qNS = document.getElementById('setting-query-ns');
+      const qTXT = document.getElementById('setting-query-txt');
+      const qSPF = document.getElementById('setting-query-spf');
+      const qDKIM = document.getElementById('setting-query-dkim');
+      const qDMARC = document.getElementById('setting-query-dmarc');
+
+      if (qA) qA.checked = dq.a;
+      if (qAAAA) qAAAA.checked = dq.aaaa;
+      if (qMX) qMX.checked = dq.mx;
+      if (qNS) qNS.checked = dq.ns;
+      if (qTXT) qTXT.checked = dq.txt;
+      if (qSPF) qSPF.checked = dq.spf;
+      if (qDKIM) qDKIM.checked = dq.dkim;
+      if (qDMARC) qDMARC.checked = dq.dmarc;
       
       // Theme Palette logic
       const themeSwatches = document.querySelectorAll('.theme-swatch');
@@ -65,6 +84,16 @@ export function initSettingsFeature() {
           startupTab: startupSelect?.value || 'last',
           dnsProvider: dnsSelect?.value || 'google',
           windowHeight: parseInt(heightSlider?.value || '600'),
+          dnsQueries: {
+            a: qA?.checked,
+            aaaa: qAAAA?.checked,
+            mx: qMX?.checked,
+            ns: qNS?.checked,
+            txt: qTXT?.checked,
+            spf: qSPF?.checked,
+            dkim: qDKIM?.checked,
+            dmarc: qDMARC?.checked
+          },
           ...updatedSettings
         };
         await Settings.save(newSettings);
@@ -85,6 +114,11 @@ export function initSettingsFeature() {
       langSelect?.addEventListener('change', () => handleSave());
       startupSelect?.addEventListener('change', () => handleSave());
       dnsSelect?.addEventListener('change', () => handleSave());
+      
+      const queryCheckboxes = [qA, qAAAA, qMX, qNS, qTXT, qSPF, qDKIM, qDMARC];
+      queryCheckboxes.forEach(cb => {
+        cb?.addEventListener('change', () => handleSave());
+      });
       
       themeSwatches.forEach(swatch => {
         swatch.addEventListener('click', (e) => {
@@ -141,8 +175,19 @@ export function initSettingsFeature() {
         reader.onload = async (event) => {
           try {
             const data = JSON.parse(event.target.result);
-            if (typeof data !== 'object') throw new Error('Invalid format');
-            await new Promise(r => chrome.storage.local.set(data, r));
+            if (typeof data !== 'object' || data === null) throw new Error('Invalid format');
+            
+            const allowedKeys = ['lilo_settings', 'lilo_notes', 'lilo_pics_history', 'lilo_last_tab'];
+            const filteredData = {};
+            for (const key of allowedKeys) {
+              if (data[key] !== undefined) {
+                filteredData[key] = data[key];
+              }
+            }
+            
+            if (Object.keys(filteredData).length === 0) throw new Error('No valid data found');
+            
+            await new Promise(r => chrome.storage.local.set(filteredData, r));
             Utils.showToast(I18n.t('toast_imported'));
             setTimeout(() => location.reload(), 1000);
           } catch (err) {

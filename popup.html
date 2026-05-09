@@ -5,6 +5,7 @@
     <title>LILO DNS & Tools</title>
     <script src="core/theme-init.js"></script>
     <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/themes.css">
     <link rel="stylesheet" href="styles/components.css">
     <link rel="stylesheet" href="styles/features.css">
     <script type="module" src="popup.js"></script>
@@ -126,13 +127,13 @@
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                 <label data-i18n="settings_theme" style="font-weight: 600;">Тема оформлення</label>
                 <div class="zen-mode-toggles" id="zen-mode-toggles">
-                    <button class="zen-mode-btn" data-value="auto" data-i18n-title="settings_theme_auto" title="Автоматично" style="display: flex; align-items: center; justify-content: center;">
+                    <button class="zen-mode-btn" data-value="auto" data-i18n-title="settings_theme_auto" title="Auto" style="display: flex; align-items: center; justify-content: center;">
                         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>
                     </button>
-                    <button class="zen-mode-btn" data-value="light" data-i18n-title="settings_theme_light" title="Світла" style="display: flex; align-items: center; justify-content: center;">
+                    <button class="zen-mode-btn" data-value="light" data-i18n-title="settings_theme_light" title="Light" style="display: flex; align-items: center; justify-content: center;">
                         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
                     </button>
-                    <button class="zen-mode-btn" data-value="dark" data-i18n-title="settings_theme_dark" title="Темна" style="display: flex; align-items: center; justify-content: center;">
+                    <button class="zen-mode-btn" data-value="dark" data-i18n-title="settings_theme_dark" title="Dark" style="display: flex; align-items: center; justify-content: center;">
                         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
                     </button>
                 </div>
@@ -141,24 +142,39 @@
             <div class="zen-palette-container">
                 <button class="zen-scroll-btn left" id="zen-scroll-left">‹</button>
                 <div class="theme-palette zen-scroll-area" id="setting-theme-palette">
-                    <div class="theme-swatch" data-value="paper" data-i18n-title="settings_theme_paper" title="Папір" style="background: #fcfaf2; --swatch-accent: #8b4513; border: 1px solid var(--border-light) !important;"></div>
-                    <div class="theme-swatch" data-value="sakura" data-i18n-title="settings_theme_sakura" title="Сакура" style="background: #fff5f6; --swatch-accent: #ff8595; border: 1px solid var(--border-light) !important;"></div>
-                    <div class="theme-swatch" data-value="mint" data-i18n-title="settings_theme_mint" title="М'ята" style="background: #f2fbf5; --swatch-accent: #10b981; border: 1px solid var(--border-light) !important;"></div>
-                    <div class="theme-swatch" data-value="peach" data-i18n-title="settings_theme_peach" title="Персик" style="background: #fff5f2; --swatch-accent: #ff8a65; border: 1px solid var(--border-light) !important;"></div>
-                    <div class="theme-swatch" data-value="rose" data-i18n-title="settings_theme_rose" title="Троянда" style="background: #fff0f5; --swatch-accent: #ec4899; border: 1px solid var(--border-light) !important;"></div>
-                    <div class="theme-swatch" data-value="matcha" data-i18n-title="settings_theme_matcha" title="Матча" style="background: #f3f7f2; --swatch-accent: #88ab75; border: 1px solid var(--border-light) !important;"></div>
+                    <!-- GROUP 1: LIGHT -->
+                    <div class="theme-swatch" data-value="paper" data-i18n-title="settings_theme_paper" title="Paper" style="background: #fcfaf2; --swatch-accent: #8b4513; border: 1px solid var(--border-light) !important;"></div>
+                    <div class="theme-swatch" data-value="sand" data-i18n-title="settings_theme_sand" title="Sand" style="background: #fdfaf6; --swatch-accent: #b58d3d; border: 1px solid var(--border-light) !important;"></div>
+                    <div class="theme-swatch" data-value="matcha" data-i18n-title="settings_theme_matcha" title="Matcha" style="background: #f3f7f2; --swatch-accent: #88ab75; border: 1px solid var(--border-light) !important;"></div>
+                    <div class="theme-swatch" data-value="mint" data-i18n-title="settings_theme_mint" title="Mint" style="background: #f2fbf5; --swatch-accent: #10b981; border: 1px solid var(--border-light) !important;"></div>
+                    <div class="theme-swatch" data-value="breeze" data-i18n-title="settings_theme_breeze" title="Breeze" style="background: #f0f8ff; --swatch-accent: #0077ff; border: 1px solid var(--border-light) !important;"></div>
+                    <div class="theme-swatch" data-value="lavender" data-i18n-title="settings_theme_lavender" title="Lavender" style="background: #f8f7ff; --swatch-accent: #9370db; border: 1px solid var(--border-light) !important;"></div>
+                    <div class="theme-swatch" data-value="sakura" data-i18n-title="settings_theme_sakura" title="Sakura" style="background: #fff5f6; --swatch-accent: #ff8595; border: 1px solid var(--border-light) !important;"></div>
+                    <div class="theme-swatch" data-value="rose" data-i18n-title="settings_theme_rose" title="Rose" style="background: #fff0f5; --swatch-accent: #ec4899; border: 1px solid var(--border-light) !important;"></div>
+                    <div class="theme-swatch" data-value="peach" data-i18n-title="settings_theme_peach" title="Peach" style="background: #fff5f2; --swatch-accent: #ff8a65; border: 1px solid var(--border-light) !important;"></div>
                     <div class="theme-swatch" data-value="solarized-light" data-i18n-title="settings_theme_solarized_light" title="Solarized Light" style="background: #fdf6e3; --swatch-accent: #268bd2; border: 1px solid var(--border-light) !important;"></div>
-                    <div class="theme-swatch" data-value="lavender" data-i18n-title="settings_theme_lavender" title="Лаванда" style="background: #f8f7ff; --swatch-accent: #9370db; border: 1px solid var(--border-light) !important;"></div>
-                    <div class="theme-swatch" data-value="solarized-dark" data-i18n-title="settings_theme_solarized_dark" title="Solarized Dark" style="background: #002b36; --swatch-accent: #268bd2;"></div>
+                    <!-- GROUP 2: DARK & BROWN -->
                     <div class="theme-swatch" data-value="nord" data-i18n-title="settings_theme_nord" title="Nord" style="background: #2e3440; --swatch-accent: #88c0d0;"></div>
-                    <div class="theme-swatch" data-value="sunset" data-i18n-title="settings_theme_sunset" title="Захід сонця" style="background: #2b1d24; --swatch-accent: #ff7e67;"></div>
-                    <div class="theme-swatch" data-value="coffee" data-i18n-title="settings_theme_coffee" title="Кава" style="background: #3e2723; --swatch-accent: #ffb300;"></div>
-                    <div class="theme-swatch" data-value="gruvbox" data-i18n-title="settings_theme_gruvbox" title="Грувбокс" style="background: #282828; --swatch-accent: #fe8019;"></div>
-                    <div class="theme-swatch" data-value="dracula" data-i18n-title="settings_theme_dracula" title="Дракула" style="background: #282a36; --swatch-accent: #ff79c6;"></div>
+                    <div class="theme-swatch" data-value="gruvbox" data-i18n-title="settings_theme_gruvbox" title="Gruvbox" style="background: #282828; --swatch-accent: #fe8019;"></div>
+                    <div class="theme-swatch" data-value="coffee" data-i18n-title="settings_theme_coffee" title="Coffee" style="background: #3e2723; --swatch-accent: #ffb300;"></div>
+                    <div class="theme-swatch" data-value="autumn" data-i18n-title="settings_theme_autumn" title="Autumn" style="background: #1f1105; --swatch-accent: #ff8c1a;"></div>
+                    <!-- GROUP 3: COLORFUL DARK -->
                     <div class="theme-swatch" data-value="oceanic" data-i18n-title="settings_theme_oceanic" title="Oceanic" style="background: #0a192f; --swatch-accent: #64ffda;"></div>
-                    <div class="theme-swatch" data-value="forest" data-i18n-title="settings_theme_forest" title="Ліс" style="background: #141d14; --swatch-accent: #4ade80;"></div>
-                    <div class="theme-swatch" data-value="sea" data-i18n-title="settings_theme_sea" title="Море" style="background: #04121d; --swatch-accent: #38bdf8;"></div>
-                    <div class="theme-swatch" data-value="cyberpunk" data-i18n-title="settings_theme_cyberpunk" title="Кіберпанк" style="background: #0d0221; --swatch-accent: #ff00ff;"></div>
+                    <div class="theme-swatch" data-value="navy" data-i18n-title="settings_theme_navy" title="Navy" style="background: #001f3f; --swatch-accent: #0074d9;"></div>
+                    <div class="theme-swatch" data-value="sea" data-i18n-title="settings_theme_sea" title="Sea" style="background: #04121d; --swatch-accent: #38bdf8;"></div>
+                    <div class="theme-swatch" data-value="solarized-dark" data-i18n-title="settings_theme_solarized_dark" title="Solarized Dark" style="background: #002b36; --swatch-accent: #268bd2;"></div>
+                    <div class="theme-swatch" data-value="forest" data-i18n-title="settings_theme_forest" title="Forest" style="background: #141d14; --swatch-accent: #4ade80;"></div>
+                    <div class="theme-swatch" data-value="sunset" data-i18n-title="settings_theme_sunset" title="Sunset" style="background: #2b1d24; --swatch-accent: #ff7e67;"></div>
+                    <div class="theme-swatch" data-value="blood" data-i18n-title="settings_theme_blood" title="Blood" style="background: #0a0000; --swatch-accent: #ff0000;"></div>
+                    <!-- GROUP 4: NEON/RETRO -->
+                    <div class="theme-swatch" data-value="monochrome" data-i18n-title="settings_theme_monochrome" title="Monochrome" style="background: #000000; --swatch-accent: #ffffff; border: 1px solid #333 !important;"></div>
+                    <div class="theme-swatch" data-value="terminal" data-i18n-title="settings_theme_terminal" title="Terminal" style="background: #000000; --swatch-accent: #00ff00;"></div>
+                    <div class="theme-swatch" data-value="amber" data-i18n-title="settings_theme_amber" title="Amber" style="background: #0d0900; --swatch-accent: #ffb000;"></div>
+                    <div class="theme-swatch" data-value="midnight" data-i18n-title="settings_theme_midnight" title="Midnight" style="background: #05051a; --swatch-accent: #8c8cff;"></div>
+                    <div class="theme-swatch" data-value="dracula" data-i18n-title="settings_theme_dracula" title="Dracula" style="background: #282a36; --swatch-accent: #ff79c6;"></div>
+                    <div class="theme-swatch" data-value="synthwave" data-i18n-title="settings_theme_synthwave" title="Synthwave" style="background: #0b0014; --swatch-accent: #ff9900;"></div>
+                    <div class="theme-swatch" data-value="cyberpunk" data-i18n-title="settings_theme_cyberpunk" title="Cyberpunk" style="background: #0d0221; --swatch-accent: #ff00ff;"></div>
+                    <div class="theme-swatch" data-value="neon-cyan" data-i18n-title="settings_theme_neon_cyan" title="Neon Cyan" style="background: #020608; --swatch-accent: #00ffff;"></div>
                 </div>
                 <button class="zen-scroll-btn right" id="zen-scroll-right">›</button>
             </div>
@@ -180,6 +196,20 @@
                 <option value="google" data-i18n="settings_dns_google">Google (8.8.8.8)</option>
                 <option value="cloudflare" data-i18n="settings_dns_cloudflare">Cloudflare (1.1.1.1)</option>
             </select>
+        </div>
+
+        <div class="settings-group" style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: 600; margin-bottom: 8px;">Запити DNS</label>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; font-size: 13px;">
+                <label style="display: flex; align-items: center; gap: 4px;"><input type="checkbox" id="setting-query-a"> A</label>
+                <label style="display: flex; align-items: center; gap: 4px;"><input type="checkbox" id="setting-query-aaaa"> AAAA</label>
+                <label style="display: flex; align-items: center; gap: 4px;"><input type="checkbox" id="setting-query-mx"> MX</label>
+                <label style="display: flex; align-items: center; gap: 4px;"><input type="checkbox" id="setting-query-ns"> NS</label>
+                <label style="display: flex; align-items: center; gap: 4px;"><input type="checkbox" id="setting-query-txt"> TXT</label>
+                <label style="display: flex; align-items: center; gap: 4px;"><input type="checkbox" id="setting-query-spf"> SPF</label>
+                <label style="display: flex; align-items: center; gap: 4px;"><input type="checkbox" id="setting-query-dkim"> DKIM</label>
+                <label style="display: flex; align-items: center; gap: 4px;"><input type="checkbox" id="setting-query-dmarc"> DMARC</label>
+            </div>
         </div>
 
         <div class="settings-group" style="margin-bottom: 20px;">

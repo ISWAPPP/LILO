@@ -38,11 +38,19 @@ export const PicsRenderer = {
   history(items) {
     if (!items || items.length === 0) return '';
     return `
-      <h4 style="margin: 15px 0 5px; font-size: 12px; color: var(--text-muted); text-transform: uppercase;" data-i18n="pics_history_title">${I18n.t('pics_history_title')}</h4>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin: 15px 0 5px;">
+        <h4 style="margin: 0; font-size: 12px; color: var(--text-muted); text-transform: uppercase;" data-i18n="pics_history_title">${I18n.t('pics_history_title')}</h4>
+        <button id="clear-pics-history" style="background:transparent; border:none; padding:0; color:var(--text-muted); cursor:pointer; display:flex; align-items:center;" title="${I18n.t('clear')}">
+           <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+        </button>
+      </div>
       <div class="pics-history-grid" style="display:flex; gap:8px; overflow-x:auto; padding-bottom:8px; scrollbar-width: none;">
          ${items.map(item => `
           <div class="pics-history-item" data-url="${item.url}" style="width: 50px; height: 50px; flex-shrink: 0; cursor: pointer; border: 1px solid var(--border-light); border-radius: var(--radius-md); overflow: hidden; position: relative; transition: all 0.2s;">
             <img src="${item.url}" style="width: 100%; height: 100%; object-fit: cover;" title="${I18n.t('pics_click_to_copy')}">
+            <div class="copy-overlay" style="position:absolute; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 0.2s; color:var(--success-text);">
+              <svg class="icon icon-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
           </div>
         `).join('')}
       </div>

@@ -5,7 +5,8 @@ export const Settings = {
     startupTab: 'last',
     dnsProvider: 'google',
     windowHeight: 600,
-    passgen: { lower: true, upper: true, numbers: true, symbols: false, length: 16 }
+    passgen: { lower: true, upper: true, numbers: true, symbols: false, length: 16 },
+    dnsQueries: { a: true, aaaa: false, mx: true, txt: false, spf: false, dkim: false, dmarc: false, ns: true }
   },
 
   async load() {

@@ -2,7 +2,8 @@
 
 export const Utils = {
   isValidDomain(domain) {
-    return /^(?!:\/\/)([a-zA-Z0-9-_]+\.)*[a-zA-Z0-9][a-zA-Z0-9-_]+\.[a-zA-Z]{2,11}?$/.test(domain);
+    if (!domain || domain.length > 253) return false;
+    return /^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.[a-zA-Z]{2,11}$/.test(domain);
   },
 
   isValidIP(ip) {
@@ -43,6 +44,18 @@ export const Utils = {
     } catch {
       return false;
     }
+  },
+
+  debounce(func, wait) {
+    let timeout;
+    return function executedFunction(...args) {
+      const later = () => {
+        clearTimeout(timeout);
+        func(...args);
+      };
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+    };
   },
 
   showToast(message) {

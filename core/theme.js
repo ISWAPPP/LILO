@@ -1,27 +1,5 @@
 export const Theme = {
-  themes: {
-    light: 'light',
-    dark: 'dark',
-    forest: 'forest',
-    paper: 'paper',
-    sea: 'sea',
-    sunset: 'sunset',
-    cyberpunk: 'cyberpunk',
-    coffee: 'coffee',
-    matcha: 'matcha',
-    peach: 'peach',
-    lavender: 'lavender',
-    nord: 'nord',
-    mint: 'mint',
-    rose: 'rose',
-    sakura: 'sakura',
-    'solarized-light': 'solarized-light',
-    'solarized-dark': 'solarized-dark',
-    dracula: 'dracula',
-    gruvbox: 'gruvbox',
-    oceanic: 'oceanic',
-    auto: 'auto'
-  },
+  // Removed hardcoded themes list; themes are now managed dynamically
 
   init(themeName) {
     this.apply(themeName);
@@ -44,8 +22,12 @@ export const Theme = {
       actualTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
     }
 
-    // Remove all theme classes
-    Object.values(this.themes).forEach(t => root.classList.remove(`theme-${t}`));
+    // Remove all theme classes dynamically
+    Array.from(root.classList).forEach(cls => {
+      if (cls.startsWith('theme-')) {
+        root.classList.remove(cls);
+      }
+    });
     
     // Add current theme class
     root.classList.add(`theme-${actualTheme}`);

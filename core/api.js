@@ -3,6 +3,23 @@
 import { Config } from '../config.js';
 import { Settings } from './settings.js';
 
+async function fetchWithTimeout(resource, options = {}) {
+  const { timeout = 8000 } = options;
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+  try {
+    const response = await fetch(resource, {
+      ...options,
+      signal: controller.signal
+    });
+    clearTimeout(id);
+    return response;
+  } catch (error) {
+    clearTimeout(id);
+    throw error;
+  }
+}
+
 export const Api = {
   /** Retrieves the domain of the active Chrome tab. */
   async getActiveTabDomain() {
@@ -22,9 +39,9 @@ export const Api = {
       const settings = await Settings.load();
       const baseUrl = Config.api.dnsProviders[settings.dnsProvider || 'google'];
       
-      const res = await fetch(
+      const res = await fetchWithTimeout(
         `${baseUrl}?name=${encodeURIComponent(name)}&type=${type}`,
-        { headers: { 'accept': 'application/dns-json' } }
+        { headers: { 'accept': 'application/dns-json' }, timeout: Config.timing.pingTimeout || 4000 }
       );
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       return await res.json();
@@ -36,7 +53,7 @@ export const Api = {
   /** IP Geolocation via ip-api.com */
   async getIpGeo(ip) {
     try {
-      const res = await fetch(`http://ip-api.com/json/${encodeURIComponent(ip)}?fields=status,message,country,countryCode,regionName,city,isp,org,as,query`);
+      const res = await fetchWithTimeout(`http://ip-api.com/json/${encodeURIComponent(ip)}?fields=status,message,country,countryCode,regionName,city,isp,org,as,query`, { timeout: Config.timing.pingTimeout || 4000 });
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const data = await res.json();
       if (data.status === 'success') {
@@ -57,8 +74,8 @@ export const Api = {
     formData.append('action', 'upload');
 
     try {
-      const res = await fetch(Config.api.imgUpload, {
-        method: 'POST', body: formData,
+      const res = await fetchWithTimeout(Config.api.imgUpload, {
+        method: 'POST', body: formData, timeout: 15000
       });
 
       if (!res.ok) {

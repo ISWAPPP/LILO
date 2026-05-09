@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "LILO Tools",
   "description": "DNS перевірка, завантаження зображень, нотатки та генератор паролів",
-  "version": "0.9.6",
+  "version": "0.9.10",
 
   "permissions": [
     "tabs",

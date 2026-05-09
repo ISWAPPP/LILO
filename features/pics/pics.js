@@ -122,12 +122,24 @@ export function initPicsFeature() {
 
   // History click
   historyContainer?.addEventListener('click', async (e) => {
+    if (e.target.closest('#clear-pics-history')) {
+      uploadHistory = [];
+      await saveHistory(uploadHistory);
+      renderHistory();
+      return;
+    }
+
     const item = e.target.closest('.pics-history-item');
     if (item && item.dataset.url) {
       const ok = await Utils.copyToClipboard(item.dataset.url);
       if (ok) {
+        const overlay = item.querySelector('.copy-overlay');
         item.style.borderColor = 'var(--success-text)';
-        setTimeout(() => { item.style.borderColor = 'var(--border-light)'; }, 800);
+        if (overlay) overlay.style.opacity = '1';
+        setTimeout(() => { 
+          item.style.borderColor = 'var(--border-light)'; 
+          if (overlay) overlay.style.opacity = '0';
+        }, 800);
       }
     }
   });
@@ -136,18 +148,30 @@ export function initPicsFeature() {
   const blockCopy = (e) => {
     const picsTab = document.getElementById('pics-tab');
     if (picsTab?.classList.contains('active')) {
+      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
       e.preventDefault();
     }
   };
 
   TabManager.register('pics', {
     async init() {
+      // Prevent browser from opening dragged files when dropped outside upload zone
+      window.addEventListener('dragover', (e) => {
+        const picsTab = document.getElementById('pics-tab');
+        if (picsTab?.classList.contains('active')) e.preventDefault();
+      }, false);
+      window.addEventListener('drop', (e) => {
+        const picsTab = document.getElementById('pics-tab');
+        if (picsTab?.classList.contains('active')) e.preventDefault();
+      }, false);
+
       document.addEventListener('paste', handlePaste);
 
       document.addEventListener('keydown', (e) => {
         const picsTab = document.getElementById('pics-tab');
         if (!picsTab?.classList.contains('active')) return;
         if (e.ctrlKey && (e.key === 'a' || e.key === 'c')) {
+          if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
           e.preventDefault();
         }
       });
