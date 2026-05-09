@@ -306,8 +306,12 @@
     border: 1px solid var(--border-light);
     border-radius: var(--radius-md);
     margin-bottom: 6px;
-    background: var(--bg-main);
-    transition: all 0.2s;
+    --note-bg: var(--bg-main);
+    --note-text: var(--text-main);
+    --note-btn-hover-bg: var(--bg-tertiary);
+    --note-btn-hover-color: var(--accent);
+    background: var(--note-bg);
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
     animation: fadeIn 0.2s ease;
 }
 
@@ -327,7 +331,7 @@
     white-space: pre-wrap;
     word-break: break-word;
     font-size: 13px;
-    color: var(--text-main);
+    color: var(--note-text);
     cursor: pointer;
     line-height: 1.4;
     display: -webkit-box;
@@ -346,10 +350,10 @@
     gap: 4px;
     opacity: 0;
     transition: opacity 0.2s;
-    background: var(--bg-main);
+    background: var(--note-bg);
     padding: 4px;
     border-radius: 6px;
-    box-shadow: -5px 0 10px 5px var(--bg-main);
+    box-shadow: -5px 0 10px 5px var(--note-bg);
 }
 
 .note-item:hover .note-actions {
@@ -368,7 +372,8 @@
     border: none;
     border-radius: 4px;
     background: transparent;
-    color: var(--text-muted);
+    color: var(--note-text);
+    opacity: 0.7;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -379,14 +384,16 @@
 .note-move-up-btn:hover,
 .note-move-down-btn:hover,
 .note-edit-btn:hover {
-    color: var(--accent);
-    background: var(--bg-tertiary);
+    color: var(--note-btn-hover-color);
+    background: var(--note-btn-hover-bg);
+    opacity: 1;
 }
 
 .note-delete-btn:hover,
 .note-cancel-btn:hover {
     color: var(--error-text);
     background: var(--error-bg);
+    opacity: 1;
 }
 
 .note-save-btn {
@@ -395,12 +402,12 @@
 
 .note-save-btn:hover {
     background: var(--success-bg);
+    opacity: 1;
 }
 
 /* Editing mode */
 .note-item.editing {
     border-color: var(--accent);
-    background: var(--bg-sec);
 }
 
 .note-edit-input {
@@ -414,6 +421,14 @@
     resize: none;
     overflow: hidden;
     font-family: inherit;
+    color: var(--note-text);
+    background: var(--note-bg);
+}
+
+.note-edit-input:focus {
+    background: var(--note-bg);
+    outline: none;
+    border-color: var(--accent);
 }
 
 /* Zen Browser Style Theme Palette */

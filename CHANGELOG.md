@@ -1,5 +1,25 @@
 # Changelog — LILO Tools
  
+## [0.9.10] — 2026-05-10
+
+### Fixed
+- **Note Editing Painting Glitch**: Resolved a Blink browser engine rendering issue where a note's custom background reverted to default on element replacement (`outerHTML`) in `startEditing` until hovered. Now, inline CSS properties and variables are forcefully pushed directly via JavaScript CSSOM to ensure immediate color applying.
+- **Focus Background Reset**: Fixed a bug where clicking inside a custom-colored note's textarea (placing the cursor) reset the background to the standard theme background. Introduced a specific `.note-edit-input:focus` selector in `styles/features.css` that overrides the global `textarea:focus` rule and holds the custom `--note-bg` color while active.
+
+## [0.9.9] — 2026-05-10
+
+### Added
+- **Expanded Theme Swatches**: Added 11 brand-new, high-quality theme palettes (including Sand, Breeze, Autumn, Navy, Blood, Monochrome, Terminal, Amber, Midnight, Synthwave, and Neon Cyan), bringing the total library to 29 beautifully curated options.
+- **Organized Swatch Groups**: Structured the scrolling swatch palette in `popup.html` into 4 cohesive groups (Light, Dark/Brown, Colorful Dark, Neon/Retro) sorted by hue and tone for an incredibly smooth visual selection flow.
+- **English Hover Fallbacks**: Translated all raw theme and toggle button `title` attributes in `popup.html` to English, establishing robust fallback tooltips if localization elements fail to render. Dynamic Ukrainian translations are applied dynamically via `core/i18n.js` mapping.
+
+### Improved
+- **Decoupled Theme Architecture**: Fully refactored `styles/base.css` to extract theme color mappings into a clean, standalone `styles/themes.css` stylesheet, dramatically simplifying future additions and enhancing design isolation.
+- **Dynamic Theme Switching**: Upgraded `core/theme.js` to dynamically search and strip all `theme-*` class tokens on the root document element rather than relying on a hardcoded dict, enabling seamless, instant theme switches in any sequence without requiring a reload.
+
+### Fixed
+- **Note Action Buttons Contrast**: Overhauled note items and color picker rendering in `features/notes/notes-renderer.js` and `styles/features.css` using modern CSS custom properties (`--note-bg`, `--note-text`, etc.). Note action panels, shadows, and control buttons now dynamically inherit the note's custom background, fully eliminating visibility bugs (like black-on-dark buttons) when applying custom colors under dark themes.
+
 ## [0.9.8] — 2026-05-10
 
 ### Added
@@ -9,6 +29,7 @@
 
 ### Improved
 - **Full-Width Notes Layout**: Overhauled Note list item elements to let text span the full 100% width. Action buttons (move, edit, delete) now float absolutely in the top-right corner on hover, using a matching background blend-shadow to overlay gracefully on top of the text.
+- **Popup Height Calculation Fix**: Adjusted body container height formula (`calc(var(--cached-height, 600px) - 20px)`) to account for top and bottom margins, ensuring that when utilizing minimum height, the bottom margin and contents are never clipped.
 
 ## [0.9.7] — 2026-05-09
 

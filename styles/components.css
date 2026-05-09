@@ -50,7 +50,7 @@
     box-sizing: border-box;
 }
 
-.tab-content { display: none; }
+.tab-content { display: none; padding-bottom: 24px; }
 .tab-content.active { display: block; animation: fadeIn 0.3s ease; }
 
 @keyframes fadeIn {

@@ -191,7 +191,14 @@ function startEditing(id) {
   item.outerHTML = NotesRenderer.noteItemEditing(note);
 
   // Focus on input
-  const input = document.querySelector(`.note-item[data-id="${id}"] .note-edit-input`);
+  const newItem = document.querySelector(`.note-item[data-id="${id}"]`);
+  if (newItem && note.color) {
+    newItem.style.backgroundColor = note.color;
+    newItem.style.setProperty('--note-bg', note.color);
+    newItem.style.setProperty('--note-text', '#1a1a1a');
+    newItem.style.setProperty('--note-btn-hover-bg', 'rgba(0, 0, 0, 0.08)');
+  }
+  const input = newItem ? newItem.querySelector('.note-edit-input') : null;
   if (input) {
     input.focus();
     input.selectionStart = input.value.length;
@@ -227,7 +234,17 @@ function setupNoteEvents() {
     if (e.target.closest('.color-swatch')) {
       const swatch = e.target.closest('.color-swatch');
       const color = swatch.dataset.color;
-      item.style.backgroundColor = color;
+      if (color) {
+        item.style.backgroundColor = color;
+        item.style.setProperty('--note-bg', color);
+        item.style.setProperty('--note-text', '#1a1a1a');
+        item.style.setProperty('--note-btn-hover-bg', 'rgba(0, 0, 0, 0.08)');
+      } else {
+        item.style.backgroundColor = '';
+        item.style.removeProperty('--note-bg');
+        item.style.removeProperty('--note-text');
+        item.style.removeProperty('--note-btn-hover-bg');
+      }
       item.dataset.selectedColor = color;
       return;
     }
