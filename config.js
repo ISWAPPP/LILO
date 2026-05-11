@@ -25,6 +25,7 @@ export const Config = {
     notesKey: 'lilo_notes',
     settingsKey: 'lilo_settings',
     lastTabKey: 'lilo_last_tab',
+    picsHistoryKey: 'lilo_pics_history',
   },
 
   passgen: {

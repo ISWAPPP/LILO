@@ -97,16 +97,17 @@ export function initDnsFeature() {
       }
 
       const settings = await Settings.load();
+      const provider = settings.dnsProvider || 'google';
       const dq = settings.dnsQueries || { a: true, aaaa: false, mx: true, txt: false, spf: false, dkim: false, dmarc: false, ns: true };
       const needsTxt = dq.txt || dq.spf || dq.dkim;
 
       const rawResults = await Promise.allSettled([
-        dq.a ? Api.dnsQuery(domain, 'A') : Promise.resolve({ Answer: null }),
-        dq.aaaa ? Api.dnsQuery(domain, 'AAAA') : Promise.resolve({ Answer: null }),
-        dq.mx ? Api.dnsQuery(domain, 'MX') : Promise.resolve({ Answer: null }),
-        needsTxt ? Api.dnsQuery(domain, 'TXT') : Promise.resolve({ Answer: null }),
-        dq.ns ? Api.dnsQuery(domain, 'NS') : Promise.resolve({ Answer: null }),
-        dq.dmarc ? Api.dnsQuery(`_dmarc.${domain}`, 'TXT') : Promise.resolve({ Answer: null })
+        dq.a ? Api.dnsQuery(domain, 'A', provider) : Promise.resolve({ Answer: null }),
+        dq.aaaa ? Api.dnsQuery(domain, 'AAAA', provider) : Promise.resolve({ Answer: null }),
+        dq.mx ? Api.dnsQuery(domain, 'MX', provider) : Promise.resolve({ Answer: null }),
+        needsTxt ? Api.dnsQuery(domain, 'TXT', provider) : Promise.resolve({ Answer: null }),
+        dq.ns ? Api.dnsQuery(domain, 'NS', provider) : Promise.resolve({ Answer: null }),
+        dq.dmarc ? Api.dnsQuery(`_dmarc.${domain}`, 'TXT', provider) : Promise.resolve({ Answer: null })
       ]);
       const [A, AAAA, MX, TXT, NS, DMARC] = rawResults.map(r => r.status === 'fulfilled' ? r.value : { Answer: null });
 
@@ -120,7 +121,7 @@ export function initDnsFeature() {
         if (target) {
             if (target.endsWith('.')) target = target.slice(0, -1);
             try {
-                const targetA = await Api.dnsQuery(target, 'A');
+                const targetA = await Api.dnsQuery(target, 'A', provider);
                 const targetIps = (targetA.Answer || []).map(a => a.data);
                 // Keep only IPs that differ from the main domain
                 const differentIps = targetIps.filter(ip => !ips.includes(ip));

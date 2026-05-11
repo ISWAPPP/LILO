@@ -5,25 +5,27 @@ import { Utils } from '../../core/utils.js';
 import { TabManager } from '../../core/tabs.js';
 import { PicsRenderer } from './pics-renderer.js';
 import { I18n } from '../../core/i18n.js';
+import { Config } from '../../config.js';
  
 export function initPicsFeature() {
   const statusBox = document.getElementById('pics-output');
   const uploadZone = document.getElementById('upload_zone');
   const fileInput = document.getElementById('pics-file-input');
   const historyContainer = document.getElementById('pics-history-container');
+  const picsTab = document.getElementById('pics-tab');
   let uploadHistory = [];
  
   const loadHistory = async () => {
     return new Promise(resolve => {
-      chrome.storage.local.get('lilo_pics_history', res => {
-        resolve(res.lilo_pics_history || []);
+      chrome.storage.local.get(Config.storage.picsHistoryKey, res => {
+        resolve(res[Config.storage.picsHistoryKey] || []);
       });
     });
   };
  
   const saveHistory = async (history) => {
     return new Promise(resolve => {
-      chrome.storage.local.set({ lilo_pics_history: history }, resolve);
+      chrome.storage.local.set({ [Config.storage.picsHistoryKey]: history }, resolve);
     });
   };
  
@@ -69,7 +71,6 @@ export function initPicsFeature() {
   };
 
   const handlePaste = async (e) => {
-    const picsTab = document.getElementById('pics-tab');
     if (!picsTab?.classList.contains('active')) return;
 
     const item = Array.from(e.clipboardData.items).find(i => i.type.includes('image'));
@@ -97,7 +98,6 @@ export function initPicsFeature() {
     uploadZone.style.borderColor = '';
     uploadZone.style.background = '';
     
-    const picsTab = document.getElementById('pics-tab');
     if (!picsTab?.classList.contains('active')) return;
 
     const file = Array.from(e.dataTransfer.files).find(f => f.type.includes('image'));
@@ -146,7 +146,6 @@ export function initPicsFeature() {
 
   // Block copying on PICS tab
   const blockCopy = (e) => {
-    const picsTab = document.getElementById('pics-tab');
     if (picsTab?.classList.contains('active')) {
       if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
       e.preventDefault();
@@ -157,18 +156,15 @@ export function initPicsFeature() {
     async init() {
       // Prevent browser from opening dragged files when dropped outside upload zone
       window.addEventListener('dragover', (e) => {
-        const picsTab = document.getElementById('pics-tab');
         if (picsTab?.classList.contains('active')) e.preventDefault();
       }, false);
       window.addEventListener('drop', (e) => {
-        const picsTab = document.getElementById('pics-tab');
         if (picsTab?.classList.contains('active')) e.preventDefault();
       }, false);
 
       document.addEventListener('paste', handlePaste);
 
       document.addEventListener('keydown', (e) => {
-        const picsTab = document.getElementById('pics-tab');
         if (!picsTab?.classList.contains('active')) return;
         if (e.ctrlKey && (e.key === 'a' || e.key === 'c')) {
           if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
@@ -183,11 +179,11 @@ export function initPicsFeature() {
     },
 
     onActivate() {
-      document.getElementById('pics-tab')?.classList.add('no-select');
+      picsTab?.classList.add('no-select');
     },
 
     onDeactivate() {
-      document.getElementById('pics-tab')?.classList.remove('no-select');
+      picsTab?.classList.remove('no-select');
     },
   });
 }

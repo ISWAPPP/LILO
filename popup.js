@@ -10,11 +10,13 @@ import { Theme } from './core/theme.js';
 import { initSettingsFeature } from './features/settings/settings.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
+  // Step 1: Register features with TabManager (no init() calls yet).
   initDnsFeature();
   initPicsFeature();
   initNotesFeature();
   initSettingsFeature();
 
+  // Step 2: Load settings, apply i18n and theme before rendering.
   const settings = await Settings.load();
   await I18n.init(settings.language);
   Theme.init(settings.theme || 'auto');
@@ -28,5 +30,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     initialTab = settings.startupTab;
   }
 
+  // Step 3: Initialize TabManager — this calls handler.init() on all registered features.
   TabManager.init(initialTab);
 });

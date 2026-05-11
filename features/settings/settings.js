@@ -77,8 +77,9 @@ export function initSettingsFeature() {
       }
 
       const handleSave = async (updatedSettings = {}) => {
+        const current = await Settings.load();
         const newSettings = {
-          ...settings,
+          ...current,
           language: langSelect?.value || 'auto',
           theme: currentTheme,
           startupTab: startupSelect?.value || 'last',
@@ -177,7 +178,7 @@ export function initSettingsFeature() {
             const data = JSON.parse(event.target.result);
             if (typeof data !== 'object' || data === null) throw new Error('Invalid format');
             
-            const allowedKeys = ['lilo_settings', 'lilo_notes', 'lilo_pics_history', 'lilo_last_tab'];
+            const allowedKeys = Object.values(Config.storage);
             const filteredData = {};
             for (const key of allowedKeys) {
               if (data[key] !== undefined) {

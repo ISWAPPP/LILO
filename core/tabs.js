@@ -59,7 +59,7 @@ export const TabManager = {
     document.querySelectorAll('.tab-link, .tab-content')
       .forEach(el => el.classList.remove('active'));
     
-    const newBtn = document.querySelector(`[data-tab="${name}"]`);
+    const newBtn = document.querySelector(`[data-tab="${CSS.escape(name)}"]`);
     newBtn?.classList.add('active');
     
     const slider = document.getElementById('tab-slider');

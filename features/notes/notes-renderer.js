@@ -71,7 +71,7 @@ export const NotesRenderer = {
         </div>
       `;
     }
-    return notes.map((n, i) => this.noteItem(n, i, notes.length)).join('');
+    return notes.map(n => this.noteItem(n)).join('');
   },
  
   /** Copy notification. */
