@@ -106,7 +106,8 @@ export const I18n = {
       'pics_error_no_internet': 'Відсутнє з\'єднання з інтернетом',
       'pics_error_failed': 'Помилка завантаження',
       'dns_error_no_internet': 'Відсутнє з\'єднання з інтернетом',
-      'copied': 'Скопійовано!'
+      'copied': 'Скопійовано!',
+      'clear': 'Очистити'
     },
     en: {
       'tab_dns': 'DNS',
@@ -212,7 +213,8 @@ export const I18n = {
       'pics_error_no_internet': 'No internet connection',
       'pics_error_failed': 'Upload failed',
       'dns_error_no_internet': 'No internet connection',
-      'copied': 'Copied!'
+      'copied': 'Copied!',
+      'clear': 'Clear'
     }
   },
 

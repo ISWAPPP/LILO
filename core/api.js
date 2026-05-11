@@ -1,7 +1,6 @@
 // core/api.js — all external HTTP requests. No cache — data is always fresh.
 
 import { Config } from '../config.js';
-import { Settings } from './settings.js';
 
 async function fetchWithTimeout(resource, options = {}) {
   const { timeout = 8000 } = options;
@@ -34,10 +33,9 @@ export const Api = {
   },
 
   /** DNS query via the selected provider (Google or Cloudflare). */
-  async dnsQuery(name, type) {
+  async dnsQuery(name, type, provider = 'google') {
     try {
-      const settings = await Settings.load();
-      const baseUrl = Config.api.dnsProviders[settings.dnsProvider || 'google'];
+      const baseUrl = Config.api.dnsProviders[provider];
       
       const res = await fetchWithTimeout(
         `${baseUrl}?name=${encodeURIComponent(name)}&type=${type}`,

@@ -111,6 +111,7 @@ function refreshPassword() {
 // ==================== NOTES LOGIC ====================
 
 let notes = [];
+let passwordInitialized = false;
 
 async function renderNotes() {
   const list = document.getElementById('notes-list');
@@ -123,13 +124,13 @@ async function addNote(text) {
   if (!trimmed) return;
 
   notes.unshift({ id: crypto.randomUUID(), text: trimmed });
-  await saveNotes(notes);
+  saveNotes();
   renderNotes();
 }
 
 async function deleteNote(id) {
   notes = notes.filter(n => n.id !== id);
-  await saveNotes(notes);
+  saveNotes();
   renderNotes();
 }
 
@@ -144,7 +145,7 @@ async function updateNoteWithColor(id, newText, color) {
       note.color = color;
     }
   }
-  await saveNotes(notes);
+  saveNotes();
   renderNotes();
 }
 
@@ -152,7 +153,7 @@ async function moveNoteUp(id) {
   const index = notes.findIndex(n => n.id === id);
   if (index > 0) {
     [notes[index - 1], notes[index]] = [notes[index], notes[index - 1]];
-    await saveNotes(notes);
+    saveNotes();
     renderNotes();
   }
 }
@@ -161,7 +162,7 @@ async function moveNoteDown(id) {
   const index = notes.findIndex(n => n.id === id);
   if (index < notes.length - 1) {
     [notes[index + 1], notes[index]] = [notes[index], notes[index + 1]];
-    await saveNotes(notes);
+    saveNotes();
     renderNotes();
   }
 }
@@ -414,7 +415,10 @@ export function initNotesFeature() {
 
     onActivate() {
       document.getElementById('note-input')?.focus();
-      refreshPassword();
+      if (!passwordInitialized) {
+        refreshPassword();
+        passwordInitialized = true;
+      }
     },
   });
 }

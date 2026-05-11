@@ -1,5 +1,21 @@
 # Changelog — LILO Tools
- 
+
+## [0.9.11] — 2026-05-11
+
+### Security
+- **XSS Prevention in PICS**: All user/server-controlled URLs in the PICS tab (previews, uploads, history grid) are now escaped via `Utils.escapeHTML` to prevent DOM-based XSS.
+- **XSS Prevention in DNS**: Input and API outputs in the DNS tab (including error messages, IP addresses, and geolocation variables) are escaped before DOM insertion.
+- **Selector Injection Protection**: Upgraded tab rendering with `CSS.escape` around tab names to prevent potential selector injection vectors from chrome local storage.
+
+### Improved
+- **DNS Lookup Performance**: Eliminated redundant nested `Settings.load()` calls inside `Api.dnsQuery()`, reducing chrome storage reads from 7 to exactly 1 per query.
+- **Settings Integrity**: Refactored the settings panel to retrieve a fresh settings object immediately before saving, preventing stale passgen configurations from being overwritten.
+- **Deep Merge Settings**: Enhanced `core/settings.js` load logic to deep-merge nested configurations (`passgen`, `dnsQueries`), preventing default sub-keys from being lost during partial loads.
+- **PICS Tab DOM Cache**: Cached the `picsTab` DOM element to eliminate repeated query cycles across handlers, and migrated storage targets to use `Config.storage` variables.
+- **Debounced Save Stability**: Fixed notes save routine to trigger cleanly without unused parameters.
+- **Password Generator Behavior**: Password is now generated once on notes tab activation rather than resetting on every single tab switch.
+- **Code Quality and Cleanup**: Added missing `'clear'` translation key, removed unused iteration arguments in `noteItem` mapping, documented theme-init duplication context, and added comments detailing popup bootstrap steps.
+
 ## [0.9.10] — 2026-05-10
 
 ### Fixed

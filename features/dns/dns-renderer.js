@@ -8,16 +8,16 @@ export const DnsRenderer = {
     let html = `<div class="results-container animate-fade-in-up">`;
     
     if (dq.a && ips) {
-      let ipContent = ips.join('<br>');
+      let ipContent = ips.map(ip => Utils.escapeHTML(ip)).join('<br>');
       if (mainGeo && ips.length > 0) {
-        const geoStr = `<div class="geo-info no-copy">${Utils.getFlagEmoji(mainGeo.countryCode)} ${mainGeo.country}, ${mainGeo.city}</div>`;
-        ipContent = geoStr + ips.join('<br>');
+        const geoStr = `<div class="geo-info no-copy">${Utils.getFlagEmoji(mainGeo.countryCode)} ${Utils.escapeHTML(mainGeo.country)}, ${Utils.escapeHTML(mainGeo.city)}</div>`;
+        ipContent = geoStr + ips.map(ip => Utils.escapeHTML(ip)).join('<br>');
       }
       html += this.row('IP (A)', ipContent || '—');
     }
     
     if (dq.aaaa && ipv6) {
-      html += this.row('IPv6', ipv6.length > 0 ? ipv6.join('<br>') : '—');
+      html += this.row('IPv6', ipv6.length > 0 ? ipv6.map(ip => Utils.escapeHTML(ip)).join('<br>') : '—');
     }
 
     if (dq.mx && mx) {
@@ -103,17 +103,17 @@ export const DnsRenderer = {
 
   ipResults(ip, geo) {
     if (!geo) {
-      return `<div class="results-container">${this.row('IP', ip)}</div>`;
+      return `<div class="results-container">${this.row('IP', Utils.escapeHTML(ip))}</div>`;
     }
     
     let html = `<div class="results-container animate-fade-in-up">`;
-    html += this.row('IP', ip);
-    html += this.row('Location', `${Utils.getFlagEmoji(geo.countryCode)} ${geo.country}, ${geo.regionName}, ${geo.city}`);
-    html += this.row('ISP', geo.isp);
+    html += this.row('IP', Utils.escapeHTML(ip));
+    html += this.row('Location', `${Utils.getFlagEmoji(geo.countryCode)} ${Utils.escapeHTML(geo.country)}, ${Utils.escapeHTML(geo.regionName)}, ${Utils.escapeHTML(geo.city)}`);
+    html += this.row('ISP', Utils.escapeHTML(geo.isp));
     if (geo.org && geo.org !== geo.isp) {
-      html += this.row('Org', geo.org);
+      html += this.row('Org', Utils.escapeHTML(geo.org));
     }
-    html += this.row('AS', geo.as);
+    html += this.row('AS', Utils.escapeHTML(geo.as));
     html += '</div>';
     return html;
   },
@@ -122,7 +122,7 @@ export const DnsRenderer = {
     return `
       <div class="msg error" style="display: flex; align-items: center; justify-content: center; gap: 6px;">
         <svg class="icon icon-error" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; flex-shrink: 0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-        <span>${msg}</span>
+        <span>${Utils.escapeHTML(msg)}</span>
       </div>`;
   },
 };

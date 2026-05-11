@@ -12,7 +12,13 @@ export const Settings = {
   async load() {
     return new Promise((resolve) => {
       chrome.storage.local.get(['lilo_settings'], (result) => {
-        resolve({ ...this.defaultSettings, ...result.lilo_settings });
+        const saved = result.lilo_settings || {};
+        resolve({
+          ...this.defaultSettings,
+          ...saved,
+          passgen: { ...this.defaultSettings.passgen, ...saved.passgen },
+          dnsQueries: { ...this.defaultSettings.dnsQueries, ...saved.dnsQueries },
+        });
       });
     });
   },

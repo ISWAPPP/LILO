@@ -1,4 +1,5 @@
 import { I18n } from '../../core/i18n.js';
+import { Utils } from '../../core/utils.js';
  
 export const PicsRenderer = {
   loading() {
@@ -6,23 +7,25 @@ export const PicsRenderer = {
   },
  
   preview(dataUrl) {
+    const safeUrl = Utils.escapeHTML(dataUrl);
     return `
       <div class="img-preview" style="text-align:center; position:relative; opacity:0.7; margin-top: 10px;">
-         <img src="${dataUrl}" style="max-width:100%; max-height:200px; border-radius:var(--radius-md); box-shadow:var(--shadow-sm);">
+         <img src="${safeUrl}" style="max-width:100%; max-height:200px; border-radius:var(--radius-md); box-shadow:var(--shadow-sm);">
          <div class="loader" style="position:absolute; top:50%; left:50%; margin: -16px 0 0 -16px; border-width:3px;"></div>
       </div>
     `;
   },
  
   success(url) {
+    const safeUrl = Utils.escapeHTML(url);
     return `
       <div class="img-result">
         <p class="img-success" style="display: flex; align-items: center; justify-content: center; gap: 4px; color: var(--success-text);">
           <svg class="icon icon-inline icon-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle;"><polyline points="20 6 9 17 4 12"></polyline></svg>
           <span>${I18n.t('copied')}</span>
         </p>
-        <img src="${url}" alt="Uploaded" style="max-height: 250px; object-fit: contain;">
-        <input value="${url}" readonly class="img-url-input">
+        <img src="${safeUrl}" alt="Uploaded" style="max-height: 250px; object-fit: contain;">
+        <input value="${safeUrl}" readonly class="img-url-input">
       </div>`;
   },
  
@@ -45,14 +48,17 @@ export const PicsRenderer = {
         </button>
       </div>
       <div class="pics-history-grid" style="display:flex; gap:8px; overflow-x:auto; padding-bottom:8px; scrollbar-width: none;">
-         ${items.map(item => `
-          <div class="pics-history-item" data-url="${item.url}" style="width: 50px; height: 50px; flex-shrink: 0; cursor: pointer; border: 1px solid var(--border-light); border-radius: var(--radius-md); overflow: hidden; position: relative; transition: all 0.2s;">
-            <img src="${item.url}" style="width: 100%; height: 100%; object-fit: cover;" title="${I18n.t('pics_click_to_copy')}">
-            <div class="copy-overlay" style="position:absolute; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 0.2s; color:var(--success-text);">
-              <svg class="icon icon-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            </div>
-          </div>
-        `).join('')}
+         ${items.map(item => {
+          const safeUrl = Utils.escapeHTML(item.url);
+          return `
+           <div class="pics-history-item" data-url="${safeUrl}" style="width: 50px; height: 50px; flex-shrink: 0; cursor: pointer; border: 1px solid var(--border-light); border-radius: var(--radius-md); overflow: hidden; position: relative; transition: all 0.2s;">
+             <img src="${safeUrl}" style="width: 100%; height: 100%; object-fit: cover;" title="${I18n.t('pics_click_to_copy')}">
+             <div class="copy-overlay" style="position:absolute; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 0.2s; color:var(--success-text);">
+               <svg class="icon icon-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width: 20px; height: 20px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+             </div>
+           </div>
+         `;
+         }).join('')}
       </div>
     `;
   }
