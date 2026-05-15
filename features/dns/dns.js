@@ -65,7 +65,30 @@ export function initDnsFeature() {
     if (Date.now() - lastRequest < Config.timing.throttleMs) return;
     lastRequest = Date.now();
 
-    const domain = Utils.cleanDomain(rawValue);
+    let dkimSelector = 'default';
+    let inputToClean = rawValue;
+    let isDirectDkimFormat = false;
+    let directDkimQuery = '';
+
+    // Handle Option 1: domain:selector
+    if (rawValue.includes(':') && !rawValue.startsWith('http')) {
+      const parts = rawValue.split(':');
+      inputToClean = parts[0];
+      if (parts[1]) {
+        dkimSelector = parts[1].trim();
+      }
+    }
+
+    const cleanedTemp = Utils.cleanDomain(inputToClean);
+
+    // Handle Option 2: selector._domainkey.domain
+    if (cleanedTemp.includes('._domainkey.')) {
+      isDirectDkimFormat = true;
+      directDkimQuery = cleanedTemp;
+      inputToClean = cleanedTemp.split('._domainkey.')[1];
+    }
+
+    const domain = Utils.cleanDomain(inputToClean);
     const isIp = Utils.isValidIP(domain);
 
     if (!Utils.isValidDomain(domain) && !isIp) {
@@ -77,7 +100,7 @@ export function initDnsFeature() {
       return;
     }
 
-    input.value = domain;
+    input.value = rawValue;
     updateLinks(domain);
 
     btn.disabled = true;
@@ -100,6 +123,8 @@ export function initDnsFeature() {
       const provider = settings.dnsProvider || 'google';
       const dq = settings.dnsQueries || { a: true, aaaa: false, mx: true, txt: false, spf: false, dkim: false, dmarc: false, ns: true };
       const needsTxt = dq.txt || dq.spf;
+      
+      const dkimQueryStr = isDirectDkimFormat ? directDkimQuery : `${dkimSelector}._domainkey.${domain}`;
 
       const rawResults = await Promise.allSettled([
         dq.a ? Api.dnsQuery(domain, 'A', provider) : Promise.resolve({ Answer: null }),
@@ -108,7 +133,7 @@ export function initDnsFeature() {
         needsTxt ? Api.dnsQuery(domain, 'TXT', provider) : Promise.resolve({ Answer: null }),
         dq.ns ? Api.dnsQuery(domain, 'NS', provider) : Promise.resolve({ Answer: null }),
         dq.dmarc ? Api.dnsQuery(`_dmarc.${domain}`, 'TXT', provider) : Promise.resolve({ Answer: null }),
-        dq.dkim ? Api.dnsQuery(`default._domainkey.${domain}`, 'TXT', provider) : Promise.resolve({ Answer: null })
+        dq.dkim ? Api.dnsQuery(dkimQueryStr, 'TXT', provider) : Promise.resolve({ Answer: null })
       ]);
       const [A, AAAA, MX, TXT, NS, DMARC, DKIM] = rawResults.map(r => r.status === 'fulfilled' ? r.value : { Answer: null });
 

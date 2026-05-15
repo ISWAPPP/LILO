@@ -43,7 +43,7 @@ body {
     transition: background-color 0.2s, color 0.2s;
     overflow-y: auto;
     overflow-x: hidden;
-    height: calc(var(--cached-height, 600px) - 20px);
+    height: calc(var(--cached-height, 300px) - 20px);
 }
 
 h2, h3 {

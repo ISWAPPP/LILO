@@ -20,8 +20,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   const settings = await Settings.load();
   await I18n.init(settings.language);
   Theme.init(settings.theme || 'auto');
-  document.documentElement.style.setProperty('--cached-height', (settings.windowHeight || 600) + 'px');
-  localStorage.setItem('lilo_height_cache', settings.windowHeight || 600);
+  document.documentElement.style.setProperty('--cached-height', (settings.windowHeight || 300) + 'px');
+  localStorage.setItem('lilo_height_cache', settings.windowHeight || 300);
 
   let initialTab = 'dns';
   if (settings.startupTab === 'last') {

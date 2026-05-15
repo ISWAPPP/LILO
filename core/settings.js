@@ -4,7 +4,7 @@ export const Settings = {
     theme: 'auto',
     startupTab: 'last',
     dnsProvider: 'google',
-    windowHeight: 600,
+    windowHeight: 300,
     passgen: { lower: true, upper: true, numbers: true, symbols: false, length: 16 },
     dnsQueries: { a: true, aaaa: false, mx: true, txt: false, spf: false, dkim: false, dmarc: false, ns: true }
   },
