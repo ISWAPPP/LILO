@@ -2,7 +2,9 @@
 
 export const Utils = {
   isValidDomain(domain) {
-    if (!domain || domain.length > 253) return false;
+    if (!domain || domain.length > 253) {
+      return false;
+    }
     return /^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*\.[a-zA-Z]{2,11}$/.test(domain);
   },
 
@@ -11,7 +13,9 @@ export const Utils = {
   },
 
   getFlagEmoji(countryCode) {
-    if (!countryCode) return '';
+    if (!countryCode) {
+      return '';
+    }
     const codePoints = countryCode
       .toUpperCase()
       .split('')
@@ -20,7 +24,9 @@ export const Utils = {
   },
 
   escapeHTML(str) {
-    if (!str) return '';
+    if (!str) {
+      return '';
+    }
     return str.replace(/[&<>'"]/g, tag => ({
       '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
     }[tag]));
@@ -28,7 +34,9 @@ export const Utils = {
 
   // Returns HTML with CSS class instead of inline styles.
   formatTime(ms) {
-    if (typeof ms !== 'number') return '—';
+    if (typeof ms !== 'number') {
+      return '—';
+    }
     const cls = ms < 100 ? 'ping-fast' : ms < 300 ? 'ping-mid' : 'ping-slow';
     return `<span class="${cls}">${ms} ms</span>`;
   },

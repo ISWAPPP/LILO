@@ -1,0 +1,23 @@
+{
+  "esversion": 11,
+  "browser": true,
+  "devel": true,
+  "module": true,
+  "undef": true,
+  "unused": true,
+  "curly": true,
+  "eqeqeq": true,
+  "indent": 2,
+  "asi": false,
+  "globals": {
+    "chrome": false,
+    "Utils": false,
+    "I18n": false,
+    "Config": false,
+    "Api": false,
+    "Settings": false,
+    "DnsRenderer": false,
+    "Theme": false,
+    "TabManager": false
+  }
+}

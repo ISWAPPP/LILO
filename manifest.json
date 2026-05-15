@@ -1,14 +1,12 @@
 {
   "manifest_version": 3,
   "name": "LILO Tools",
-  "description": "DNS перевірка, завантаження зображень, нотатки та генератор паролів",
-  "version": "0.9.11",
-
+  "description": "Advanced developer toolbox: Secure DNS lookup, high-speed image hosting with history, encrypted notes, and secure password generator.",
+  "version": "0.9.12",
   "permissions": [
     "tabs",
     "storage"
   ],
-
   "host_permissions": [
     "https://dns.google/*",
     "https://1.1.1.1/*",
@@ -16,7 +14,6 @@
     "https://freeimage.host/*",
     "http://ip-api.com/*"
   ],
-
   "action": {
     "default_popup": "popup.html"
   }

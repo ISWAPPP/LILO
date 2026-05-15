@@ -4,7 +4,7 @@ import { Utils } from '../../core/utils.js';
 
 export const DnsRenderer = {
   /** Full block of DNS check results. */
-  results({ ips, ipv6, mx, txt, dmarc, ns, mainGeo, dq }) {
+  results({ ips, ipv6, mx, txt, dmarc, dkim, ns, mainGeo, dq }) {
     let html = `<div class="results-container animate-fade-in-up">`;
     
     if (dq.a && ips) {
@@ -29,32 +29,22 @@ export const DnsRenderer = {
     const dmarcRecords = dmarc || [];
     
     const spfRec = txtRecords.find(r => r.data.includes('v=spf1'));
-    const dkimRec = txtRecords.find(r => r.data.includes('v=DKIM1'));
     const dmarcRec = dmarcRecords.find(r => r.data.includes('v=DMARC1'));
-    const otherTxt = txtRecords.filter(r => r !== spfRec && r !== dkimRec).map(r => Utils.escapeHTML(r.data));
+    const otherTxt = txtRecords.filter(r => r !== spfRec && !r.data.includes('v=DKIM1')).map(r => Utils.escapeHTML(r.data));
+    
+    const dkimRecords = dkim || [];
+    const dkimRec = dkimRecords.find(r => r.data.includes('v=DKIM1'));
 
-    if (dq.spf) {
-      if (spfRec) {
-        html += this.row('SPF', `<span style="font-family: monospace; font-size: 11px; word-break: break-all;">${Utils.escapeHTML(spfRec.data)}</span>`);
-      } else {
-        html += this.row('SPF', '<span style="color: var(--text-muted); font-size: 11px; display: flex; align-items: center; gap: 4px;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Not found</span>');
-      }
+    if (dq.spf && spfRec) {
+      html += this.row('SPF', `<div style="display: flex; align-items: center; gap: 4px;"><svg class="icon icon-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;color:var(--success-text);flex-shrink:0;"><polyline points="20 6 9 17 4 12"></polyline></svg> <span style="font-family: monospace; font-size: 11px; word-break: break-all;">${Utils.escapeHTML(spfRec.data)}</span></div>`);
     }
     
-    if (dq.dmarc) {
-      if (dmarcRec) {
-        html += this.row('DMARC', `<span style="font-family: monospace; font-size: 11px; word-break: break-all;">${Utils.escapeHTML(dmarcRec.data)}</span>`);
-      } else {
-        html += this.row('DMARC', '<span style="color: var(--text-muted); font-size: 11px; display: flex; align-items: center; gap: 4px;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Not found</span>');
-      }
+    if (dq.dmarc && dmarcRec) {
+      html += this.row('DMARC', `<div style="display: flex; align-items: center; gap: 4px;"><svg class="icon icon-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;color:var(--success-text);flex-shrink:0;"><polyline points="20 6 9 17 4 12"></polyline></svg> <span style="font-family: monospace; font-size: 11px; word-break: break-all;">${Utils.escapeHTML(dmarcRec.data)}</span></div>`);
     }
     
-    if (dq.dkim) {
-      if (dkimRec) {
-        html += this.row('DKIM', `<span style="color: var(--success-text); display: flex; align-items: center; gap: 4px; margin-bottom:4px;"><svg class="icon icon-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:12px;height:12px;"><polyline points="20 6 9 17 4 12"></polyline></svg> Configured (in root TXT)</span><span style="font-family: monospace; font-size: 11px;">${Utils.escapeHTML(dkimRec.data)}</span>`);
-      } else {
-        html += this.row('DKIM', '<span style="color: var(--text-muted); font-size: 11px; display: flex; align-items: center; gap: 4px;"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg> Not found (or requires selector)</span>');
-      }
+    if (dq.dkim && dkimRec) {
+      html += this.row('DKIM', `<div style="display: flex; align-items: center; gap: 4px;"><svg class="icon icon-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;color:var(--success-text);flex-shrink:0;"><polyline points="20 6 9 17 4 12"></polyline></svg> <span style="font-family: monospace; font-size: 11px; word-break: break-all;">${Utils.escapeHTML(dkimRec.data)}</span></div>`);
     }
 
     if (dq.txt) {
@@ -74,7 +64,9 @@ export const DnsRenderer = {
   },
 
   row(label, content) {
-    if (!content || content === '—') return '';
+    if (!content || content === '—') {
+      return '';
+    }
     return `
       <div class="result-row">
         <div class="result-label">${label}</div>
@@ -83,7 +75,9 @@ export const DnsRenderer = {
   },
 
   formatMX(records) {
-    if (!records?.length) return '—';
+    if (!records?.length) {
+      return '—';
+    }
     return records
       .sort((a, b) => (parseInt(a.data) || 0) - (parseInt(b.data) || 0))
       .map(r => {

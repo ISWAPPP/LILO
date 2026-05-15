@@ -12,13 +12,13 @@ import { I18n } from '../../core/i18n.js';
 import { Settings } from '../../core/settings.js';
 
 export function initDnsFeature() {
-  const input  = document.getElementById('domain_input');
+  const input = document.getElementById('domain_input');
   const output = document.getElementById('output');
-  const btn    = document.getElementById('btnDIG');
+  const btn = document.getElementById('btnDIG');
 
   const links = {
-    ssl:   { a: document.getElementById('linkSSL'), btn: document.getElementById('copySSL') },
-    dns:   { a: document.getElementById('linkDNS'), btn: document.getElementById('copyDNS') },
+    ssl: { a: document.getElementById('linkSSL'), btn: document.getElementById('copySSL') },
+    dns: { a: document.getElementById('linkDNS'), btn: document.getElementById('copyDNS') },
     whois: { a: document.getElementById('linkWhois'), btn: document.getElementById('copyWhois') },
   };
 
@@ -28,7 +28,9 @@ export function initDnsFeature() {
   // This function activates toolbar buttons and assigns target URLs.
   // It also sets up handlers for copying these URLs to clipboard.
   const updateLinks = (domain) => {
-    if (!domain) return;
+    if (!domain) {
+      return;
+    }
     const urls = {
       ssl: Config.links.ssl(domain),
       dns: Config.links.dns(domain),
@@ -37,8 +39,10 @@ export function initDnsFeature() {
 
     Object.keys(links).forEach(key => {
       const { a, btn } = links[key];
-      if (!a || !btn) return;
-      
+      if (!a || !btn) {
+        return;
+      }
+
       a.href = urls[key];
       a.classList.remove('disabled');
       btn.classList.remove('disabled');
@@ -59,13 +63,40 @@ export function initDnsFeature() {
   // Performs a series of parallel API requests to gather domain info
   const checkDNS = async () => {
     const rawValue = input.value.trim();
-    if (!rawValue) return;
+    if (!rawValue) {
+      return;
+    }
 
     // Throttle
-    if (Date.now() - lastRequest < Config.timing.throttleMs) return;
+    if (Date.now() - lastRequest < Config.timing.throttleMs) {
+      return;
+    }
     lastRequest = Date.now();
 
-    const domain = Utils.cleanDomain(rawValue);
+    let dkimSelector = 'default';
+    let inputToClean = rawValue;
+    let isDirectDkimFormat = false;
+    let directDkimQuery = '';
+
+    // Handle Option 1: domain:selector
+    if (rawValue.includes(':') && !rawValue.startsWith('http')) {
+      const parts = rawValue.split(':');
+      inputToClean = parts[0];
+      if (parts[1]) {
+        dkimSelector = parts[1].trim();
+      }
+    }
+
+    const cleanedTemp = Utils.cleanDomain(inputToClean);
+
+    // Handle Option 2: selector._domainkey.domain
+    if (cleanedTemp.includes('._domainkey.')) {
+      isDirectDkimFormat = true;
+      directDkimQuery = cleanedTemp;
+      inputToClean = cleanedTemp.split('._domainkey.')[1];
+    }
+
+    const domain = Utils.cleanDomain(inputToClean);
     const isIp = Utils.isValidIP(domain);
 
     if (!Utils.isValidDomain(domain) && !isIp) {
@@ -77,12 +108,12 @@ export function initDnsFeature() {
       return;
     }
 
-    input.value = domain;
+    input.value = rawValue;
     updateLinks(domain);
 
     btn.disabled = true;
     output.innerHTML = DnsRenderer.loader();
- 
+
     if (typeof navigator !== 'undefined' && !navigator.onLine) {
       output.innerHTML = DnsRenderer.error(I18n.t('dns_error_no_internet'));
       btn.disabled = false;
@@ -99,7 +130,9 @@ export function initDnsFeature() {
       const settings = await Settings.load();
       const provider = settings.dnsProvider || 'google';
       const dq = settings.dnsQueries || { a: true, aaaa: false, mx: true, txt: false, spf: false, dkim: false, dmarc: false, ns: true };
-      const needsTxt = dq.txt || dq.spf || dq.dkim;
+      const needsTxt = dq.txt || dq.spf;
+      
+      const dkimQueryStr = isDirectDkimFormat ? directDkimQuery : `${dkimSelector}._domainkey.${domain}`;
 
       const rawResults = await Promise.allSettled([
         dq.a ? Api.dnsQuery(domain, 'A', provider) : Promise.resolve({ Answer: null }),
@@ -107,28 +140,31 @@ export function initDnsFeature() {
         dq.mx ? Api.dnsQuery(domain, 'MX', provider) : Promise.resolve({ Answer: null }),
         needsTxt ? Api.dnsQuery(domain, 'TXT', provider) : Promise.resolve({ Answer: null }),
         dq.ns ? Api.dnsQuery(domain, 'NS', provider) : Promise.resolve({ Answer: null }),
-        dq.dmarc ? Api.dnsQuery(`_dmarc.${domain}`, 'TXT', provider) : Promise.resolve({ Answer: null })
+        dq.dmarc ? Api.dnsQuery(`_dmarc.${domain}`, 'TXT', provider) : Promise.resolve({ Answer: null }),
+        dq.dkim ? Api.dnsQuery(dkimQueryStr, 'TXT', provider) : Promise.resolve({ Answer: null })
       ]);
-      const [A, AAAA, MX, TXT, NS, DMARC] = rawResults.map(r => r.status === 'fulfilled' ? r.value : { Answer: null });
+      const [A, AAAA, MX, TXT, NS, DMARC, DKIM] = rawResults.map(r => r.status === 'fulfilled' ? r.value : { Answer: null });
 
-      const ips  = A.Answer === null ? null : (A.Answer || []).map(r => r.data);
+      const ips = A.Answer === null ? null : (A.Answer || []).map(r => r.data);
       const ipv6 = AAAA.Answer === null ? null : (AAAA.Answer || []).map(r => r.data);
-      
+
       const mxRecords = MX.Answer || [];
       const mxResolved = await Promise.all(mxRecords.map(async r => {
         const parts = r.data.split(' ');
         let target = parts[parts.length - 1]; // last part is the domain
         if (target) {
-            if (target.endsWith('.')) target = target.slice(0, -1);
-            try {
-                const targetA = await Api.dnsQuery(target, 'A', provider);
-                const targetIps = (targetA.Answer || []).map(a => a.data);
-                // Keep only IPs that differ from the main domain
-                const differentIps = targetIps.filter(ip => !ips.includes(ip));
-                if (differentIps.length > 0) {
-                    return { ...r, targetIps: differentIps };
-                }
-            } catch (e) { }
+          if (target.endsWith('.')) {
+            target = target.slice(0, -1);
+          }
+          try {
+            const targetA = await Api.dnsQuery(target, 'A', provider);
+            const targetIps = (targetA.Answer || []).map(a => a.data);
+            // Keep only IPs that differ from the main domain
+            const differentIps = targetIps.filter(ip => !ips.includes(ip));
+            if (differentIps.length > 0) {
+              return { ...r, targetIps: differentIps };
+            }
+          } catch (e) { }
         }
         return r;
       }));
@@ -144,6 +180,7 @@ export function initDnsFeature() {
         mx: MX.Answer === null ? null : mxResolved,
         txt: TXT.Answer === null ? null : (TXT.Answer || []),
         dmarc: DMARC.Answer === null ? null : (DMARC.Answer || []),
+        dkim: DKIM.Answer === null ? null : (DKIM.Answer || []),
         ns: NS.Answer === null ? null : (NS.Answer || []),
         mainGeo,
         dq
@@ -161,23 +198,31 @@ export function initDnsFeature() {
     init() {
       btn.addEventListener('click', checkDNS);
       input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') checkDNS();
+        if (e.key === 'Enter') {
+          checkDNS();
+        }
       });
 
       // Click on result-row — copy value
       output.addEventListener('click', async (e) => {
         const row = e.target.closest('.result-row');
-        if (!row) return;
+        if (!row) {
+          return;
+        }
 
         const valueEl = row.querySelector('.result-value');
-        if (!valueEl) return;
+        if (!valueEl) {
+          return;
+        }
 
         // Clone to manipulate without affecting UI
         const clone = valueEl.cloneNode(true);
         clone.querySelectorAll('.no-copy').forEach(el => el.remove());
-        
+
         let textToCopy = clone.innerText.trim();
-        if (!textToCopy) return;
+        if (!textToCopy) {
+          return;
+        }
 
         // For MX records, priority text could be removed if needed, 
         // but priority is usually useful. innerText preserves it.

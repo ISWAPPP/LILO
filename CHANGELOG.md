@@ -1,5 +1,14 @@
 # Changelog — LILO Tools
 
+## [0.9.12] — 2026-05-15
+
+### Fixed
+- **DKIM Validation Subdomain**: Corrected the DKIM lookup mechanism to query the `default._domainkey` subdomain instead of the root domain.
+- **DKIM Selector Formats**: Added advanced input parsing for DKIM checks. Users can now input `domain:selector` (e.g., `mxtoolbox.com:email`) or `selector._domainkey.domain` to query specific DKIM keys directly.
+- **DKIM UI Logic**: The DKIM row now only appears if a valid record is found, displaying a clean success checkmark (✓) instead of raw text, providing a minimalist and focused status indicator.
+- **DNS Record Filtering**: Enhanced the DNS results renderer to filter out DKIM-related records from the general TXT results block, preventing duplicate information display.
+- **Tab Hover Bug**: Fixed a visual glitch where the top navigation tabs appeared darker than intended when hovered or selected, by switching the hover overlay from a static black overlay to the dynamic theme secondary background color.
+
 ## [0.9.11] — 2026-05-11
 
 ### Security
