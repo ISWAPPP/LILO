@@ -28,7 +28,9 @@ export function initDnsFeature() {
   // This function activates toolbar buttons and assigns target URLs.
   // It also sets up handlers for copying these URLs to clipboard.
   const updateLinks = (domain) => {
-    if (!domain) return;
+    if (!domain) {
+      return;
+    }
     const urls = {
       ssl: Config.links.ssl(domain),
       dns: Config.links.dns(domain),
@@ -37,7 +39,9 @@ export function initDnsFeature() {
 
     Object.keys(links).forEach(key => {
       const { a, btn } = links[key];
-      if (!a || !btn) return;
+      if (!a || !btn) {
+        return;
+      }
 
       a.href = urls[key];
       a.classList.remove('disabled');
@@ -59,10 +63,14 @@ export function initDnsFeature() {
   // Performs a series of parallel API requests to gather domain info
   const checkDNS = async () => {
     const rawValue = input.value.trim();
-    if (!rawValue) return;
+    if (!rawValue) {
+      return;
+    }
 
     // Throttle
-    if (Date.now() - lastRequest < Config.timing.throttleMs) return;
+    if (Date.now() - lastRequest < Config.timing.throttleMs) {
+      return;
+    }
     lastRequest = Date.now();
 
     let dkimSelector = 'default';
@@ -145,7 +153,9 @@ export function initDnsFeature() {
         const parts = r.data.split(' ');
         let target = parts[parts.length - 1]; // last part is the domain
         if (target) {
-          if (target.endsWith('.')) target = target.slice(0, -1);
+          if (target.endsWith('.')) {
+            target = target.slice(0, -1);
+          }
           try {
             const targetA = await Api.dnsQuery(target, 'A', provider);
             const targetIps = (targetA.Answer || []).map(a => a.data);
@@ -188,23 +198,31 @@ export function initDnsFeature() {
     init() {
       btn.addEventListener('click', checkDNS);
       input.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter') checkDNS();
+        if (e.key === 'Enter') {
+          checkDNS();
+        }
       });
 
       // Click on result-row — copy value
       output.addEventListener('click', async (e) => {
         const row = e.target.closest('.result-row');
-        if (!row) return;
+        if (!row) {
+          return;
+        }
 
         const valueEl = row.querySelector('.result-value');
-        if (!valueEl) return;
+        if (!valueEl) {
+          return;
+        }
 
         // Clone to manipulate without affecting UI
         const clone = valueEl.cloneNode(true);
         clone.querySelectorAll('.no-copy').forEach(el => el.remove());
 
         let textToCopy = clone.innerText.trim();
-        if (!textToCopy) return;
+        if (!textToCopy) {
+          return;
+        }
 
         // For MX records, priority text could be removed if needed, 
         // but priority is usually useful. innerText preserves it.

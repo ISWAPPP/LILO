@@ -64,7 +64,9 @@ export const DnsRenderer = {
   },
 
   row(label, content) {
-    if (!content || content === '—') return '';
+    if (!content || content === '—') {
+      return '';
+    }
     return `
       <div class="result-row">
         <div class="result-label">${label}</div>
@@ -73,7 +75,9 @@ export const DnsRenderer = {
   },
 
   formatMX(records) {
-    if (!records?.length) return '—';
+    if (!records?.length) {
+      return '—';
+    }
     return records
       .sort((a, b) => (parseInt(a.data) || 0) - (parseInt(b.data) || 0))
       .map(r => {

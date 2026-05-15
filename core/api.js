@@ -22,12 +22,18 @@ async function fetchWithTimeout(resource, options = {}) {
 export const Api = {
   /** Retrieves the domain of the active Chrome tab. */
   async getActiveTabDomain() {
-    if (typeof chrome === 'undefined' || !chrome.tabs) return null;
+    if (typeof chrome === 'undefined' || !chrome.tabs) {
+      return null;
+    }
     try {
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-      if (!tab?.url) return null;
+      if (!tab?.url) {
+        return null;
+      }
       const url = new URL(tab.url);
-      if (['http:', 'https:'].includes(url.protocol)) return url.hostname;
+      if (['http:', 'https:'].includes(url.protocol)) {
+        return url.hostname;
+      }
       return null;
     } catch { return null; }
   },
@@ -41,7 +47,9 @@ export const Api = {
         `${baseUrl}?name=${encodeURIComponent(name)}&type=${type}`,
         { headers: { 'accept': 'application/dns-json' }, timeout: Config.timing.pingTimeout || 4000 }
       );
-      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
       return await res.json();
     } catch (err) { 
       console.error('DNS query failed:', err);
@@ -52,7 +60,9 @@ export const Api = {
   async getIpGeo(ip) {
     try {
       const res = await fetchWithTimeout(`http://ip-api.com/json/${encodeURIComponent(ip)}?fields=status,message,country,countryCode,regionName,city,isp,org,as,query`, { timeout: Config.timing.pingTimeout || 4000 });
-      if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
       const data = await res.json();
       if (data.status === 'success') {
         return data;
@@ -90,7 +100,9 @@ export const Api = {
       }
 
       const result = await res.json();
-      if (result?.image?.url) return result.image.url;
+      if (result?.image?.url) {
+        return result.image.url;
+      }
       
       console.error('Invalid response format', result);
       return null;
