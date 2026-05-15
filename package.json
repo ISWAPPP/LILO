@@ -5,9 +5,11 @@
   "description": "LILO Browser Extension",
   "scripts": {
     "build": "mkdir -p dist && cp -r core features styles popup.html popup.js manifest.json config.js dist/ 2>/dev/null || true",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "jshint": "jshint ."
   },
   "devDependencies": {
-    "eslint": "^8.57.0"
+    "eslint": "^8.57.0",
+    "jshint": "^2.13.6"
   }
 }
