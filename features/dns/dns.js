@@ -169,9 +169,10 @@ export function initDnsFeature() {
         return r;
       }));
 
-      let mainGeo = null;
+      let ipGeos = [];
       if (ips && ips.length > 0) {
-        mainGeo = await Api.getIpGeo(ips[0]);
+        const geoResults = await Promise.allSettled(ips.map(ip => Api.getIpGeo(ip)));
+        ipGeos = geoResults.map(r => (r.status === 'fulfilled' ? r.value : null));
       }
 
       output.innerHTML = DnsRenderer.results({
@@ -182,7 +183,7 @@ export function initDnsFeature() {
         dmarc: DMARC.Answer === null ? null : (DMARC.Answer || []),
         dkim: DKIM.Answer === null ? null : (DKIM.Answer || []),
         ns: NS.Answer === null ? null : (NS.Answer || []),
-        mainGeo,
+        ipGeos,
         dq
       });
     } catch (err) {

@@ -32,6 +32,7 @@ export const Config = {
     defaultLength: 16,
     minLength: 4,
     maxLength: 64,
+    similarChars: '0O1lI|',
     charsets: {
       lower: 'abcdefghijklmnopqrstuvwxyz',
       upper: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',

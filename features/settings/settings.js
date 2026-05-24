@@ -189,6 +189,7 @@ export function initSettingsFeature() {
             if (Object.keys(filteredData).length === 0) throw new Error('No valid data found');
             
             await new Promise(r => chrome.storage.local.set(filteredData, r));
+            Settings.invalidate();
             Utils.showToast(I18n.t('toast_imported'));
             setTimeout(() => location.reload(), 1000);
           } catch (err) {
@@ -201,6 +202,7 @@ export function initSettingsFeature() {
       btnReset?.addEventListener('click', async () => {
         if (!confirm(I18n.t('settings_confirm_reset'))) return;
         await new Promise(r => chrome.storage.local.remove('lilo_settings', r));
+        Settings.invalidate();
         Utils.showToast(I18n.t('toast_reset'));
         setTimeout(() => location.reload(), 800);
       });
@@ -208,6 +210,7 @@ export function initSettingsFeature() {
       btnClear?.addEventListener('click', async () => {
         if (!confirm(I18n.t('settings_confirm_clear'))) return;
         await new Promise(r => chrome.storage.local.clear(r));
+        Settings.invalidate();
         localStorage.clear();
         Utils.showToast(I18n.t('toast_cleared'));
         setTimeout(() => location.reload(), 800);

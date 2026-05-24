@@ -6,12 +6,18 @@ export const PicsRenderer = {
     return `<div class="loader"></div><p>${I18n.t('pics_loading')}</p>`;
   },
  
-  preview(dataUrl) {
+  preview(dataUrl, percent = 0) {
     const safeUrl = Utils.escapeHTML(dataUrl);
+    const width = Math.max(0, Math.min(100, percent));
     return `
-      <div class="img-preview" style="text-align:center; position:relative; opacity:0.7; margin-top: 10px;">
-         <img src="${safeUrl}" style="max-width:100%; max-height:200px; border-radius:var(--radius-md); box-shadow:var(--shadow-sm);">
-         <div class="loader" style="position:absolute; top:50%; left:50%; margin: -16px 0 0 -16px; border-width:3px;"></div>
+      <div class="img-preview" style="text-align:center; position:relative; margin-top: 10px;">
+         <img src="${safeUrl}" style="max-width:100%; max-height:200px; border-radius:var(--radius-md); box-shadow:var(--shadow-sm); opacity:0.85;">
+         <div class="pics-upload-progress" style="margin-top: 10px;">
+           <div class="pics-upload-progress-track">
+             <div class="pics-upload-progress-bar" style="width: ${width}%;"></div>
+           </div>
+           <p class="pics-upload-progress-label">${I18n.t('pics_uploading')} ${width}%</p>
+         </div>
       </div>
     `;
   },

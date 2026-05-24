@@ -1,5 +1,5 @@
 export const I18n = {
-  currentLang: 'uk', // Default
+  currentLang: 'en',
 
   translations: {
     uk: {
@@ -23,6 +23,8 @@ export const I18n = {
       'passgen_placeholder': '...',
       'passgen_tooltip': 'Натисніть щоб скопіювати',
       'passgen_refresh': 'Згенерувати новий',
+      'passgen_no_similar': 'Без схожих',
+      'pics_uploading': 'Завантаження',
       'notes_placeholder': 'Нова нотатка...',
       'feedback_title': 'Є ідеї як покращити LILO?',
       'feedback_text': 'Залиште свій відгук, щоб зробити плагін ще кращим!',
@@ -132,6 +134,8 @@ export const I18n = {
       'passgen_placeholder': '...',
       'passgen_tooltip': 'Click to copy',
       'passgen_refresh': 'Generate new',
+      'passgen_no_similar': 'No similar',
+      'pics_uploading': 'Uploading',
       'notes_placeholder': 'New note...',
       'feedback_title': 'Have ideas to improve LILO?',
       'feedback_text': 'Leave your feedback to make the plugin even better!',

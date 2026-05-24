@@ -1,5 +1,21 @@
 # Changelog — LILO Tools
 
+## [0.9.13] — 2026-05-23
+
+### Added
+- **DNS Geolocation for All A Records**: Each IPv4 address now shows its own country and city when available.
+- **PICS Upload Progress Bar**: Visual upload progress with percentage during image upload.
+- **Password Generator — Exclude Similar Characters**: Optional checkbox to omit ambiguous characters (`0`, `O`, `1`, `l`, `I`, `|`).
+- **Extension Icons**: Added toolbar and manifest icons.
+
+### Improved
+- **Settings Cache**: In-memory cache for `Settings.load()` avoids redundant `chrome.storage` reads during a popup session.
+- **English as Primary Language**: Default UI language and HTML `lang` set to English.
+
+### Removed
+- **DNS History Placeholder**: Removed unused `#history-list` container from the DNS tab.
+- **Encryption Claims**: Manifest description no longer mentions encrypted notes (notes are stored locally in plain text).
+
 ## [0.9.12] — 2026-05-15
 
 ### Fixed

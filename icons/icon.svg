@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="LILO Tools">
+  <rect width="128" height="128" rx="28" fill="#2563eb"/>
+  <circle cx="64" cy="52" r="28" fill="none" stroke="#ffffff" stroke-width="6"/>
+  <path d="M64 24 L64 80 M40 52 L88 52" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+  <text x="64" y="108" font-family="system-ui,sans-serif" font-size="22" font-weight="700" fill="#ffffff" text-anchor="middle">LILO</text>
+</svg>

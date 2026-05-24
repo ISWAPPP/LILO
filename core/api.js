@@ -74,41 +74,57 @@ export const Api = {
     }
   },
 
-  /** Uploads an image to freeimage.host. */
-  async uploadImage(blob) {
+  /** Uploads an image to freeimage.host. Optional onProgress(0–100). */
+  uploadImage(blob, onProgress) {
     const formData = new FormData();
     formData.append('key', Config.api.imgApiKey);
     formData.append('source', blob);
     formData.append('action', 'upload');
 
-    try {
-      const res = await fetchWithTimeout(Config.api.imgUpload, {
-        method: 'POST', body: formData, timeout: 15000
+    return new Promise((resolve) => {
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', Config.api.imgUpload);
+      xhr.timeout = 15000;
+
+      xhr.upload.addEventListener('progress', (e) => {
+        if (!onProgress) return;
+        if (e.lengthComputable) {
+          onProgress(Math.min(100, Math.round((e.loaded / e.total) * 100)));
+        }
       });
 
-      if (!res.ok) {
-        let errData = 'Unknown error';
+      xhr.addEventListener('load', () => {
+        if (onProgress) onProgress(100);
+        if (xhr.status < 200 || xhr.status >= 300) {
+          console.error('Server error:', xhr.responseText);
+          resolve(null);
+          return;
+        }
         try {
-          if (res.headers.get('content-type')?.includes('application/json')) {
-            errData = await res.json();
+          const result = JSON.parse(xhr.responseText);
+          if (result?.image?.url) {
+            resolve(result.image.url);
           } else {
-            errData = await res.text();
+            console.error('Invalid response format', result);
+            resolve(null);
           }
-        } catch (e) { /* ignore */ }
-        console.error('Server error:', errData);
-        return null;
-      }
+        } catch (err) {
+          console.error('Upload parse failed:', err);
+          resolve(null);
+        }
+      });
 
-      const result = await res.json();
-      if (result?.image?.url) {
-        return result.image.url;
-      }
-      
-      console.error('Invalid response format', result);
-      return null;
-    } catch (err) {
-      console.error('Upload failed:', err);
-      return null;
-    }
+      xhr.addEventListener('error', () => {
+        console.error('Upload failed: network error');
+        resolve(null);
+      });
+
+      xhr.addEventListener('timeout', () => {
+        console.error('Upload failed: timeout');
+        resolve(null);
+      });
+
+      xhr.send(formData);
+    });
   },
 };

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="uk">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>LILO DNS & Tools</title>
@@ -43,8 +43,7 @@
             <input type="text" id="domain_input" placeholder="example.com" data-i18n="dns_placeholder" spellcheck="false" autocomplete="off"/>
             <button id="btnDIG" data-i18n="dns_btn_go">GO</button>
         </div>
-        <div id="history-list" class="history-container"></div>
-        <div id="output" data-i18n="dns_output_wait">Очікування...</div>
+        <div id="output" data-i18n="dns_output_wait">Waiting...</div>
     </div>
 
     <!-- ===== PICS TAB ===== -->
@@ -79,12 +78,13 @@
             <div class="passgen-strength-container" style="margin-bottom: 12px; height: 4px; background: var(--bg-main); border-radius: 2px; overflow: hidden;">
                 <div id="passgen-strength-meter" class="passgen-strength-meter"></div>
             </div>
-            <div class="passgen-options" style="display: flex; align-items: center; gap: 15px; flex-wrap: nowrap; margin-bottom: 0;">
-                <div style="display: flex; gap: 10px; flex-shrink: 0;">
+            <div class="passgen-options" style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap; margin-bottom: 0;">
+                <div style="display: flex; gap: 10px; flex-shrink: 0; flex-wrap: wrap;">
                     <label><input type="checkbox" id="opt-lower" checked> a-z</label>
                     <label><input type="checkbox" id="opt-upper" checked> A-Z</label>
                     <label><input type="checkbox" id="opt-numbers" checked> 0-9</label>
                     <label><input type="checkbox" id="opt-symbols"> !@#</label>
+                    <label><input type="checkbox" id="opt-no-similar"><span data-i18n="passgen_no_similar">No similar</span></label>
                 </div>
                 <div class="passgen-length" style="display: flex; align-items: center; gap: 8px; flex: 1;">
                     <input type="range" id="passgen-length" min="4" max="64" value="16" style="flex: 1; min-width: 50px;">

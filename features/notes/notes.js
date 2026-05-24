@@ -36,6 +36,12 @@ function generatePassword() {
 
   if (!charset) charset = cfg.charsets.lower; // Fallback
 
+  if (document.getElementById('opt-no-similar')?.checked) {
+    const similar = new Set(cfg.similarChars.split(''));
+    charset = [...charset].filter(ch => !similar.has(ch)).join('');
+    if (!charset) charset = cfg.charsets.lower;
+  }
+
   const length = parseInt(document.getElementById('passgen-length')?.value) || cfg.defaultLength;
   
   let password = '';
@@ -312,12 +318,13 @@ export function initNotesFeature() {
     async init() {
       // Load saved passgen settings
       const settings = await Settings.load();
-      const pg = settings.passgen || { lower: true, upper: true, numbers: true, symbols: false, length: 16 };
-      
+      const pg = settings.passgen;
+
       const elLower = document.getElementById('opt-lower');
       const elUpper = document.getElementById('opt-upper');
       const elNum = document.getElementById('opt-numbers');
       const elSym = document.getElementById('opt-symbols');
+      const elNoSimilar = document.getElementById('opt-no-similar');
       const lengthSlider = document.getElementById('passgen-length');
       const lengthVal = document.getElementById('passgen-length-val');
 
@@ -325,6 +332,7 @@ export function initNotesFeature() {
       if (elUpper) elUpper.checked = pg.upper;
       if (elNum) elNum.checked = pg.numbers;
       if (elSym) elSym.checked = pg.symbols;
+      if (elNoSimilar) elNoSimilar.checked = pg.excludeSimilar;
       if (lengthSlider) lengthSlider.value = pg.length;
       if (lengthVal) lengthVal.textContent = pg.length;
 
@@ -337,13 +345,14 @@ export function initNotesFeature() {
             upper: elUpper?.checked,
             numbers: elNum?.checked,
             symbols: elSym?.checked,
+            excludeSimilar: elNoSimilar?.checked,
             length: parseInt(lengthSlider?.value) || 16
           }
         });
       };
 
       // Password generator events
-      const passgenOptions = ['opt-lower', 'opt-upper', 'opt-numbers', 'opt-symbols'];
+      const passgenOptions = ['opt-lower', 'opt-upper', 'opt-numbers', 'opt-symbols', 'opt-no-similar'];
       passgenOptions.forEach(optId => {
         document.getElementById(optId)?.addEventListener('change', () => {
           savePassgenSettings();

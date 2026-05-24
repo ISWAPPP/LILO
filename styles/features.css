@@ -132,6 +132,27 @@
 /* ============================================================
    NOTES FEATURE — PASSWORD GENERATOR
    ============================================================ */
+.pics-upload-progress-track {
+  height: 4px;
+  background: var(--bg-main);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.pics-upload-progress-bar {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.15s ease;
+}
+
+.pics-upload-progress-label {
+  margin: 6px 0 0;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
 .passgen-section {
     border: 1px solid var(--border-light);
     border-radius: var(--radius-lg);

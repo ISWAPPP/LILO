@@ -4,15 +4,19 @@ import { Utils } from '../../core/utils.js';
 
 export const DnsRenderer = {
   /** Full block of DNS check results. */
-  results({ ips, ipv6, mx, txt, dmarc, dkim, ns, mainGeo, dq }) {
+  results({ ips, ipv6, mx, txt, dmarc, dkim, ns, ipGeos, dq }) {
     let html = `<div class="results-container animate-fade-in-up">`;
     
     if (dq.a && ips) {
-      let ipContent = ips.map(ip => Utils.escapeHTML(ip)).join('<br>');
-      if (mainGeo && ips.length > 0) {
-        const geoStr = `<div class="geo-info no-copy">${Utils.getFlagEmoji(mainGeo.countryCode)} ${Utils.escapeHTML(mainGeo.country)}, ${Utils.escapeHTML(mainGeo.city)}</div>`;
-        ipContent = geoStr + ips.map(ip => Utils.escapeHTML(ip)).join('<br>');
-      }
+      const ipContent = ips.map((ip, i) => {
+        const geo = ipGeos?.[i];
+        let block = '';
+        if (geo) {
+          block += `<div class="geo-info no-copy">${Utils.getFlagEmoji(geo.countryCode)} ${Utils.escapeHTML(geo.country)}, ${Utils.escapeHTML(geo.city)}</div>`;
+        }
+        block += Utils.escapeHTML(ip);
+        return block;
+      }).join('<br>');
       html += this.row('IP (A)', ipContent || '—');
     }
     
