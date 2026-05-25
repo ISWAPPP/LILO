@@ -22,57 +22,68 @@ export const DnsRenderer = {
           </div>`;
       
       if (hasA) {
-        ips.forEach((ip, i) => {
+        let valRows = ips.map((ip, i) => {
           const geo = ipGeos?.[i];
           let geoHtml = '';
           if (geo) {
-            geoHtml = `<div class="geo-badge no-copy">${Utils.getFlagEmoji(geo.countryCode)} ${Utils.escapeHTML(geo.country)}, ${Utils.escapeHTML(geo.city)}</div>`;
+            geoHtml = `<span class="geo-badge no-copy" style="margin-bottom: 0; margin-right: 6px;">${Utils.getFlagEmoji(geo.countryCode)} ${Utils.escapeHTML(geo.country)}, ${Utils.escapeHTML(geo.city)}</span>`;
           }
-          html += `
-            <div class="result-row dns-record-block">
-              <div class="dns-record-header no-copy">
-                <span class="dns-record-label">A</span>
-                <span class="dns-record-copy-indicator">
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                  ${I18n.t('copied').toLowerCase()}
-                </span>
-              </div>
+          return `
+            <div class="dns-val-row">
               ${geoHtml}
-              <div class="result-value dns-record-value">${Utils.escapeHTML(ip)}</div>
+              <span class="dns-single-val" title="Клікніть щоб скопіювати тільки цю адресу">${Utils.escapeHTML(ip)}</span>
             </div>`;
-        });
+        }).join('');
+
+        html += `
+          <div class="result-row dns-record-block">
+            <div class="dns-record-header no-copy">
+              <span class="dns-record-label">A</span>
+              <span class="dns-record-copy-indicator">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                ${I18n.t('copied').toLowerCase()}
+              </span>
+            </div>
+            <div class="result-value dns-record-value">${valRows}</div>
+          </div>`;
       }
       
       if (hasAAAA) {
-        ipv6.forEach(ip => {
-          html += `
-            <div class="result-row dns-record-block">
-              <div class="dns-record-header no-copy">
-                <span class="dns-record-label">AAAA</span>
-                <span class="dns-record-copy-indicator">
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                  ${I18n.t('copied').toLowerCase()}
-                </span>
-              </div>
-              <div class="result-value dns-record-value">${Utils.escapeHTML(ip)}</div>
-            </div>`;
-        });
+        let valRows = ipv6.map(ip => `
+          <div class="dns-val-row">
+            <span class="dns-single-val" title="Клікніть щоб скопіювати тільки цю адресу">${Utils.escapeHTML(ip)}</span>
+          </div>`).join('');
+
+        html += `
+          <div class="result-row dns-record-block">
+            <div class="dns-record-header no-copy">
+              <span class="dns-record-label">AAAA</span>
+              <span class="dns-record-copy-indicator">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                ${I18n.t('copied').toLowerCase()}
+              </span>
+            </div>
+            <div class="result-value dns-record-value">${valRows}</div>
+          </div>`;
       }
       
       if (hasNS) {
-        ns.forEach(r => {
-          html += `
-            <div class="result-row dns-record-block">
-              <div class="dns-record-header no-copy">
-                <span class="dns-record-label">NS</span>
-                <span class="dns-record-copy-indicator">
-                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                  ${I18n.t('copied').toLowerCase()}
-                </span>
-              </div>
-              <div class="result-value dns-record-value">${Utils.escapeHTML(r.data)}</div>
-            </div>`;
-        });
+        let valRows = ns.map(r => `
+          <div class="dns-val-row">
+            <span class="dns-single-val" title="Клікніть щоб скопіювати тільки цей запис">${Utils.escapeHTML(r.data)}</span>
+          </div>`).join('');
+
+        html += `
+          <div class="result-row dns-record-block">
+            <div class="dns-record-header no-copy">
+              <span class="dns-record-label">NS</span>
+              <span class="dns-record-copy-indicator">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                ${I18n.t('copied').toLowerCase()}
+              </span>
+            </div>
+            <div class="result-value dns-record-value">${valRows}</div>
+          </div>`;
       }
       
       html += `</div>`;

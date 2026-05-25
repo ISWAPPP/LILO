@@ -211,6 +211,23 @@ export function initDnsFeature() {
           return;
         }
 
+        // Check if clicked directly on an individual value item
+        const singleValEl = e.target.closest('.dns-single-val');
+        if (singleValEl) {
+          const textToCopy = singleValEl.innerText.trim();
+          if (textToCopy) {
+            const ok = await Utils.copyToClipboard(textToCopy);
+            if (ok) {
+              singleValEl.classList.add('copied');
+              setTimeout(() => singleValEl.classList.remove('copied'), 800);
+              
+              row.classList.add('copied-partially');
+              setTimeout(() => row.classList.remove('copied-partially'), 800);
+            }
+          }
+          return; // Stop here, do not copy the whole row!
+        }
+
         const valueEl = row.querySelector('.result-value');
         if (!valueEl) {
           return;
@@ -224,9 +241,6 @@ export function initDnsFeature() {
         if (!textToCopy) {
           return;
         }
-
-        // For MX records, priority text could be removed if needed, 
-        // but priority is usually useful. innerText preserves it.
 
         const ok = await Utils.copyToClipboard(textToCopy);
         if (ok) {

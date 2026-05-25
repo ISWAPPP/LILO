@@ -696,3 +696,54 @@
     user-select: none;
     -webkit-user-select: none;
 }
+
+/* Individual value hover and selection styling */
+.dns-val-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: var(--radius-md);
+    background: var(--bg-sec);
+    border: 1px solid var(--border-light);
+    margin-bottom: 4px;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.dns-val-row:last-child {
+    margin-bottom: 0;
+}
+
+.dns-val-row:hover {
+    border-color: var(--border-focus) !important;
+    background: var(--bg-main) !important;
+    box-shadow: var(--shadow-sm);
+}
+
+.dns-single-val {
+    font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: text;
+    -webkit-user-select: text;
+}
+
+.dns-single-val:hover {
+    background: var(--bg-tertiary) !important;
+    color: var(--accent) !important;
+}
+
+.dns-single-val.copied {
+    background: var(--success-bg) !important;
+    color: var(--success-text) !important;
+    box-shadow: 0 0 0 1px var(--success-text);
+}
+
+.dns-record-block.copied-partially {
+    border-color: var(--success-text) !important;
+}
