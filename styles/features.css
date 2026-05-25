@@ -4,18 +4,18 @@
    DNS FEATURE
    ============================================================ */
 #output {
-    margin-top: 16px;
+    margin-top: 10px;
 }
 
 .results-container {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
 }
 
 .result-row {
     display: flex;
-    padding: 10px 12px;
+    padding: 8px 10px;
     align-items: baseline;
     cursor: pointer;
     border-radius: var(--radius-md);
@@ -577,8 +577,8 @@
     background: var(--bg-sec);
     border: 1px solid var(--border-light);
     border-radius: var(--radius-card);
-    padding: 12px;
-    margin-bottom: 12px;
+    padding: 8px;
+    margin-bottom: 0;
     box-shadow: var(--card-shadow);
     animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
@@ -588,8 +588,8 @@
     align-items: center;
     gap: 8px;
     border-bottom: 1px solid var(--border-light);
-    padding-bottom: 6px;
-    margin-bottom: 10px;
+    padding-bottom: 4px;
+    margin-bottom: 6px;
     font-size: 11px;
     text-transform: uppercase;
     font-weight: 700;
@@ -606,12 +606,12 @@
 .dns-record-block {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    padding: 8px 10px;
+    gap: 2px;
+    padding: 4px 6px;
     border-radius: var(--radius-md);
     background: var(--bg-main);
     border: 1px solid var(--border-light);
-    margin-bottom: 6px;
+    margin-bottom: 3px;
     transition: all 0.2s ease;
     cursor: pointer;
     position: relative;
@@ -687,12 +687,12 @@
     gap: 4px;
     background: var(--bg-tertiary);
     border: 1px solid var(--border-light);
-    padding: 2px 6px;
+    padding: 1px 5px;
     border-radius: 10px;
     font-size: 10px;
     font-weight: 600;
     color: var(--text-muted);
-    margin-bottom: 4px;
+    margin-bottom: 0;
     user-select: none;
     -webkit-user-select: none;
 }
@@ -703,7 +703,7 @@
     align-items: center;
     flex-wrap: wrap;
     gap: 4px;
-    padding: 3px 6px;
+    padding: 2px 4px;
     border-radius: var(--radius-sm);
     margin-bottom: 2px;
     transition: all 0.2s ease;

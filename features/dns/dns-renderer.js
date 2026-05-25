@@ -28,11 +28,7 @@ export const DnsRenderer = {
           if (geo) {
             geoHtml = `<span class="geo-badge no-copy" style="margin-bottom: 0; margin-right: 6px;">${Utils.getFlagEmoji(geo.countryCode)} ${Utils.escapeHTML(geo.country)}, ${Utils.escapeHTML(geo.city)}</span>`;
           }
-          return `
-            <div class="dns-val-row">
-              ${geoHtml}
-              <span class="dns-single-val" title="Клікніть щоб скопіювати тільки цю адресу">${Utils.escapeHTML(ip)}</span>
-            </div>`;
+          return `<div class="dns-val-row">${geoHtml}<span class="dns-single-val" title="Клікніть щоб скопіювати тільки цю адресу">${Utils.escapeHTML(ip)}</span></div>`;
         }).join('');
 
         html += `
@@ -43,16 +39,12 @@ export const DnsRenderer = {
                 <svg class="copy-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                 <svg class="check-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
               </span>
-            </div>
-            <div class="result-value dns-record-value">${valRows}</div>
+            </div><div class="result-value dns-record-value" style="white-space: normal;">${valRows}</div>
           </div>`;
       }
       
       if (hasAAAA) {
-        let valRows = ipv6.map(ip => `
-          <div class="dns-val-row">
-            <span class="dns-single-val" title="Клікніть щоб скопіювати тільки цю адресу">${Utils.escapeHTML(ip)}</span>
-          </div>`).join('');
+        let valRows = ipv6.map(ip => `<div class="dns-val-row"><span class="dns-single-val" title="Клікніть щоб скопіювати тільки цю адресу">${Utils.escapeHTML(ip)}</span></div>`).join('');
 
         html += `
           <div class="result-row dns-record-block">
@@ -62,16 +54,12 @@ export const DnsRenderer = {
                 <svg class="copy-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                 <svg class="check-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
               </span>
-            </div>
-            <div class="result-value dns-record-value">${valRows}</div>
+            </div><div class="result-value dns-record-value" style="white-space: normal;">${valRows}</div>
           </div>`;
       }
       
       if (hasNS) {
-        let valRows = ns.map(r => `
-          <div class="dns-val-row">
-            <span class="dns-single-val" title="Клікніть щоб скопіювати тільки цей запис">${Utils.escapeHTML(r.data)}</span>
-          </div>`).join('');
+        let valRows = ns.map(r => `<div class="dns-val-row"><span class="dns-single-val" title="Клікніть щоб скопіювати тільки цей запис">${Utils.escapeHTML(r.data)}</span></div>`).join('');
 
         html += `
           <div class="result-row dns-record-block">
@@ -81,8 +69,7 @@ export const DnsRenderer = {
                 <svg class="copy-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                 <svg class="check-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
               </span>
-            </div>
-            <div class="result-value dns-record-value">${valRows}</div>
+            </div><div class="result-value dns-record-value" style="white-space: normal;">${valRows}</div>
           </div>`;
       }
       
