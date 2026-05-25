@@ -1,5 +1,17 @@
 # Changelog — LILO Tools
 
+## [0.9.14] — 2026-05-26
+
+### Added
+- **Unified A/NS DNS Grouping**: Redesigned A and NS query results to merge multiple records logically under single consolidated cards instead of rendering distinct separate blocks.
+
+### Improved
+- **Micro-Spacing Optimization**: Comprehensively tightened CSS paddings, margins, and gaps across all DNS result cards, headers, and individual rows, establishing an extremely compact, professional layout.
+- **Double Margin Bug Fix**: Resolved a layout bug causing double vertical spacing by eliminating bottom margins on `.dns-group-card` and relying solely on the container gap.
+- **Pre-wrap Spacing & Alignment Fix**: Resolved a critical layout glitch where `white-space: pre-wrap` rendered unwanted newlines and indentation from JavaScript templates as massive vertical gaps and pushed IP addresses to the far right. Grouped record rows are now rendered on a single tight line.
+- **Dual Copy Clipboard Delegation**: Upgraded copy delegation to selectively copy individual values when clicking specific IP/NS rows, and copy all addresses separated by a newline when clicking the card header or outer borders.
+- **Modern Textless Copy Indicators**: Replaced raw copy-warning spans with elegant, textless inline double SVGs that smoothly transition from a copy icon to a green validation checkmark upon successful copying, completely eliminating false hover notifications.
+
 ## [0.9.13] — 2026-05-23
 
 ### Added
