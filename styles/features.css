@@ -571,3 +571,128 @@
     transform: scale(1.15);
     box-shadow: 0 0 0 3px var(--bg-sec), 0 0 0 5px var(--text-main);
 }
+
+/* ===== NEW DNS CARDS & LOGICAL GROUPS ===== */
+.dns-group-card {
+    background: var(--bg-sec);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-card);
+    padding: 12px;
+    margin-bottom: 12px;
+    box-shadow: var(--card-shadow);
+    animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.dns-group-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 6px;
+    margin-bottom: 10px;
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+}
+
+.dns-group-header svg.icon {
+    width: 14px;
+    height: 14px;
+    stroke: var(--accent);
+}
+
+.dns-record-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px 10px;
+    border-radius: var(--radius-md);
+    background: var(--bg-main);
+    border: 1px solid var(--border-light);
+    margin-bottom: 6px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
+    user-select: text;
+    -webkit-user-select: text;
+}
+
+.dns-record-block:last-child {
+    margin-bottom: 0;
+}
+
+.dns-record-block:hover {
+    border-color: var(--border-focus);
+    background: var(--bg-tertiary);
+}
+
+.dns-record-block.copied {
+    background: var(--success-bg) !important;
+    border-color: var(--success-text) !important;
+}
+
+.dns-record-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2px;
+}
+
+.dns-record-label {
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--accent);
+    background: var(--bg-sec);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--border-light);
+    text-transform: uppercase;
+}
+
+.dns-record-copy-indicator {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.dns-record-block:hover .dns-record-copy-indicator {
+    opacity: 0.7;
+}
+
+.dns-record-block.copied .dns-record-copy-indicator {
+    opacity: 1;
+    color: var(--success-text);
+}
+
+.dns-record-value {
+    font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
+    font-size: 11px;
+    line-height: 1.5;
+    word-break: break-all;
+    white-space: pre-wrap;
+    overflow-x: auto;
+    color: var(--text-main);
+}
+
+.geo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-light);
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+    user-select: none;
+    -webkit-user-select: none;
+}

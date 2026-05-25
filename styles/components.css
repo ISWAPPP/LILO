@@ -270,3 +270,148 @@ svg.icon-large {
     height: 16px;
 }
 
+/* ===== NEW MODERN CARDS ===== */
+.lilo-card, .settings-card {
+    background: var(--bg-sec);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-card);
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    box-shadow: var(--card-shadow);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.lilo-card:hover, .settings-card:hover {
+    border-color: var(--border-focus);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+}
+
+.settings-card h3 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 8px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+}
+
+.settings-card h3 svg.icon {
+    width: 16px;
+    height: 16px;
+    stroke: var(--accent);
+}
+
+/* ===== INTERACTIVE QUERY CHIPS ===== */
+.query-chips-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 6px;
+    margin-top: 10px;
+}
+
+.query-chip {
+    position: relative;
+    cursor: pointer;
+}
+
+.query-chip input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.query-chip-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    padding: 0 4px;
+    background: var(--bg-main);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-chip);
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 700;
+    text-align: center;
+    transition: all 0.2s ease;
+    user-select: none;
+    box-shadow: var(--shadow-sm);
+}
+
+.query-chip:hover .query-chip-inner {
+    border-color: var(--border-focus);
+    color: var(--text-main);
+    background: var(--bg-tertiary);
+}
+
+.query-chip input[type="checkbox"]:checked + .query-chip-inner {
+    background: var(--accent);
+    color: var(--accent-text, #ffffff);
+    border-color: var(--accent);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* ===== DATA MANAGEMENT GRID ===== */
+.data-mgmt-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.data-mgmt-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 38px;
+    padding: 0 12px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-light);
+    background: var(--bg-main);
+    color: var(--text-main);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.data-mgmt-btn:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--border-focus);
+}
+
+.data-mgmt-btn.export {
+    color: var(--success-text);
+    border-color: var(--success-text);
+    background: var(--success-bg);
+}
+.data-mgmt-btn.export:hover {
+    opacity: 0.9;
+}
+
+.data-mgmt-btn.import {
+    color: var(--accent);
+    border-color: var(--accent);
+}
+
+.data-mgmt-btn.reset {
+    color: var(--text-muted);
+}
+
+.data-mgmt-btn.clear {
+    color: var(--error-text);
+    border-color: var(--error-bg);
+    background: var(--error-bg);
+}
+.data-mgmt-btn.clear:hover {
+    opacity: 0.9;
+}
+
+
