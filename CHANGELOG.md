@@ -1,5 +1,12 @@
 # Changelog — LILO Tools
 
+## [0.9.15] — 2026-05-26
+
+### Added
+- **Interactive DNS Pinboard (Favorites & History)**: Created a tag cloud quick-access row under the search input displaying favorited domains (starred with ★) and recently searched domains (🕒). Clicking any chip instantly triggers a DNS query; items can be easily removed.
+- **Dynamic Note Markdown Rendering**: Notes now automatically render as rich text with styling for bold text (`**`), list items (`-`), inline code (`` ` ``), and syntax-styled multi-line code blocks (`` ``` ``), while maintaining simple raw textarea editing on click.
+- **Zero-Friction Notes Clipboard Integration**: Maintained raw Markdown format for clipboard copy operations upon note selection, ensuring clean text-scraping for developers.
+
 ## [0.9.14] — 2026-05-26
 
 ### Added

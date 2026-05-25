@@ -175,7 +175,13 @@ export function initDnsFeature() {
         ipGeos = geoResults.map(r => (r.status === 'fulfilled' ? r.value : null));
       }
 
+      const data = await chrome.storage.local.get(['lilo_dns_favorites', 'lilo_dns_history']);
+      const favs = data.lilo_dns_favorites || [];
+      const isFav = favs.includes(domain);
+
       output.innerHTML = DnsRenderer.results({
+        domain,
+        isFav,
         ips,
         ipv6,
         mx: MX.Answer === null ? null : mxResolved,
@@ -186,12 +192,112 @@ export function initDnsFeature() {
         ipGeos,
         dq
       });
+
+      // Save to history (keep top 4, unique)
+      let hist = data.lilo_dns_history || [];
+      hist = [domain, ...hist.filter(d => d !== domain)].slice(0, 4);
+      await chrome.storage.local.set({ lilo_dns_history: hist });
+
+      renderQuickAccess();
     } catch (err) {
       console.error('DNS check failed:', err);
       output.innerHTML = DnsRenderer.error(I18n.t('dns_error_network'));
     } finally {
       btn.disabled = false;
     }
+  };
+
+  // --- Quick Access Favorites & History logic ---
+  const renderQuickAccess = async () => {
+    const data = await chrome.storage.local.get(['lilo_dns_favorites', 'lilo_dns_history']);
+    const favorites = data.lilo_dns_favorites || [];
+    const history = data.lilo_dns_history || [];
+
+    const container = document.getElementById('dns-quick-access');
+    const favList = document.getElementById('dns-favorites-list');
+    const histList = document.getElementById('dns-history-list');
+
+    if (favorites.length === 0 && history.length === 0) {
+      container.style.display = 'none';
+      return;
+    }
+    container.style.display = 'flex';
+
+    if (favorites.length > 0) {
+      document.getElementById('dns-favorites-container').style.display = 'flex';
+      favList.innerHTML = favorites.map(dom => `
+        <span class="dns-chip fav-chip" data-domain="${Utils.escapeHTML(dom)}">
+          ★ ${Utils.escapeHTML(dom)}
+          <span class="remove-chip" data-domain="${Utils.escapeHTML(dom)}" data-type="favorite">✕</span>
+        </span>
+      `).join('');
+    } else {
+      document.getElementById('dns-favorites-container').style.display = 'none';
+    }
+
+    if (history.length > 0) {
+      document.getElementById('dns-history-container').style.display = 'flex';
+      histList.innerHTML = history.map(dom => `
+        <span class="dns-chip hist-chip" data-domain="${Utils.escapeHTML(dom)}">
+          ${Utils.escapeHTML(dom)}
+          <span class="remove-chip" data-domain="${Utils.escapeHTML(dom)}" data-type="history">✕</span>
+        </span>
+      `).join('');
+    } else {
+      document.getElementById('dns-history-container').style.display = 'none';
+    }
+
+    // Attach click listeners to chips
+    container.querySelectorAll('.dns-chip').forEach(chip => {
+      chip.onclick = (e) => {
+        if (e.target.classList.contains('remove-chip')) {
+          e.stopPropagation();
+          const dom = e.target.getAttribute('data-domain');
+          const type = e.target.getAttribute('data-type');
+          removeQuickAccessItem(dom, type);
+          return;
+        }
+        const dom = chip.getAttribute('data-domain');
+        input.value = dom;
+        checkDNS();
+      };
+    });
+  };
+
+  const removeQuickAccessItem = async (dom, type) => {
+    if (type === 'favorite') {
+      const data = await chrome.storage.local.get('lilo_dns_favorites');
+      let favs = data.lilo_dns_favorites || [];
+      favs = favs.filter(d => d !== dom);
+      await chrome.storage.local.set({ lilo_dns_favorites: favs });
+    } else {
+      const data = await chrome.storage.local.get('lilo_dns_history');
+      let hist = data.lilo_dns_history || [];
+      hist = hist.filter(d => d !== dom);
+      await chrome.storage.local.set({ lilo_dns_history: hist });
+    }
+    renderQuickAccess();
+    
+    // Update active results star if showing this domain
+    const starEl = document.getElementById('dns-star-btn');
+    if (starEl && starEl.getAttribute('data-domain') === dom && type === 'favorite') {
+      starEl.classList.remove('active');
+    }
+  };
+
+  const toggleFavorite = async (dom) => {
+    const data = await chrome.storage.local.get('lilo_dns_favorites');
+    let favs = data.lilo_dns_favorites || [];
+    const starEl = document.getElementById('dns-star-btn');
+    if (favs.includes(dom)) {
+      favs = favs.filter(d => d !== dom);
+      if (starEl) starEl.classList.remove('active');
+    } else {
+      favs.push(dom);
+      if (starEl) starEl.classList.add('active');
+    }
+    await chrome.storage.local.set({ lilo_dns_favorites: favs });
+    renderQuickAccess();
   };
 
   // --- Tab registration ---
@@ -204,8 +310,18 @@ export function initDnsFeature() {
         }
       });
 
-      // Click on result-row — copy value
+      // Click on output elements (copy or star favorite)
       output.addEventListener('click', async (e) => {
+        const starEl = e.target.closest('#dns-star-btn');
+        if (starEl) {
+          e.stopPropagation();
+          const dom = starEl.getAttribute('data-domain');
+          if (dom) {
+            toggleFavorite(dom);
+          }
+          return;
+        }
+
         const row = e.target.closest('.result-row');
         if (!row) {
           return;
@@ -276,6 +392,7 @@ export function initDnsFeature() {
 
     async onActivate() {
       input.focus();
+      renderQuickAccess();
 
       // Autostart from active tab (only if input is empty)
       if (!input.value.trim()) {
