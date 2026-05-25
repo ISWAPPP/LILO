@@ -1,5 +1,18 @@
 # Changelog — LILO Tools
 
+## [0.9.21] — 2026-05-26
+
+### Improved
+- **English-by-Default Labeling**: Fully localized all slider controls via core translation dictionaries (using "Max lines" for English by default).
+- **Default Height to Maximum (20 lines)**: Notes now default to the maximum height of 20 lines (full height display) when created, and users can explicitly slide it down to compress long notes.
+- **Wider, High-Precision Slider**: Expanded the slider's physical interactive width from 50px to 90px in edit mode to permit comfortable, high-precision height control.
+
+## [0.9.20] — 2026-05-26
+
+### Added
+- **Adjustable Note Display Height Slider**: Integrated an interactive range slider in note edit mode, allowing users to customize each note's maximum display height between 2 and 20 lines.
+- **Default Display Height Constraint**: Set a strict 2-line maximum display height default for all notes, turning long markdown text blocks into compact, scrollable cards to conserve popup real estate.
+
 ## [0.9.19] — 2026-05-26
 
 ### Improved
