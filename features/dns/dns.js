@@ -61,7 +61,7 @@ export function initDnsFeature() {
 
   // --- Main DNS check ---
   // Performs a series of parallel API requests to gather domain info
-  const checkDNS = async () => {
+  const checkDNS = async (saveToHistory = true) => {
     const rawValue = input.value.trim();
     if (!rawValue) {
       return;
@@ -175,7 +175,10 @@ export function initDnsFeature() {
         ipGeos = geoResults.map(r => (r.status === 'fulfilled' ? r.value : null));
       }
 
+      const data = await chrome.storage.local.get(['lilo_dns_history']);
+
       output.innerHTML = DnsRenderer.results({
+        domain,
         ips,
         ipv6,
         mx: MX.Answer === null ? null : mxResolved,
@@ -186,12 +189,66 @@ export function initDnsFeature() {
         ipGeos,
         dq
       });
+
+      if (saveToHistory) {
+        // Save to history (keep top 4, unique)
+        let hist = data.lilo_dns_history || [];
+        hist = [domain, ...hist.filter(d => d !== domain)].slice(0, 4);
+        await chrome.storage.local.set({ lilo_dns_history: hist });
+      }
+
+      renderQuickAccess();
     } catch (err) {
       console.error('DNS check failed:', err);
       output.innerHTML = DnsRenderer.error(I18n.t('dns_error_network'));
     } finally {
       btn.disabled = false;
     }
+  };
+
+  // --- Quick Access History logic ---
+  const renderQuickAccess = async () => {
+    const data = await chrome.storage.local.get(['lilo_dns_history']);
+    const history = data.lilo_dns_history || [];
+
+    const container = document.getElementById('dns-quick-access');
+    const histList = document.getElementById('dns-history-list');
+
+    if (history.length === 0) {
+      container.style.display = 'none';
+      return;
+    }
+    container.style.display = 'flex';
+
+    histList.innerHTML = history.map(dom => `
+      <span class="dns-chip hist-chip" data-domain="${Utils.escapeHTML(dom)}">
+        ${Utils.escapeHTML(dom)}
+        <span class="remove-chip" data-domain="${Utils.escapeHTML(dom)}">✕</span>
+      </span>
+    `).join('');
+
+    // Attach click listeners to chips
+    container.querySelectorAll('.dns-chip').forEach(chip => {
+      chip.onclick = (e) => {
+        if (e.target.classList.contains('remove-chip')) {
+          e.stopPropagation();
+          const dom = e.target.getAttribute('data-domain');
+          removeQuickAccessItem(dom);
+          return;
+        }
+        const dom = chip.getAttribute('data-domain');
+        input.value = dom;
+        checkDNS(false);
+      };
+    });
+  };
+
+  const removeQuickAccessItem = async (dom) => {
+    const data = await chrome.storage.local.get('lilo_dns_history');
+    let hist = data.lilo_dns_history || [];
+    hist = hist.filter(d => d !== dom);
+    await chrome.storage.local.set({ lilo_dns_history: hist });
+    renderQuickAccess();
   };
 
   // --- Tab registration ---
@@ -204,13 +261,54 @@ export function initDnsFeature() {
         }
       });
 
-      // Click on result-row — copy value
+      // Click on output elements (copy)
       output.addEventListener('click', async (e) => {
         const row = e.target.closest('.result-row');
         if (!row) {
           return;
         }
 
+        // Find all single values inside this card
+        const singleValEls = row.querySelectorAll('.dns-single-val');
+
+        // If there is only 1 value, click anywhere on the card copies that single value!
+        if (singleValEls.length === 1) {
+          const singleValEl = singleValEls[0];
+          const textToCopy = singleValEl.innerText.trim();
+          if (textToCopy) {
+            const ok = await Utils.copyToClipboard(textToCopy);
+            if (ok) {
+              row.classList.add('copied');
+              setTimeout(() => row.classList.remove('copied'), 800);
+            }
+          }
+          return;
+        }
+
+        // If there are multiple values, check if clicked on a specific row
+        const valRowEl = e.target.closest('.dns-val-row');
+        if (valRowEl) {
+          const singleValEl = valRowEl.querySelector('.dns-single-val');
+          if (singleValEl) {
+            const textToCopy = singleValEl.innerText.trim();
+            if (textToCopy) {
+              const ok = await Utils.copyToClipboard(textToCopy);
+              if (ok) {
+                valRowEl.classList.add('copied');
+                setTimeout(() => valRowEl.classList.remove('copied'), 800);
+
+                singleValEl.classList.add('copied');
+                setTimeout(() => singleValEl.classList.remove('copied'), 800);
+
+                row.classList.add('copied-partially');
+                setTimeout(() => row.classList.remove('copied-partially'), 800);
+              }
+            }
+            return;
+          }
+        }
+
+        // Else, clicked on the general card area outside specific rows (when multiple values exist) -> copy all!
         const valueEl = row.querySelector('.result-value');
         if (!valueEl) {
           return;
@@ -225,9 +323,6 @@ export function initDnsFeature() {
           return;
         }
 
-        // For MX records, priority text could be removed if needed, 
-        // but priority is usually useful. innerText preserves it.
-
         const ok = await Utils.copyToClipboard(textToCopy);
         if (ok) {
           row.classList.add('copied');
@@ -238,6 +333,7 @@ export function initDnsFeature() {
 
     async onActivate() {
       input.focus();
+      renderQuickAccess();
 
       // Autostart from active tab (only if input is empty)
       if (!input.value.trim()) {

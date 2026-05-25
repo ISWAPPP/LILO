@@ -140,7 +140,7 @@ async function deleteNote(id) {
   renderNotes();
 }
 
-async function updateNoteWithColor(id, newText, color) {
+async function updateNoteWithColor(id, newText, color, lines) {
   if (!newText.trim()) {
     // Empty text = deletion
     notes = notes.filter(n => n.id !== id);
@@ -149,6 +149,9 @@ async function updateNoteWithColor(id, newText, color) {
     if (note) {
       note.text = newText.trim();
       note.color = color;
+      if (lines !== undefined) {
+        note.lines = lines;
+      }
     }
   }
   saveNotes();
@@ -277,8 +280,10 @@ function setupNoteEvents() {
     // Save button
     if (e.target.closest('.note-save-btn')) {
       const input = item.querySelector('.note-edit-input');
+      const slider = item.querySelector('.note-height-slider');
+      const lines = slider ? parseInt(slider.value) : 20;
       const color = item.dataset.selectedColor !== undefined ? item.dataset.selectedColor : (notes.find(n => n.id === id)?.color || '');
-      updateNoteWithColor(id, input?.value || '', color);
+      updateNoteWithColor(id, input?.value || '', color, lines);
       return;
     }
 
@@ -294,6 +299,13 @@ function setupNoteEvents() {
       e.target.style.height = 'auto';
       e.target.style.height = (e.target.scrollHeight + 2) + 'px';
     }
+    if (e.target.classList.contains('note-height-slider')) {
+      const item = e.target.closest('.note-item');
+      const valEl = item ? item.querySelector('.range-val') : null;
+      if (valEl) {
+        valEl.textContent = e.target.value;
+      }
+    }
   });
 
   list.addEventListener('keydown', (e) => {
@@ -305,8 +317,10 @@ function setupNoteEvents() {
       e.preventDefault(); // Prevent adding new line
       const item = e.target.closest('.note-item');
       const id = item?.dataset.id;
+      const slider = item?.querySelector('.note-height-slider');
+      const lines = slider ? parseInt(slider.value) : 20;
       const color = item?.dataset.selectedColor !== undefined ? item.dataset.selectedColor : (notes.find(n => n.id === id)?.color || '');
-      updateNoteWithColor(id, e.target.value || '', color);
+      updateNoteWithColor(id, e.target.value || '', color, lines);
     }
   });
 }

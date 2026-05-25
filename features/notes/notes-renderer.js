@@ -4,15 +4,80 @@ import { Utils } from '../../core/utils.js';
 import { I18n } from '../../core/i18n.js';
  
 export const NotesRenderer = {
+  /** Secure Regex-based Markdown Parser */
+  parseMarkdown(text) {
+    if (!text) return '';
+    // 1. Escape HTML for strict XSS protection
+    let html = Utils.escapeHTML(text);
+
+    // 2. Code blocks (do first to isolate content)
+    const codeBlocks = [];
+    html = html.replace(/```(?:[a-zA-Z0-9]+)?\n([\s\S]*?)\n```/g, (match, code) => {
+      const id = `__CODE_BLOCK_${codeBlocks.length}__`;
+      codeBlocks.push(`<pre><code>${code}</code></pre>`);
+      return id;
+    });
+
+    // 3. Lists
+    const lines = html.split('\n');
+    let inList = false;
+    const processedLines = [];
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+      const bulletMatch = line.match(/^[-*+]\s+(.*)$/);
+      if (bulletMatch) {
+        if (!inList) {
+          processedLines.push('<ul>');
+          inList = true;
+        }
+        processedLines.push(`<li>${bulletMatch[1]}</li>`);
+      } else {
+        if (inList) {
+          processedLines.push('</ul>');
+          inList = false;
+        }
+        processedLines.push(line);
+      }
+    }
+    if (inList) {
+      processedLines.push('</ul>');
+    }
+    html = processedLines.join('\n');
+
+    // 4. Bold
+    html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+
+    // 5. Inline code
+    html = html.replace(/`([^`\n]+)`/g, '<code>$1</code>');
+
+    // 6. Convert non-block newlines to <br>
+    const finalLines = html.split('\n');
+    const finalHtml = finalLines.map(line => {
+      if (line.startsWith('__CODE_BLOCK_') || line === '<ul>' || line === '</ul>' || line.startsWith('<li>')) {
+        return line;
+      }
+      return line + '<br>';
+    }).join('');
+
+    // 7. Restore code blocks
+    let restoredHtml = finalHtml;
+    for (let i = 0; i < codeBlocks.length; i++) {
+      restoredHtml = restoredHtml.replace(`__CODE_BLOCK_${i}__`, codeBlocks[i]);
+    }
+
+    return restoredHtml;
+  },
+
   /** Single note item (normal state). */
   noteItem(note) {
-    const escaped = Utils.escapeHTML(note.text);
+    const rendered = this.parseMarkdown(note.text);
     const inlineStyle = note.color 
       ? `background-color: ${note.color}; --note-bg: ${note.color}; --note-text: #1a1a1a; --note-btn-hover-bg: rgba(0, 0, 0, 0.08);` 
       : '';
+    const lines = note.lines !== undefined ? note.lines : 20;
     return `
       <div class="note-item" data-id="${note.id}" style="${inlineStyle}">
-        <span class="note-text" title="${I18n.t('passgen_tooltip')}">${escaped}</span>
+        <div class="note-markdown-body note-text" style="max-height: calc(${lines} * 1.5em); overflow-y: auto;" title="${I18n.t('passgen_tooltip')}">${rendered}</div>
         <div class="note-actions">
           <button class="note-move-up-btn" title="${I18n.t('notes_move_up')}">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
@@ -42,12 +107,20 @@ export const NotesRenderer = {
       ? `background-color: ${note.color}; --note-bg: ${note.color}; --note-text: #1a1a1a; --note-btn-hover-bg: rgba(0, 0, 0, 0.08);` 
       : '';
     
+    const lines = note.lines !== undefined ? note.lines : 20;
+
     return `
       <div class="note-item editing" data-id="${note.id}" style="${inlineStyle}">
         <div style="display:flex; flex-direction:column; flex:1; gap:6px;">
           <textarea class="note-edit-input" placeholder="${I18n.t('notes_edit_placeholder')}" rows="1">${escaped}</textarea>
-          <div style="display:flex; gap:6px;" class="note-color-picker">
-            ${palette}
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;" class="note-edit-controls">
+            <div style="display:flex; gap:6px;" class="note-color-picker">
+              ${palette}
+            </div>
+            <div style="display:flex; align-items:center; gap:4px; flex:1; justify-content:flex-end;">
+              <span style="font-size:9px; color:var(--text-muted); opacity:0.85; white-space:nowrap;">${I18n.t('notes_max_lines')}: <strong class="range-val">${lines}</strong></span>
+              <input type="range" class="note-height-slider" min="2" max="20" value="${lines}" style="width:90px; height:4px; accent-color:var(--accent); cursor:pointer;">
+            </div>
           </div>
         </div>
         <div style="display:flex; flex-direction:column; gap:4px;">

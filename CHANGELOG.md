@@ -1,5 +1,66 @@
 # Changelog — LILO Tools
 
+## [0.9.21] — 2026-05-26
+
+### Improved
+- **English-by-Default Labeling**: Fully localized all slider controls via core translation dictionaries (using "Max lines" for English by default).
+- **Default Height to Maximum (20 lines)**: Notes now default to the maximum height of 20 lines (full height display) when created, and users can explicitly slide it down to compress long notes.
+- **Wider, High-Precision Slider**: Expanded the slider's physical interactive width from 50px to 90px in edit mode to permit comfortable, high-precision height control.
+
+## [0.9.20] — 2026-05-26
+
+### Added
+- **Adjustable Note Display Height Slider**: Integrated an interactive range slider in note edit mode, allowing users to customize each note's maximum display height between 2 and 20 lines.
+- **Default Display Height Constraint**: Set a strict 2-line maximum display height default for all notes, turning long markdown text blocks into compact, scrollable cards to conserve popup real estate.
+
+## [0.9.19] — 2026-05-26
+
+### Improved
+- **Sleek Thinner DNS Domain Input**: Reduced the thickness (height) of the DNS input field and the GO button from 48px to a highly-refined 38px, optimizing vertical space usage.
+- **Restored Balanced Full-Width Layout**: Returned the input field and history chips container to their natural full-width sizing inside the extension window, maintaining a uniform and premium grid structure.
+
+## [0.9.18] — 2026-05-26
+
+### Added
+- **Smart DNS History Filtering**: History is now saved only on plugin activation (automatic tab lookup) or manual search trigger (GO/Enter). Navigating via history tags performs queries without mutating or re-triggering history logs.
+
+### Improved
+- **Optimized Layout Width**: Narrowed the DNS input row and centered it for a highly-refined and balanced aesthetic.
+- **Symmetric Spacing**: Optimized vertical spacing between the input bar, history clouds, and domain records to form a cleaner visual column.
+
+## [0.9.17] — 2026-05-26
+
+### Improved
+- **Unified Domain Input Styling**: Redesigned the primary DNS input field to inherit the premium, monospace styling of the results domain header (taller 48px height, monospace font family, accent text color, and soft secondary background).
+- **Eliminated Domain Duplication**: Removed the redundant results header from the query output container, keeping exactly one beautifully styled domain field visible at the top of the interface.
+
+## [0.9.16] — 2026-05-26
+
+### Removed
+- **DNS Favorites Panel & Star Button**: Completely removed all traces of the domain pinning/favorites feature, the star icon (★) from search results, and related storage mechanisms, simplifying the DNS tab down to essential lookup history.
+
+### Improved
+- **Modern Textless History Icon**: Replaced the history emoji (🕒) with a custom vector SVG clock icon that fits perfectly with the modern design guidelines.
+
+## [0.9.15] — 2026-05-26
+
+### Added
+- **Interactive DNS Pinboard (Favorites & History)**: Created a tag cloud quick-access row under the search input displaying favorited domains (starred with ★) and recently searched domains (🕒). Clicking any chip instantly triggers a DNS query; items can be easily removed.
+- **Dynamic Note Markdown Rendering**: Notes now automatically render as rich text with styling for bold text (`**`), list items (`-`), inline code (`` ` ``), and syntax-styled multi-line code blocks (`` ``` ``), while maintaining simple raw textarea editing on click.
+- **Zero-Friction Notes Clipboard Integration**: Maintained raw Markdown format for clipboard copy operations upon note selection, ensuring clean text-scraping for developers.
+
+## [0.9.14] — 2026-05-26
+
+### Added
+- **Unified A/NS DNS Grouping**: Redesigned A and NS query results to merge multiple records logically under single consolidated cards instead of rendering distinct separate blocks.
+
+### Improved
+- **Micro-Spacing Optimization**: Comprehensively tightened CSS paddings, margins, and gaps across all DNS result cards, headers, and individual rows, establishing an extremely compact, professional layout.
+- **Double Margin Bug Fix**: Resolved a layout bug causing double vertical spacing by eliminating bottom margins on `.dns-group-card` and relying solely on the container gap.
+- **Pre-wrap Spacing & Alignment Fix**: Resolved a critical layout glitch where `white-space: pre-wrap` rendered unwanted newlines and indentation from JavaScript templates as massive vertical gaps and pushed IP addresses to the far right. Grouped record rows are now rendered on a single tight line.
+- **Dual Copy Clipboard Delegation**: Upgraded copy delegation to selectively copy individual values when clicking specific IP/NS rows, and copy all addresses separated by a newline when clicking the card header or outer borders.
+- **Modern Textless Copy Indicators**: Replaced raw copy-warning spans with elegant, textless inline double SVGs that smoothly transition from a copy icon to a green validation checkmark upon successful copying, completely eliminating false hover notifications.
+
 ## [0.9.13] — 2026-05-23
 
 ### Added

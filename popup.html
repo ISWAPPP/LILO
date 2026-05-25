@@ -43,6 +43,14 @@
             <input type="text" id="domain_input" placeholder="example.com" data-i18n="dns_placeholder" spellcheck="false" autocomplete="off"/>
             <button id="btnDIG" data-i18n="dns_btn_go">GO</button>
         </div>
+        <div id="dns-quick-access" class="dns-quick-access no-copy" style="display: none;">
+            <div id="dns-history-container" class="dns-quick-group">
+                <span class="dns-quick-label" title="Нещодавні запити">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px; opacity: 0.6;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                </span>
+                <div id="dns-history-list" class="dns-chips-list"></div>
+            </div>
+        </div>
         <div id="output" data-i18n="dns_output_wait">Waiting...</div>
     </div>
 
@@ -105,37 +113,124 @@
 
     <!-- ===== SETTINGS TAB ===== -->
     <div id="settings-tab" class="tab-content">
-        <h3 data-i18n="settings_title" style="margin-bottom: 15px; border-bottom: 1px solid var(--border-light); padding-bottom: 8px;">Налаштування</h3>
         
-        <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 15px; background: var(--bg-sec); padding: 8px; border-radius: 4px; border: 1px dashed var(--border-light); display: flex; align-items: flex-start; gap: 6px;">
-            <svg class="icon icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; flex-shrink: 0; margin-top: 1px;"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .6 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"></path><line x1="9" y1="18" x2="15" y2="18"></line><line x1="10" y1="22" x2="14" y2="22"></line></svg>
-            <div>
-                <b data-i18n="settings_shortcuts_title">Швидка навігація:</b> <span data-i18n="settings_shortcuts_desc">Використовуйте Alt+1 (DNS), Alt+2 (PICS), Alt+3 (NOTES) або Alt+4 (Налаштування).</span>
+        <!-- CARD 1: GENERAL SETTINGS -->
+        <div class="settings-card">
+            <h3 data-i18n="settings_title">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <span data-i18n="settings_title">Налаштування</span>
+            </h3>
+
+            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 15px; background: var(--bg-main); padding: 10px; border-radius: var(--radius-md); border: 1px dashed var(--border-light); display: flex; align-items: flex-start; gap: 8px;">
+                <svg class="icon icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; flex-shrink: 0; margin-top: 1px; color: var(--accent);"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .6 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"></path><line x1="9" y1="18" x2="15" y2="18"></line><line x1="10" y1="22" x2="14" y2="22"></line></svg>
+                <div>
+                    <b data-i18n="settings_shortcuts_title">Швидка навігація:</b> <span data-i18n="settings_shortcuts_desc">Використовуйте Alt+1 (DNS), Alt+2 (PICS), Alt+3 (NOTES) або Alt+4 (Налаштування).</span>
+                </div>
+            </div>
+
+            <div class="settings-group" style="margin-bottom: 12px;">
+                <label for="setting-language" data-i18n="settings_lang" style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);">Мова інтерфейсу</label>
+                <select id="setting-language" style="width: 100%; padding: 8px; border-radius: var(--radius-md); border: 1px solid var(--border-light); background: var(--bg-main); color: var(--text-main);">
+                    <option value="auto" data-i18n="settings_lang_auto">Автоматично (браузер)</option>
+                    <option value="uk" data-i18n="settings_lang_uk">Українська</option>
+                    <option value="en" data-i18n="settings_lang_en">English</option>
+                </select>
+            </div>
+
+            <div class="settings-group" style="margin-bottom: 12px;">
+                <label for="setting-startup-tab" data-i18n="settings_startup" style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);">Початкова вкладка</label>
+                <select id="setting-startup-tab" style="width: 100%; padding: 8px; border-radius: var(--radius-md); border: 1px solid var(--border-light); background: var(--bg-main); color: var(--text-main);">
+                    <option value="last" data-i18n="settings_startup_last">Остання відкрита</option>
+                    <option value="dns" data-i18n="settings_startup_dns">DNS</option>
+                    <option value="pics" data-i18n="settings_startup_pics" id="setting-startup-pics">PICS</option>
+                    <option value="notes" data-i18n="settings_startup_notes">NOTES</option>
+                </select>
+            </div>
+
+            <div class="settings-group">
+                <label for="setting-window-height" style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);" data-i18n="settings_window_height">Максимальна висота вікна (px)</label>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <input type="range" id="setting-window-height" min="300" max="600" step="10" value="300" style="flex: 1; accent-color: var(--accent);">
+                    <span id="setting-window-height-val" style="font-weight: 700; width: 40px; text-align: right; color: var(--accent);">300px</span>
+                </div>
             </div>
         </div>
 
-        <div class="settings-group" style="margin-bottom: 20px;">
-            <label for="setting-language" data-i18n="settings_lang" style="display: block; font-weight: 600; margin-bottom: 8px;">Мова інтерфейсу</label>
-            <select id="setting-language" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid var(--border-light); background: var(--bg-main); color: var(--text-main);">
-                <option value="auto" data-i18n="settings_lang_auto">Автоматично (браузер)</option>
-                <option value="uk" data-i18n="settings_lang_uk">Українська</option>
-                <option value="en" data-i18n="settings_lang_en">English</option>
-            </select>
+        <!-- CARD 2: DNS CONFIGURATION -->
+        <div class="settings-card">
+            <h3 data-i18n="settings_dns">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                <span data-i18n="settings_dns">DNS Провайдер</span>
+            </h3>
+
+            <div class="settings-group" style="margin-bottom: 14px;">
+                <label for="setting-dns-provider" data-i18n="settings_dns" style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);">DNS Провайдер</label>
+                <select id="setting-dns-provider" style="width: 100%; padding: 8px; border-radius: var(--radius-md); border: 1px solid var(--border-light); background: var(--bg-main); color: var(--text-main);">
+                    <option value="google" data-i18n="settings_dns_google">Google (8.8.8.8)</option>
+                    <option value="cloudflare" data-i18n="settings_dns_cloudflare">Cloudflare (1.1.1.1)</option>
+                </select>
+            </div>
+
+            <div class="settings-group">
+                <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);" data-i18n="settings_dns_queries">Запити DNS</label>
+                <div class="query-chips-grid">
+                    <label class="query-chip">
+                        <input type="checkbox" id="setting-query-a">
+                        <div class="query-chip-inner">A</div>
+                    </label>
+                    <label class="query-chip">
+                        <input type="checkbox" id="setting-query-aaaa">
+                        <div class="query-chip-inner">AAAA</div>
+                    </label>
+                    <label class="query-chip">
+                        <input type="checkbox" id="setting-query-mx">
+                        <div class="query-chip-inner">MX</div>
+                    </label>
+                    <label class="query-chip">
+                        <input type="checkbox" id="setting-query-ns">
+                        <div class="query-chip-inner">NS</div>
+                    </label>
+                    <label class="query-chip">
+                        <input type="checkbox" id="setting-query-txt">
+                        <div class="query-chip-inner">TXT</div>
+                    </label>
+                    <label class="query-chip">
+                        <input type="checkbox" id="setting-query-spf">
+                        <div class="query-chip-inner">SPF</div>
+                    </label>
+                    <label class="query-chip">
+                        <input type="checkbox" id="setting-query-dkim">
+                        <div class="query-chip-inner">DKIM</div>
+                    </label>
+                    <label class="query-chip">
+                        <input type="checkbox" id="setting-query-dmarc">
+                        <div class="query-chip-inner">DMARC</div>
+                    </label>
+                </div>
+            </div>
         </div>
 
-        <div class="settings-group" style="margin-bottom: 20px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <label data-i18n="settings_theme" style="font-weight: 600;">Тема оформлення</label>
-                <div class="zen-mode-toggles" id="zen-mode-toggles">
-                    <button class="zen-mode-btn" data-value="auto" data-i18n-title="settings_theme_auto" title="Auto" style="display: flex; align-items: center; justify-content: center;">
-                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>
-                    </button>
-                    <button class="zen-mode-btn" data-value="light" data-i18n-title="settings_theme_light" title="Light" style="display: flex; align-items: center; justify-content: center;">
-                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-                    </button>
-                    <button class="zen-mode-btn" data-value="dark" data-i18n-title="settings_theme_dark" title="Dark" style="display: flex; align-items: center; justify-content: center;">
-                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-                    </button>
+        <!-- CARD 3: THEME AND APPEARANCE -->
+        <div class="settings-card">
+            <h3 data-i18n="settings_theme">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>
+                <span data-i18n="settings_theme">Тема оформлення</span>
+            </h3>
+
+            <div class="settings-group" style="margin-bottom: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <label data-i18n="settings_theme" style="font-size: 12px; font-weight: 600; color: var(--text-muted);">Режим теми</label>
+                    <div class="zen-mode-toggles" id="zen-mode-toggles">
+                        <button class="zen-mode-btn" data-value="auto" data-i18n-title="settings_theme_auto" title="Auto" style="display: flex; align-items: center; justify-content: center;">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>
+                        </button>
+                        <button class="zen-mode-btn" data-value="light" data-i18n-title="settings_theme_light" title="Light" style="display: flex; align-items: center; justify-content: center;">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        </button>
+                        <button class="zen-mode-btn" data-value="dark" data-i18n-title="settings_theme_dark" title="Dark" style="display: flex; align-items: center; justify-content: center;">
+                            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                        </button>
+                    </div>
                 </div>
             </div>
             
@@ -180,60 +275,29 @@
             </div>
         </div>
 
-        <div class="settings-group" style="margin-bottom: 20px;">
-            <label for="setting-startup-tab" data-i18n="settings_startup" style="display: block; font-weight: 600; margin-bottom: 8px;">Початкова вкладка</label>
-            <select id="setting-startup-tab" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid var(--border-light); background: var(--bg-main); color: var(--text-main);">
-                <option value="last" data-i18n="settings_startup_last">Остання відкрита</option>
-                <option value="dns" data-i18n="settings_startup_dns">DNS</option>
-                <option value="pics" data-i18n="settings_startup_pics" id="setting-startup-pics">PICS</option>
-                <option value="notes" data-i18n="settings_startup_notes">NOTES</option>
-            </select>
-        </div>
+        <!-- CARD 4: DATA MANAGEMENT -->
+        <div class="settings-card">
+            <h3 data-i18n="settings_data_title">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                <span data-i18n="settings_data_title">Управління даними</span>
+            </h3>
 
-        <div class="settings-group" style="margin-bottom: 20px;">
-            <label for="setting-dns-provider" data-i18n="settings_dns" style="display: block; font-weight: 600; margin-bottom: 8px;">DNS Провайдер</label>
-            <select id="setting-dns-provider" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid var(--border-light); background: var(--bg-main); color: var(--text-main);">
-                <option value="google" data-i18n="settings_dns_google">Google (8.8.8.8)</option>
-                <option value="cloudflare" data-i18n="settings_dns_cloudflare">Cloudflare (1.1.1.1)</option>
-            </select>
-        </div>
-
-        <div class="settings-group" style="margin-bottom: 20px;">
-            <label style="display: block; font-weight: 600; margin-bottom: 8px;" data-i18n="settings_dns_queries">Запити DNS</label>
-            <div style="display: flex; flex-wrap: wrap; gap: 10px; font-size: 13px;">
-                <label style="display: flex; align-items: center; gap: 4px;"><input type="checkbox" id="setting-query-a"> A</label>
-                <label style="display: flex; align-items: center; gap: 4px;"><input type="checkbox" id="setting-query-aaaa"> AAAA</label>
-                <label style="display: flex; align-items: center; gap: 4px;"><input type="checkbox" id="setting-query-mx"> MX</label>
-                <label style="display: flex; align-items: center; gap: 4px;"><input type="checkbox" id="setting-query-ns"> NS</label>
-                <label style="display: flex; align-items: center; gap: 4px;"><input type="checkbox" id="setting-query-txt"> TXT</label>
-                <label style="display: flex; align-items: center; gap: 4px;"><input type="checkbox" id="setting-query-spf"> SPF</label>
-                <label style="display: flex; align-items: center; gap: 4px;"><input type="checkbox" id="setting-query-dkim"> DKIM</label>
-                <label style="display: flex; align-items: center; gap: 4px;"><input type="checkbox" id="setting-query-dmarc"> DMARC</label>
-            </div>
-        </div>
-
-        <div class="settings-group" style="margin-bottom: 20px;">
-            <label for="setting-window-height" style="display: block; font-weight: 600; margin-bottom: 8px;" data-i18n="settings_window_height">Максимальна висота вікна (px)</label>
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <input type="range" id="setting-window-height" min="300" max="600" step="10" value="300" style="flex: 1; accent-color: var(--accent);">
-                <span id="setting-window-height-val" style="font-weight: 600; width: 40px; text-align: right;">300px</span>
-            </div>
-        </div>
-
-        <div class="settings-group" style="margin-bottom: 20px; border-top: 1px solid var(--border-light); padding-top: 20px;">
-            <h3 style="margin-bottom: 12px;" data-i18n="settings_data_title">Управління даними</h3>
-            <div style="display: flex; gap: 8px;">
-                <button id="btn-export-data" style="flex: 1; height: 36px; padding: 0; border-radius: var(--radius-md); border-left: 1px solid var(--border-light); display: flex; align-items: center; justify-content: center;" title="Export Data" data-i18n-title="settings_tooltip_export">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <div class="data-mgmt-grid">
+                <button id="btn-export-data" class="data-mgmt-btn export" title="Export Data" data-i18n-title="settings_tooltip_export">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    <span data-i18n="settings_btn_export">Експорт</span>
                 </button>
-                <button id="btn-import-data" style="flex: 1; height: 36px; padding: 0; border-radius: var(--radius-md); border-left: 1px solid var(--border-light); display: flex; align-items: center; justify-content: center;" title="Import Data" data-i18n-title="settings_tooltip_import">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                <button id="btn-import-data" class="data-mgmt-btn import" title="Import Data" data-i18n-title="settings_tooltip_import">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                    <span data-i18n="settings_btn_import">Імпорт</span>
                 </button>
-                <button id="btn-reset-settings" style="flex: 1; height: 36px; padding: 0; border-radius: var(--radius-md); border-left: 1px solid var(--border-light); color: var(--text-muted); display: flex; align-items: center; justify-content: center;" title="Reset UI" data-i18n-title="settings_tooltip_reset">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+                <button id="btn-reset-settings" class="data-mgmt-btn reset" title="Reset UI" data-i18n-title="settings_tooltip_reset">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+                    <span data-i18n="settings_btn_reset">Скинути UI</span>
                 </button>
-                <button id="btn-clear-data" style="flex: 1; height: 36px; padding: 0; border-radius: var(--radius-md); border-left: 1px solid var(--border-light); color: var(--error-text); border-color: var(--error-bg); background: var(--error-bg); display: flex; align-items: center; justify-content: center;" title="Clear All Data" data-i18n-title="settings_tooltip_clear">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                <button id="btn-clear-data" class="data-mgmt-btn clear" title="Clear All Data" data-i18n-title="settings_tooltip_clear">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                    <span data-i18n="settings_btn_clear">Очистити все</span>
                 </button>
             </div>
             <input type="file" id="file-import" accept=".json" style="display: none;">
