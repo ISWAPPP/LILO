@@ -211,23 +211,47 @@ export function initDnsFeature() {
           return;
         }
 
-        // Check if clicked directly on an individual value item
-        const singleValEl = e.target.closest('.dns-single-val');
-        if (singleValEl) {
+        // Find all single values inside this card
+        const singleValEls = row.querySelectorAll('.dns-single-val');
+
+        // If there is only 1 value, click anywhere on the card copies that single value!
+        if (singleValEls.length === 1) {
+          const singleValEl = singleValEls[0];
           const textToCopy = singleValEl.innerText.trim();
           if (textToCopy) {
             const ok = await Utils.copyToClipboard(textToCopy);
             if (ok) {
-              singleValEl.classList.add('copied');
-              setTimeout(() => singleValEl.classList.remove('copied'), 800);
-              
-              row.classList.add('copied-partially');
-              setTimeout(() => row.classList.remove('copied-partially'), 800);
+              row.classList.add('copied');
+              setTimeout(() => row.classList.remove('copied'), 800);
             }
           }
-          return; // Stop here, do not copy the whole row!
+          return;
         }
 
+        // If there are multiple values, check if clicked on a specific row
+        const valRowEl = e.target.closest('.dns-val-row');
+        if (valRowEl) {
+          const singleValEl = valRowEl.querySelector('.dns-single-val');
+          if (singleValEl) {
+            const textToCopy = singleValEl.innerText.trim();
+            if (textToCopy) {
+              const ok = await Utils.copyToClipboard(textToCopy);
+              if (ok) {
+                valRowEl.classList.add('copied');
+                setTimeout(() => valRowEl.classList.remove('copied'), 800);
+
+                singleValEl.classList.add('copied');
+                setTimeout(() => singleValEl.classList.remove('copied'), 800);
+
+                row.classList.add('copied-partially');
+                setTimeout(() => row.classList.remove('copied-partially'), 800);
+              }
+            }
+            return;
+          }
+        }
+
+        // Else, clicked on the general card area outside specific rows (when multiple values exist) -> copy all!
         const valueEl = row.querySelector('.result-value');
         if (!valueEl) {
           return;
