@@ -5,16 +5,8 @@ import { I18n } from '../../core/i18n.js';
 
 export const DnsRenderer = {
   /** Full block of DNS check results. */
-  results({ domain, isFav, ips, ipv6, mx, txt, dmarc, dkim, ns, ipGeos, dq }) {
+  results({ domain, ips, ipv6, mx, txt, dmarc, dkim, ns, ipGeos, dq }) {
     let html = `<div class="results-container animate-fade-in-up">`;
-    
-    if (domain) {
-      html += `
-        <div class="dns-results-domain-header no-copy" style="display: flex; align-items: center; justify-content: space-between; padding: 4px 8px; font-size: 13px; font-weight: 700; color: var(--text-main); margin-bottom: 2px; background: var(--bg-sec); border-radius: var(--radius-sm); border: 1px solid var(--border-light);">
-          <span style="font-family: monospace; font-size: 12px; color: var(--accent);">${Utils.escapeHTML(domain)}</span>
-          <span id="dns-star-btn" class="dns-favorite-star ${isFav ? 'active' : ''}" data-domain="${Utils.escapeHTML(domain)}" title="Додати до обраного" style="font-size: 16px; line-height: 1;">★</span>
-        </div>`;
-    }
     
     // Group 1: Addressing & Routing (A, AAAA, NS)
     const hasA = dq.a && ips && ips.length > 0;

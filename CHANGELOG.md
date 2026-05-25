@@ -1,5 +1,34 @@
 # Changelog — LILO Tools
 
+## [0.9.19] — 2026-05-26
+
+### Improved
+- **Sleek Thinner DNS Domain Input**: Reduced the thickness (height) of the DNS input field and the GO button from 48px to a highly-refined 38px, optimizing vertical space usage.
+- **Restored Balanced Full-Width Layout**: Returned the input field and history chips container to their natural full-width sizing inside the extension window, maintaining a uniform and premium grid structure.
+
+## [0.9.18] — 2026-05-26
+
+### Added
+- **Smart DNS History Filtering**: History is now saved only on plugin activation (automatic tab lookup) or manual search trigger (GO/Enter). Navigating via history tags performs queries without mutating or re-triggering history logs.
+
+### Improved
+- **Optimized Layout Width**: Narrowed the DNS input row and centered it for a highly-refined and balanced aesthetic.
+- **Symmetric Spacing**: Optimized vertical spacing between the input bar, history clouds, and domain records to form a cleaner visual column.
+
+## [0.9.17] — 2026-05-26
+
+### Improved
+- **Unified Domain Input Styling**: Redesigned the primary DNS input field to inherit the premium, monospace styling of the results domain header (taller 48px height, monospace font family, accent text color, and soft secondary background).
+- **Eliminated Domain Duplication**: Removed the redundant results header from the query output container, keeping exactly one beautifully styled domain field visible at the top of the interface.
+
+## [0.9.16] — 2026-05-26
+
+### Removed
+- **DNS Favorites Panel & Star Button**: Completely removed all traces of the domain pinning/favorites feature, the star icon (★) from search results, and related storage mechanisms, simplifying the DNS tab down to essential lookup history.
+
+### Improved
+- **Modern Textless History Icon**: Replaced the history emoji (🕒) with a custom vector SVG clock icon that fits perfectly with the modern design guidelines.
+
 ## [0.9.15] — 2026-05-26
 
 ### Added

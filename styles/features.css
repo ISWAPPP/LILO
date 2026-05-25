@@ -766,14 +766,44 @@
     color: var(--success-text) !important;
 }
 
+/* Premium styled DNS domain input matching the results domain header, but thinner */
+#domain_input {
+    font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--bg-sec) !important;
+    height: 38px !important;
+    padding: 8px 12px !important;
+    border-color: var(--border-light) !important;
+    border-right: none !important;
+    transition: all 0.2s ease !important;
+}
+
+#domain_input:focus {
+    background: var(--bg-tertiary) !important;
+    border-color: var(--border-focus) !important;
+}
+
+#btnDIG {
+    height: 38px !important;
+    font-weight: 700 !important;
+    font-size: 13px !important;
+    padding: 0 16px !important;
+}
+
 /* ===== DNS QUICK ACCESS PINBOARD & CHIPS ===== */
 .dns-quick-access {
     display: flex;
     flex-direction: column;
     gap: 5px;
-    margin-top: 6px;
-    margin-bottom: 2px;
+    margin-top: 8px;
+    margin-bottom: 10px;
     padding: 0 4px;
+}
+
+#output {
+    margin-top: 10px !important;
 }
 
 .dns-quick-group {
@@ -840,25 +870,7 @@
     color: var(--error-text);
 }
 
-/* Star favorite toggle in DNS result blocks */
-.dns-favorite-star {
-    cursor: pointer;
-    margin-left: 6px;
-    opacity: 0.4;
-    transition: all 0.15s ease;
-    color: var(--text-muted);
-}
 
-.dns-favorite-star:hover {
-    opacity: 0.9;
-    transform: scale(1.15);
-    color: #eab308; /* yellow star */
-}
-
-.dns-favorite-star.active {
-    opacity: 1;
-    color: #eab308;
-}
 
 /* ===== NOTES MARKDOWN & RICH VIEW ===== */
 .note-markdown-body {
