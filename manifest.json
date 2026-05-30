@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "LILO Tools",
   "description": "Advanced developer toolbox: DNS lookup, image hosting with history, local notes, and secure password generator.",
-  "version": "0.9.21",
+  "version": "0.9.23",
   "permissions": [
     "tabs",
     "storage"
@@ -12,7 +12,9 @@
     "https://1.1.1.1/*",
     "https://cloudflare-dns.com/*",
     "https://freeimage.host/*",
-    "http://ip-api.com/*"
+    "http://ip-api.com/*",
+    "https://ssl-checker.io/*",
+    "https://api.cert.ist/*"
   ],
   "icons": {
     "16": "icons/icon.svg",

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>LILO DNS & Tools</title>
@@ -10,14 +11,23 @@
     <link rel="stylesheet" href="styles/features.css">
     <script type="module" src="popup.js"></script>
 </head>
+
 <body>
     <!-- Navigation tabs (DNS, PICS, NOTES) -->
     <div class="tabs-header">
         <button class="tab-link active" data-tab="dns" data-i18n="tab_dns">DNS</button>
         <button class="tab-link" data-tab="pics" id="tab-btn-pics" data-i18n="tab_pics">PICS</button>
         <button class="tab-link" data-tab="notes" data-i18n="tab_notes">NOTES</button>
-        <button class="tab-link" data-tab="settings" data-i18n-title="tab_settings" style="flex: 0 0 auto; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center;" title="Settings">
-            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        <button class="tab-link" data-tab="settings" data-i18n-title="tab_settings"
+            style="flex: 0 0 auto; width: 34px; padding: 0; display: flex; align-items: center; justify-content: center;"
+            title="Settings">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" style="width: 16px; height: 16px;">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path
+                    d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z">
+                </path>
+            </svg>
         </button>
         <div class="tab-slider" id="tab-slider"></div>
     </div>
@@ -27,26 +37,49 @@
     <div id="dns-tab" class="tab-content active">
         <div class="toolbar">
             <div class="toolbar-btn-group" id="groupSSL">
-                <button id="copySSL" class="disabled" title="Copy link" data-i18n="dns_ssl"><span><svg class="icon icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg></span> SSL</button>
+                <button id="copySSL" class="disabled" title="Copy link" data-i18n="dns_ssl"><span><svg
+                            class="icon icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg></span> SSL</button>
                 <a id="linkSSL" target="_blank" class="disabled" title="Go">➜</a>
             </div>
             <div class="toolbar-btn-group" id="groupDNS">
-                <button id="copyDNS" class="disabled" title="Copy link" data-i18n="dns_dns"><span><svg class="icon icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg></span> DNS</button>
+                <button id="copyDNS" class="disabled" title="Copy link" data-i18n="dns_dns"><span><svg
+                            class="icon icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                            <path
+                                d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+                            </path>
+                        </svg></span> DNS</button>
                 <a id="linkDNS" target="_blank" class="disabled" title="Go">➜</a>
             </div>
             <div class="toolbar-btn-group" id="groupWhois">
-                <button id="copyWhois" class="disabled" title="Copy link" data-i18n="dns_whois"><span><svg class="icon icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span> Whois</button>
+                <button id="copyWhois" class="disabled" title="Copy link" data-i18n="dns_whois"><span><svg
+                            class="icon icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg></span> Whois</button>
                 <a id="linkWhois" target="_blank" class="disabled" title="Go">➜</a>
             </div>
         </div>
         <div class="input-row">
-            <input type="text" id="domain_input" placeholder="example.com" data-i18n="dns_placeholder" spellcheck="false" autocomplete="off"/>
+            <input type="text" id="domain_input" placeholder="example.com" data-i18n="dns_placeholder"
+                spellcheck="false" autocomplete="off" />
             <button id="btnDIG" data-i18n="dns_btn_go">GO</button>
         </div>
         <div id="dns-quick-access" class="dns-quick-access no-copy" style="display: none;">
             <div id="dns-history-container" class="dns-quick-group">
                 <span class="dns-quick-label" title="Recent queries">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px; opacity: 0.6;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" style="width: 12px; height: 12px; opacity: 0.6;">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
                 </span>
                 <div id="dns-history-list" class="dns-chips-list"></div>
             </div>
@@ -57,15 +90,30 @@
     <!-- ===== PICS TAB ===== -->
     <!-- Tab for uploading images (screenshots) to third-party hosting -->
     <div id="pics-tab" class="tab-content">
-        <div class="pics-warning-container" style="display: flex; align-items: flex-start; justify-content: center; gap: 6px; margin-bottom: 12px; color: var(--error-text); font-size: 11px; font-weight: 500; text-align: left; padding: 0 10px; line-height: 1.4;">
-            <svg class="icon icon-warning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; flex-shrink: 0; margin-top: 1px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-            <span class="pics-warning" data-i18n="pics_warning">Images are stored on third-party servers. Do not share private information!</span>
+        <div class="pics-warning-container"
+            style="display: flex; align-items: flex-start; justify-content: center; gap: 6px; margin-bottom: 12px; color: var(--error-text); font-size: 11px; font-weight: 500; text-align: left; padding: 0 10px; line-height: 1.4;">
+            <svg class="icon icon-warning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round"
+                style="width: 14px; height: 14px; flex-shrink: 0; margin-top: 1px;">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
+                </path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            <span class="pics-warning" data-i18n="pics_warning">Images are stored on third-party servers. Do not share
+                private information!</span>
         </div>
         <div class="upload-zone" id="upload_zone">
-            <div class="upload-icon" style="display: flex; align-items: center; justify-content: center; margin-bottom: 10px; color: var(--text-muted);">
-                <svg class="icon icon-large" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width: 32px; height: 32px;"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+            <div class="upload-icon"
+                style="display: flex; align-items: center; justify-content: center; margin-bottom: 10px; color: var(--text-muted);">
+                <svg class="icon icon-large" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                    stroke-linecap="round" stroke-linejoin="round" style="width: 32px; height: 32px;">
+                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                </svg>
             </div>
-            <p><span data-i18n="pics_paste_prefix">Press </span><b>Ctrl + V</b><span data-i18n="pics_paste_suffix"> to paste screenshot</span></p>
+            <p><span data-i18n="pics_paste_prefix">Press </span><b>Ctrl + V</b><span data-i18n="pics_paste_suffix"> to
+                    paste screenshot</span></p>
             <small data-i18n="pics_auto">Image will be uploaded automatically</small>
             <input type="file" id="pics-file-input" accept="image/*" style="display: none;">
         </div>
@@ -78,24 +126,35 @@
         <!-- Password Generator -->
         <div class="passgen-section">
             <div class="passgen-output">
-                <input type="text" id="passgen-result" readonly placeholder="..." data-i18n="passgen_placeholder" title="Click to copy" data-i18n-title="passgen_tooltip">
-                <button id="passgen-refresh" title="Generate new" data-i18n-title="passgen_refresh" style="display: flex; align-items: center; justify-content: center;">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+                <input type="text" id="passgen-result" readonly placeholder="..." data-i18n="passgen_placeholder"
+                    title="Click to copy" data-i18n-title="passgen_tooltip">
+                <button id="passgen-refresh" title="Generate new" data-i18n-title="passgen_refresh"
+                    style="display: flex; align-items: center; justify-content: center;">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <polyline points="1 20 1 14 7 14"></polyline>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                    </svg>
                 </button>
             </div>
-            <div class="passgen-strength-container" style="margin-bottom: 12px; height: 4px; background: var(--bg-main); border-radius: 2px; overflow: hidden;">
+            <div class="passgen-strength-container"
+                style="margin-bottom: 12px; height: 4px; background: var(--bg-main); border-radius: 2px; overflow: hidden;">
                 <div id="passgen-strength-meter" class="passgen-strength-meter"></div>
             </div>
-            <div class="passgen-options" style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap; margin-bottom: 0;">
+            <div class="passgen-options"
+                style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap; margin-bottom: 0;">
                 <div style="display: flex; gap: 10px; flex-shrink: 0; flex-wrap: wrap;">
                     <label><input type="checkbox" id="opt-lower" checked> a-z</label>
                     <label><input type="checkbox" id="opt-upper" checked> A-Z</label>
                     <label><input type="checkbox" id="opt-numbers" checked> 0-9</label>
                     <label><input type="checkbox" id="opt-symbols"> !@#</label>
-                    <label><input type="checkbox" id="opt-no-similar"><span data-i18n="passgen_no_similar">No similar</span></label>
+                    <label><input type="checkbox" id="opt-no-similar"><span data-i18n="passgen_no_similar">No
+                            similar</span></label>
                 </div>
                 <div class="passgen-length" style="display: flex; align-items: center; gap: 8px; flex: 1;">
-                    <input type="range" id="passgen-length" min="4" max="64" value="16" style="flex: 1; min-width: 50px;">
+                    <input type="range" id="passgen-length" min="4" max="64" value="16"
+                        style="flex: 1; min-width: 50px;">
                     <span id="passgen-length-val" style="width: 20px; text-align: right; font-weight: 600;">16</span>
                 </div>
             </div>
@@ -104,7 +163,8 @@
         <!-- Notes -->
         <div class="notes-section">
             <div class="notes-add">
-                <textarea id="note-input" placeholder="New note..." data-i18n="notes_placeholder" spellcheck="false" rows="1"></textarea>
+                <textarea id="note-input" placeholder="New note..." data-i18n="notes_placeholder" spellcheck="false"
+                    rows="1"></textarea>
                 <button id="note-add-btn">+</button>
             </div>
             <div id="notes-list"></div>
@@ -113,24 +173,43 @@
 
     <!-- ===== SETTINGS TAB ===== -->
     <div id="settings-tab" class="tab-content">
-        
+
         <!-- CARD 1: GENERAL SETTINGS -->
         <div class="settings-card">
             <h3>
-                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path
+                        d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z">
+                    </path>
+                </svg>
                 <span data-i18n="settings_title">Settings</span>
             </h3>
 
-            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 15px; background: var(--bg-main); padding: 10px; border-radius: var(--radius-md); border: 1px dashed var(--border-light); display: flex; align-items: flex-start; gap: 8px;">
-                <svg class="icon icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; flex-shrink: 0; margin-top: 1px; color: var(--accent);"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .6 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"></path><line x1="9" y1="18" x2="15" y2="18"></line><line x1="10" y1="22" x2="14" y2="22"></line></svg>
+            <div
+                style="font-size: 11px; color: var(--text-muted); margin-bottom: 15px; background: var(--bg-main); padding: 10px; border-radius: var(--radius-md); border: 1px dashed var(--border-light); display: flex; align-items: flex-start; gap: 8px;">
+                <svg class="icon icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"
+                    style="width: 14px; height: 14px; flex-shrink: 0; margin-top: 1px; color: var(--accent);">
+                    <path
+                        d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .6 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5">
+                    </path>
+                    <line x1="9" y1="18" x2="15" y2="18"></line>
+                    <line x1="10" y1="22" x2="14" y2="22"></line>
+                </svg>
                 <div>
-                    <b data-i18n="settings_shortcuts_title">Quick Navigation:</b> <span data-i18n="settings_shortcuts_desc">Use Alt+1 (DNS), Alt+2 (PICS), Alt+3 (NOTES) or Alt+4 (Settings).</span>
+                    <b data-i18n="settings_shortcuts_title">Quick Navigation:</b> <span
+                        data-i18n="settings_shortcuts_desc">Use Alt+1 (DNS), Alt+2 (PICS), Alt+3 (NOTES) or Alt+4
+                        (Settings).</span>
                 </div>
             </div>
 
             <div class="settings-group" style="margin-bottom: 12px;">
-                <label for="setting-language" data-i18n="settings_lang" style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);">Interface Language</label>
-                <select id="setting-language" style="width: 100%; padding: 8px; border-radius: var(--radius-md); border: 1px solid var(--border-light); background: var(--bg-main); color: var(--text-main);">
+                <label for="setting-language" data-i18n="settings_lang"
+                    style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);">Interface
+                    Language</label>
+                <select id="setting-language"
+                    style="width: 100%; padding: 8px; border-radius: var(--radius-md); border: 1px solid var(--border-light); background: var(--bg-main); color: var(--text-main);">
                     <option value="auto" data-i18n="settings_lang_auto">Auto (Browser)</option>
                     <option value="uk" data-i18n="settings_lang_uk">Українська</option>
                     <option value="en" data-i18n="settings_lang_en">English</option>
@@ -138,8 +217,11 @@
             </div>
 
             <div class="settings-group" style="margin-bottom: 12px;">
-                <label for="setting-startup-tab" data-i18n="settings_startup" style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);">Startup Tab</label>
-                <select id="setting-startup-tab" style="width: 100%; padding: 8px; border-radius: var(--radius-md); border: 1px solid var(--border-light); background: var(--bg-main); color: var(--text-main);">
+                <label for="setting-startup-tab" data-i18n="settings_startup"
+                    style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);">Startup
+                    Tab</label>
+                <select id="setting-startup-tab"
+                    style="width: 100%; padding: 8px; border-radius: var(--radius-md); border: 1px solid var(--border-light); background: var(--bg-main); color: var(--text-main);">
                     <option value="last" data-i18n="settings_startup_last">Last Opened</option>
                     <option value="dns" data-i18n="settings_startup_dns">DNS</option>
                     <option value="pics" data-i18n="settings_startup_pics" id="setting-startup-pics">PICS</option>
@@ -148,18 +230,26 @@
             </div>
 
             <div class="settings-group">
-                <label for="setting-window-height" style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);" data-i18n="settings_window_height">Maximum Window Height (px)</label>
+                <label for="setting-window-height"
+                    style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);"
+                    data-i18n="settings_window_height">Maximum Window Height (px)</label>
                 <div style="display: flex; align-items: center; gap: 10px;">
-                    <input type="range" id="setting-window-height" min="300" max="600" step="10" value="300" style="flex: 1; accent-color: var(--accent);">
-                    <span id="setting-window-height-val" style="font-weight: 700; width: 40px; text-align: right; color: var(--accent);">300px</span>
+                    <input type="range" id="setting-window-height" min="300" max="600" step="10" value="300"
+                        style="flex: 1; accent-color: var(--accent);">
+                    <span id="setting-window-height-val"
+                        style="font-weight: 700; width: 40px; text-align: right; color: var(--accent);">300px</span>
                 </div>
             </div>
 
             <div class="settings-group" style="margin-top: 12px;">
-                <label for="setting-history-limit" style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);" data-i18n="settings_history_limit">Max DNS History Domains</label>
+                <label for="setting-history-limit"
+                    style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);"
+                    data-i18n="settings_history_limit">Max DNS History Domains</label>
                 <div style="display: flex; align-items: center; gap: 10px;">
-                    <input type="range" id="setting-history-limit" min="1" max="9" step="1" value="4" style="flex: 1; accent-color: var(--accent);">
-                    <span id="setting-history-limit-val" style="font-weight: 700; width: 40px; text-align: right; color: var(--accent);">4</span>
+                    <input type="range" id="setting-history-limit" min="1" max="9" step="1" value="4"
+                        style="flex: 1; accent-color: var(--accent);">
+                    <span id="setting-history-limit-val"
+                        style="font-weight: 700; width: 40px; text-align: right; color: var(--accent);">4</span>
                 </div>
             </div>
         </div>
@@ -167,19 +257,39 @@
         <!-- CARD 2: DNS CONFIGURATION -->
         <div class="settings-card">
             <h3>
-                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="2" y1="12" x2="22" y2="12"></line>
+                    <path
+                        d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+                    </path>
+                </svg>
                 <span data-i18n="settings_dns_config">DNS Configuration</span>
             </h3>
 
             <div class="settings-group" style="margin-bottom: 14px;">
-                <select id="setting-dns-provider" style="width: 100%; padding: 8px; border-radius: var(--radius-md); border: 1px solid var(--border-light); background: var(--bg-main); color: var(--text-main);">
+                <select id="setting-dns-provider"
+                    style="width: 100%; padding: 8px; border-radius: var(--radius-md); border: 1px solid var(--border-light); background: var(--bg-main); color: var(--text-main);">
                     <option value="google" data-i18n="settings_dns_google">Google (8.8.8.8)</option>
                     <option value="cloudflare" data-i18n="settings_dns_cloudflare">Cloudflare (1.1.1.1)</option>
                 </select>
             </div>
 
+            <div class="settings-group" style="margin-bottom: 14px;">
+                <label
+                    style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);"
+                    data-i18n="settings_ssl_provider_label">SSL Checker Provider</label>
+                <select id="setting-ssl-provider"
+                    style="width: 100%; padding: 8px; border-radius: var(--radius-md); border: 1px solid var(--border-light); background: var(--bg-main); color: var(--text-main);">
+                    <option value="certist" data-i18n="settings_ssl_certist">api.cert.ist</option>
+                    <option value="sslchecker" data-i18n="settings_ssl_sslchecker">ssl-checker.io</option>
+                </select>
+            </div>
+
             <div class="settings-group">
-                <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);" data-i18n="settings_dns_queries">DNS Queries</label>
+                <label
+                    style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);"
+                    data-i18n="settings_dns_queries">DNS Queries</label>
                 <div class="query-chips-grid">
                     <label class="query-chip">
                         <input type="checkbox" id="setting-query-a">
@@ -217,7 +327,9 @@
             </div>
 
             <div class="settings-group" style="margin-top: 14px;">
-                <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);" data-i18n="settings_dns_buttons">DNS Toolbar Buttons</label>
+                <label
+                    style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);"
+                    data-i18n="settings_dns_buttons">DNS Toolbar Buttons</label>
                 <div class="query-chips-grid" style="grid-template-columns: repeat(3, 1fr);">
                     <label class="query-chip">
                         <input type="checkbox" id="setting-btn-ssl">
@@ -238,46 +350,93 @@
         <!-- CARD 3: THEME AND APPEARANCE -->
         <div class="settings-card">
             <h3>
-                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path
+                        d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z">
+                    </path>
+                </svg>
                 <span data-i18n="settings_theme">Theme</span>
             </h3>
-            
+
             <div class="zen-palette-container">
                 <button class="zen-scroll-btn left" id="zen-scroll-left">‹</button>
                 <div class="theme-palette zen-scroll-area" id="setting-theme-palette">
                     <!-- GROUP 1: LIGHT -->
-                    <div class="theme-swatch" data-value="paper" data-i18n-title="settings_theme_paper" title="Paper" style="background: #fcfaf2; --swatch-accent: #8b4513; border: 1px solid var(--border-light) !important;"></div>
-                    <div class="theme-swatch" data-value="sand" data-i18n-title="settings_theme_sand" title="Sand" style="background: #fdfaf6; --swatch-accent: #b58d3d; border: 1px solid var(--border-light) !important;"></div>
-                    <div class="theme-swatch" data-value="matcha" data-i18n-title="settings_theme_matcha" title="Matcha" style="background: #f3f7f2; --swatch-accent: #88ab75; border: 1px solid var(--border-light) !important;"></div>
-                    <div class="theme-swatch" data-value="mint" data-i18n-title="settings_theme_mint" title="Mint" style="background: #f2fbf5; --swatch-accent: #10b981; border: 1px solid var(--border-light) !important;"></div>
-                    <div class="theme-swatch" data-value="breeze" data-i18n-title="settings_theme_breeze" title="Breeze" style="background: #f0f8ff; --swatch-accent: #0077ff; border: 1px solid var(--border-light) !important;"></div>
-                    <div class="theme-swatch" data-value="lavender" data-i18n-title="settings_theme_lavender" title="Lavender" style="background: #f8f7ff; --swatch-accent: #9370db; border: 1px solid var(--border-light) !important;"></div>
-                    <div class="theme-swatch" data-value="sakura" data-i18n-title="settings_theme_sakura" title="Sakura" style="background: #fff5f6; --swatch-accent: #ff8595; border: 1px solid var(--border-light) !important;"></div>
-                    <div class="theme-swatch" data-value="rose" data-i18n-title="settings_theme_rose" title="Rose" style="background: #fff0f5; --swatch-accent: #ec4899; border: 1px solid var(--border-light) !important;"></div>
-                    <div class="theme-swatch" data-value="peach" data-i18n-title="settings_theme_peach" title="Peach" style="background: #fff5f2; --swatch-accent: #ff8a65; border: 1px solid var(--border-light) !important;"></div>
-                    <div class="theme-swatch" data-value="solarized-light" data-i18n-title="settings_theme_solarized_light" title="Solarized Light" style="background: #fdf6e3; --swatch-accent: #268bd2; border: 1px solid var(--border-light) !important;"></div>
+                    <div class="theme-swatch" data-value="paper" data-i18n-title="settings_theme_paper" title="Paper"
+                        style="background: #fcfaf2; --swatch-accent: #8b4513; border: 1px solid var(--border-light) !important;">
+                    </div>
+                    <div class="theme-swatch" data-value="sand" data-i18n-title="settings_theme_sand" title="Sand"
+                        style="background: #fdfaf6; --swatch-accent: #b58d3d; border: 1px solid var(--border-light) !important;">
+                    </div>
+                    <div class="theme-swatch" data-value="matcha" data-i18n-title="settings_theme_matcha" title="Matcha"
+                        style="background: #f3f7f2; --swatch-accent: #88ab75; border: 1px solid var(--border-light) !important;">
+                    </div>
+                    <div class="theme-swatch" data-value="mint" data-i18n-title="settings_theme_mint" title="Mint"
+                        style="background: #f2fbf5; --swatch-accent: #10b981; border: 1px solid var(--border-light) !important;">
+                    </div>
+                    <div class="theme-swatch" data-value="breeze" data-i18n-title="settings_theme_breeze" title="Breeze"
+                        style="background: #f0f8ff; --swatch-accent: #0077ff; border: 1px solid var(--border-light) !important;">
+                    </div>
+                    <div class="theme-swatch" data-value="lavender" data-i18n-title="settings_theme_lavender"
+                        title="Lavender"
+                        style="background: #f8f7ff; --swatch-accent: #9370db; border: 1px solid var(--border-light) !important;">
+                    </div>
+                    <div class="theme-swatch" data-value="sakura" data-i18n-title="settings_theme_sakura" title="Sakura"
+                        style="background: #fff5f6; --swatch-accent: #ff8595; border: 1px solid var(--border-light) !important;">
+                    </div>
+                    <div class="theme-swatch" data-value="rose" data-i18n-title="settings_theme_rose" title="Rose"
+                        style="background: #fff0f5; --swatch-accent: #ec4899; border: 1px solid var(--border-light) !important;">
+                    </div>
+                    <div class="theme-swatch" data-value="peach" data-i18n-title="settings_theme_peach" title="Peach"
+                        style="background: #fff5f2; --swatch-accent: #ff8a65; border: 1px solid var(--border-light) !important;">
+                    </div>
+                    <div class="theme-swatch" data-value="solarized-light"
+                        data-i18n-title="settings_theme_solarized_light" title="Solarized Light"
+                        style="background: #fdf6e3; --swatch-accent: #268bd2; border: 1px solid var(--border-light) !important;">
+                    </div>
                     <!-- GROUP 2: DARK & BROWN -->
-                    <div class="theme-swatch" data-value="nord" data-i18n-title="settings_theme_nord" title="Nord" style="background: #2e3440; --swatch-accent: #88c0d0;"></div>
-                    <div class="theme-swatch" data-value="gruvbox" data-i18n-title="settings_theme_gruvbox" title="Gruvbox" style="background: #282828; --swatch-accent: #fe8019;"></div>
-                    <div class="theme-swatch" data-value="coffee" data-i18n-title="settings_theme_coffee" title="Coffee" style="background: #3e2723; --swatch-accent: #ffb300;"></div>
-                    <div class="theme-swatch" data-value="autumn" data-i18n-title="settings_theme_autumn" title="Autumn" style="background: #1f1105; --swatch-accent: #ff8c1a;"></div>
+                    <div class="theme-swatch" data-value="nord" data-i18n-title="settings_theme_nord" title="Nord"
+                        style="background: #2e3440; --swatch-accent: #88c0d0;"></div>
+                    <div class="theme-swatch" data-value="gruvbox" data-i18n-title="settings_theme_gruvbox"
+                        title="Gruvbox" style="background: #282828; --swatch-accent: #fe8019;"></div>
+                    <div class="theme-swatch" data-value="coffee" data-i18n-title="settings_theme_coffee" title="Coffee"
+                        style="background: #3e2723; --swatch-accent: #ffb300;"></div>
+                    <div class="theme-swatch" data-value="autumn" data-i18n-title="settings_theme_autumn" title="Autumn"
+                        style="background: #1f1105; --swatch-accent: #ff8c1a;"></div>
                     <!-- GROUP 3: COLORFUL DARK -->
-                    <div class="theme-swatch" data-value="oceanic" data-i18n-title="settings_theme_oceanic" title="Oceanic" style="background: #0a192f; --swatch-accent: #64ffda;"></div>
-                    <div class="theme-swatch" data-value="navy" data-i18n-title="settings_theme_navy" title="Navy" style="background: #001f3f; --swatch-accent: #0074d9;"></div>
-                    <div class="theme-swatch" data-value="sea" data-i18n-title="settings_theme_sea" title="Sea" style="background: #04121d; --swatch-accent: #38bdf8;"></div>
-                    <div class="theme-swatch" data-value="solarized-dark" data-i18n-title="settings_theme_solarized_dark" title="Solarized Dark" style="background: #002b36; --swatch-accent: #268bd2;"></div>
-                    <div class="theme-swatch" data-value="forest" data-i18n-title="settings_theme_forest" title="Forest" style="background: #141d14; --swatch-accent: #4ade80;"></div>
-                    <div class="theme-swatch" data-value="sunset" data-i18n-title="settings_theme_sunset" title="Sunset" style="background: #2b1d24; --swatch-accent: #ff7e67;"></div>
-                    <div class="theme-swatch" data-value="blood" data-i18n-title="settings_theme_blood" title="Blood" style="background: #0a0000; --swatch-accent: #ff0000;"></div>
+                    <div class="theme-swatch" data-value="oceanic" data-i18n-title="settings_theme_oceanic"
+                        title="Oceanic" style="background: #0a192f; --swatch-accent: #64ffda;"></div>
+                    <div class="theme-swatch" data-value="navy" data-i18n-title="settings_theme_navy" title="Navy"
+                        style="background: #001f3f; --swatch-accent: #0074d9;"></div>
+                    <div class="theme-swatch" data-value="sea" data-i18n-title="settings_theme_sea" title="Sea"
+                        style="background: #04121d; --swatch-accent: #38bdf8;"></div>
+                    <div class="theme-swatch" data-value="solarized-dark"
+                        data-i18n-title="settings_theme_solarized_dark" title="Solarized Dark"
+                        style="background: #002b36; --swatch-accent: #268bd2;"></div>
+                    <div class="theme-swatch" data-value="forest" data-i18n-title="settings_theme_forest" title="Forest"
+                        style="background: #141d14; --swatch-accent: #4ade80;"></div>
+                    <div class="theme-swatch" data-value="sunset" data-i18n-title="settings_theme_sunset" title="Sunset"
+                        style="background: #2b1d24; --swatch-accent: #ff7e67;"></div>
+                    <div class="theme-swatch" data-value="blood" data-i18n-title="settings_theme_blood" title="Blood"
+                        style="background: #0a0000; --swatch-accent: #ff0000;"></div>
                     <!-- GROUP 4: NEON/RETRO -->
-                    <div class="theme-swatch" data-value="monochrome" data-i18n-title="settings_theme_monochrome" title="Monochrome" style="background: #000000; --swatch-accent: #ffffff; border: 1px solid #333 !important;"></div>
-                    <div class="theme-swatch" data-value="terminal" data-i18n-title="settings_theme_terminal" title="Terminal" style="background: #000000; --swatch-accent: #00ff00;"></div>
-                    <div class="theme-swatch" data-value="amber" data-i18n-title="settings_theme_amber" title="Amber" style="background: #0d0900; --swatch-accent: #ffb000;"></div>
-                    <div class="theme-swatch" data-value="midnight" data-i18n-title="settings_theme_midnight" title="Midnight" style="background: #05051a; --swatch-accent: #8c8cff;"></div>
-                    <div class="theme-swatch" data-value="dracula" data-i18n-title="settings_theme_dracula" title="Dracula" style="background: #282a36; --swatch-accent: #ff79c6;"></div>
-                    <div class="theme-swatch" data-value="synthwave" data-i18n-title="settings_theme_synthwave" title="Synthwave" style="background: #0b0014; --swatch-accent: #ff9900;"></div>
-                    <div class="theme-swatch" data-value="cyberpunk" data-i18n-title="settings_theme_cyberpunk" title="Cyberpunk" style="background: #0d0221; --swatch-accent: #ff00ff;"></div>
-                    <div class="theme-swatch" data-value="neon-cyan" data-i18n-title="settings_theme_neon_cyan" title="Neon Cyan" style="background: #020608; --swatch-accent: #00ffff;"></div>
+                    <div class="theme-swatch" data-value="monochrome" data-i18n-title="settings_theme_monochrome"
+                        title="Monochrome"
+                        style="background: #000000; --swatch-accent: #ffffff; border: 1px solid #333 !important;"></div>
+                    <div class="theme-swatch" data-value="terminal" data-i18n-title="settings_theme_terminal"
+                        title="Terminal" style="background: #000000; --swatch-accent: #00ff00;"></div>
+                    <div class="theme-swatch" data-value="amber" data-i18n-title="settings_theme_amber" title="Amber"
+                        style="background: #0d0900; --swatch-accent: #ffb000;"></div>
+                    <div class="theme-swatch" data-value="midnight" data-i18n-title="settings_theme_midnight"
+                        title="Midnight" style="background: #05051a; --swatch-accent: #8c8cff;"></div>
+                    <div class="theme-swatch" data-value="dracula" data-i18n-title="settings_theme_dracula"
+                        title="Dracula" style="background: #282a36; --swatch-accent: #ff79c6;"></div>
+                    <div class="theme-swatch" data-value="synthwave" data-i18n-title="settings_theme_synthwave"
+                        title="Synthwave" style="background: #0b0014; --swatch-accent: #ff9900;"></div>
+                    <div class="theme-swatch" data-value="cyberpunk" data-i18n-title="settings_theme_cyberpunk"
+                        title="Cyberpunk" style="background: #0d0221; --swatch-accent: #ff00ff;"></div>
+                    <div class="theme-swatch" data-value="neon-cyan" data-i18n-title="settings_theme_neon_cyan"
+                        title="Neon Cyan" style="background: #020608; --swatch-accent: #00ffff;"></div>
                 </div>
                 <button class="zen-scroll-btn right" id="zen-scroll-right">›</button>
             </div>
@@ -286,42 +445,82 @@
         <!-- CARD 4: DATA MANAGEMENT -->
         <div class="settings-card">
             <h3>
-                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
                 <span data-i18n="settings_data_title">Data Management</span>
             </h3>
 
             <div class="data-mgmt-grid">
-                <button id="btn-export-data" class="data-mgmt-btn export" title="Export Data" data-i18n-title="settings_tooltip_export">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                <button id="btn-export-data" class="data-mgmt-btn export" title="Export Data"
+                    data-i18n-title="settings_tooltip_export">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
                     <span data-i18n="settings_btn_export">Export</span>
                 </button>
-                <button id="btn-import-data" class="data-mgmt-btn import" title="Import Data" data-i18n-title="settings_tooltip_import">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                <button id="btn-import-data" class="data-mgmt-btn import" title="Import Data"
+                    data-i18n-title="settings_tooltip_import">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
                     <span data-i18n="settings_btn_import">Import</span>
                 </button>
-                <button id="btn-reset-settings" class="data-mgmt-btn reset" title="Reset UI" data-i18n-title="settings_tooltip_reset">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+                <button id="btn-reset-settings" class="data-mgmt-btn reset" title="Reset UI"
+                    data-i18n-title="settings_tooltip_reset">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
+                        <polyline points="1 4 1 10 7 10"></polyline>
+                        <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+                    </svg>
                     <span data-i18n="settings_btn_reset">Reset UI</span>
                 </button>
-                <button id="btn-clear-data" class="data-mgmt-btn clear" title="Clear All Data" data-i18n-title="settings_tooltip_clear">
-                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                <button id="btn-clear-data" class="data-mgmt-btn clear" title="Clear All Data"
+                    data-i18n-title="settings_tooltip_clear">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
                     <span data-i18n="settings_btn_clear">Clear All</span>
                 </button>
             </div>
             <input type="file" id="file-import" accept=".json" style="display: none;">
         </div>
 
-        <div class="settings-footer" style="margin-top: 30px; padding-top: 15px; border-top: 1px solid var(--border-light); display: flex; gap: 15px; justify-content: center; font-size: 13px;">
-            <a href="https://feedback.iswappp.com/lilo-extension" target="_blank" style="color: var(--accent-main); text-decoration: none; display: flex; align-items: center; gap: 5px;">
-                <svg class="icon icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg> Feedback
+        <div class="settings-footer"
+            style="margin-top: 30px; padding-top: 15px; border-top: 1px solid var(--border-light); display: flex; gap: 15px; justify-content: center; font-size: 13px;">
+            <a href="https://feedback.iswappp.com/lilo-extension" target="_blank"
+                style="color: var(--accent-main); text-decoration: none; display: flex; align-items: center; gap: 5px;">
+                <svg class="icon icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg> Feedback
             </a>
             <span style="color: var(--text-muted);">|</span>
-            <a href="https://github.com/ISWAPPP/LILO/blob/master/CHANGELOG.md" target="_blank" style="color: var(--accent-main); text-decoration: none; display: flex; align-items: center; gap: 5px;">
-                <svg class="icon icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg> Changelog
+            <a href="https://github.com/ISWAPPP/LILO/blob/master/CHANGELOG.md" target="_blank"
+                style="color: var(--accent-main); text-decoration: none; display: flex; align-items: center; gap: 5px;">
+                <svg class="icon icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                </svg> Changelog
             </a>
         </div>
     </div>
     <div id="toast-container"></div>
 
 </body>
+
 </html>

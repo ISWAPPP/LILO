@@ -8,6 +8,8 @@ export const I18n = {
       'tab_notes': 'NOTES',
       'tab_settings': 'НАЛАШТУВАННЯ',
       'dns_ssl': 'SSL',
+      'dns_ssl_days': '{days} дн.',
+      'dns_ssl_expired': 'Закінчився',
       'dns_dns': 'DNS',
       'dns_whois': 'Whois',
       'dns_placeholder': 'example.com',
@@ -53,6 +55,9 @@ export const I18n = {
       'settings_history_limit': 'Макс. доменів в історії DNS',
       'settings_dns_google': 'Google (8.8.8.8)',
       'settings_dns_cloudflare': 'Cloudflare (1.1.1.1)',
+      'settings_ssl_provider_label': 'Провайдер перевірки SSL',
+      'settings_ssl_certist': 'api.cert.ist (CORS-сумісний)',
+      'settings_ssl_sslchecker': 'ssl-checker.io',
       'settings_theme': 'Тема оформлення',
       'settings_theme_auto': 'Автоматично (браузер)',
       'settings_theme_light': 'Світла',
@@ -127,6 +132,8 @@ export const I18n = {
       'tab_notes': 'NOTES',
       'tab_settings': 'SETTINGS',
       'dns_ssl': 'SSL',
+      'dns_ssl_days': '{days} days',
+      'dns_ssl_expired': 'Expired',
       'dns_dns': 'DNS',
       'dns_whois': 'Whois',
       'dns_placeholder': 'example.com',
@@ -172,6 +179,9 @@ export const I18n = {
       'settings_history_limit': 'Max DNS History Domains',
       'settings_dns_google': 'Google (8.8.8.8)',
       'settings_dns_cloudflare': 'Cloudflare (1.1.1.1)',
+      'settings_ssl_provider_label': 'SSL Checker Provider',
+      'settings_ssl_certist': 'api.cert.ist (CORS compliant)',
+      'settings_ssl_sslchecker': 'ssl-checker.io',
       'settings_theme': 'Theme',
       'settings_theme_auto': 'Auto (Browser)',
       'settings_theme_light': 'Light',
@@ -270,7 +280,20 @@ export const I18n = {
             const icon = el.querySelector('span');
             el.textContent = '';
             el.appendChild(icon);
-            el.appendChild(document.createTextNode(' ' + this.t(key)));
+            
+            let btnText = this.t(key);
+            if (el.id === 'copySSL' && el.hasAttribute('data-ssl-days')) {
+              const daysVal = el.getAttribute('data-ssl-days');
+              if (daysVal === 'expired') {
+                btnText = this.t('dns_ssl_expired');
+              } else if (daysVal === 'loading') {
+                btnText = 'SSL...';
+              } else if (daysVal !== '') {
+                btnText = this.t('dns_ssl_days').replace('{days}', daysVal);
+              }
+            }
+            
+            el.appendChild(document.createTextNode(' ' + btnText));
         } else {
           el.textContent = this.t(key);
         }

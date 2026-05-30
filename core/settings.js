@@ -5,6 +5,7 @@ const defaultSettings = {
   theme: 'auto',
   startupTab: 'last',
   dnsProvider: 'google',
+  sslProvider: 'certist',
   windowHeight: 300,
   dnsHistoryLimit: 4,
   passgen: { lower: true, upper: true, numbers: true, symbols: false, excludeSimilar: false, length: 16 },

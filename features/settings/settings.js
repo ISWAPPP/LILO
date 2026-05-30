@@ -13,6 +13,7 @@ export function initSettingsFeature() {
       const langSelect = document.getElementById('setting-language');
       const startupSelect = document.getElementById('setting-startup-tab');
       const dnsSelect = document.getElementById('setting-dns-provider');
+      const sslSelect = document.getElementById('setting-ssl-provider');
       const heightSlider = document.getElementById('setting-window-height');
       const heightVal = document.getElementById('setting-window-height-val');
       const historyLimitSlider = document.getElementById('setting-history-limit');
@@ -78,6 +79,7 @@ export function initSettingsFeature() {
       if (langSelect) { langSelect.value = settings.language; }
       if (startupSelect) { startupSelect.value = settings.startupTab; }
       if (dnsSelect) { dnsSelect.value = settings.dnsProvider || 'google'; }
+      if (sslSelect) { sslSelect.value = settings.sslProvider || 'certist'; }
       if (heightSlider) {
         heightSlider.value = settings.windowHeight || 600;
         if (heightVal) {
@@ -99,6 +101,7 @@ export function initSettingsFeature() {
           theme: currentTheme,
           startupTab: startupSelect?.value || 'last',
           dnsProvider: dnsSelect?.value || 'google',
+          sslProvider: sslSelect?.value || 'certist',
           windowHeight: parseInt(heightSlider?.value || '600', 10),
           dnsHistoryLimit: parseInt(historyLimitSlider?.value || '4', 10),
           dnsQueries: {
@@ -145,6 +148,7 @@ export function initSettingsFeature() {
       langSelect?.addEventListener('change', () => handleSave());
       startupSelect?.addEventListener('change', () => handleSave());
       dnsSelect?.addEventListener('change', () => handleSave());
+      sslSelect?.addEventListener('change', () => handleSave());
       
       const queryCheckboxes = [qA, qAAAA, qMX, qNS, qTXT, qSPF, qDKIM, qDMARC];
       queryCheckboxes.forEach(cb => {

@@ -24,6 +24,48 @@ export function initDnsFeature() {
 
   let lastRequest = 0;
 
+  // --- Asynchronously check SSL certificate validity days ---
+  const updateSSLButton = async (domain) => {
+    const sslBtn = document.getElementById('copySSL');
+    if (!sslBtn) return;
+
+    const isIp = Utils.isValidIP(domain);
+    if (isIp) {
+      sslBtn.removeAttribute('data-ssl-days');
+      const span = sslBtn.querySelector('span');
+      sslBtn.innerHTML = `${span ? span.outerHTML : ''} SSL`;
+      return;
+    }
+
+    sslBtn.setAttribute('data-ssl-days', 'loading');
+    const span = sslBtn.querySelector('span');
+    const iconHTML = span ? span.outerHTML : '';
+    sslBtn.innerHTML = `${iconHTML} SSL...`;
+
+    const days = await Api.getSslDays(domain);
+
+    // Verify domain hasn't changed in input since the request was initiated
+    const currentDomain = Utils.cleanDomain(input.value.split(':')[0]);
+    if (currentDomain !== domain) {
+      return;
+    }
+
+    if (days !== null) {
+      let text = '';
+      if (days < 0) {
+        sslBtn.setAttribute('data-ssl-days', 'expired');
+        text = I18n.t('dns_ssl_expired');
+      } else {
+        sslBtn.setAttribute('data-ssl-days', days);
+        text = I18n.t('dns_ssl_days').replace('{days}', days);
+      }
+      sslBtn.innerHTML = `${iconHTML} ${text}`;
+    } else {
+      sslBtn.removeAttribute('data-ssl-days');
+      sslBtn.innerHTML = `${iconHTML} SSL`;
+    }
+  };
+
   // --- External links and copy handlers update ---
   // This function activates toolbar buttons and assigns target URLs.
   // It also sets up handlers for copying these URLs to clipboard.
@@ -57,6 +99,9 @@ export function initDnsFeature() {
         }
       };
     });
+
+    // Start fetching SSL certificate days
+    updateSSLButton(domain);
   };
 
   // --- Main DNS check ---
@@ -103,7 +148,14 @@ export function initDnsFeature() {
       output.innerHTML = DnsRenderer.error(I18n.t('dns_error_invalid'));
       Object.keys(links).forEach(key => {
         if (links[key].a) links[key].a.classList.add('disabled');
-        if (links[key].btn) links[key].btn.classList.add('disabled');
+        if (links[key].btn) {
+          links[key].btn.classList.add('disabled');
+          if (key === 'ssl') {
+            links[key].btn.removeAttribute('data-ssl-days');
+            const span = links[key].btn.querySelector('span');
+            links[key].btn.innerHTML = `${span ? span.outerHTML : ''} SSL`;
+          }
+        }
       });
       return;
     }

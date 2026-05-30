@@ -1,6 +1,7 @@
 // core/api.js — all external HTTP requests. No cache — data is always fresh.
 
 import { Config } from '../config.js';
+import { Settings } from './settings.js';
 
 async function fetchWithTimeout(resource, options = {}) {
   const { timeout = 8000 } = options;
@@ -130,5 +131,42 @@ export const Api = {
 
       xhr.send(formData);
     });
+  },
+
+  /** Gets SSL certificate info (days remaining) via the configured provider */
+  async getSslDays(domain) {
+    try {
+      const settings = await Settings.load();
+      const provider = settings.sslProvider || 'certist';
+
+      if (provider === 'sslchecker') {
+        const res = await fetchWithTimeout(`https://ssl-checker.io/api/v1/check/${encodeURIComponent(domain)}`, { timeout: 6000 });
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const data = await res.json();
+        if (data.status === 'ok' && data.result) {
+          return data.result.days_left !== undefined ? data.result.days_left : null;
+        }
+        return null;
+      } else {
+        // Default to certist
+        const res = await fetchWithTimeout(`https://api.cert.ist/${encodeURIComponent(domain)}`, { timeout: 6000 });
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        const data = await res.json();
+        if (data?.certificate?.validity_dates?.not_after) {
+          const expiryDate = new Date(data.certificate.validity_dates.not_after);
+          const diffTime = expiryDate.getTime() - Date.now();
+          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+          return diffDays;
+        }
+        return null;
+      }
+    } catch (err) {
+      console.error('SSL check failed:', err);
+      return null;
+    }
   },
 };

@@ -1,5 +1,11 @@
 # Changelog — LILO Tools
 
+## 0.9.23 — 2026-05-30
+
+### Added
+- **Dynamic SSL Certificate Expiry Days**: Replaced the static "SSL" toolbar button label with a live indicator showing the remaining validity days of the queried domain's SSL certificate (e.g., "60 days" or "60 дн."). Built using the reliable `api.cert.ist` API to guarantee zero-CORS issues, fully supports dynamic translation locales, and is completely protected against query race conditions.
+- **SSL Checker Provider Configuration**: Added a select dropdown in settings allowing users to choose their preferred SSL checker provider between `api.cert.ist` (CORS-compliant edge API) and `ssl-checker.io`.
+
 ## 0.9.22 — 2026-05-30
 
 ### Added
