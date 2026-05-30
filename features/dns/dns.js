@@ -336,6 +336,16 @@ export function initDnsFeature() {
       input.focus();
       renderQuickAccess();
 
+      // Update toolbar buttons visibility
+      const settings = await Settings.load();
+      const tb = settings.dnsToolbarButtons || { ssl: true, dns: true, whois: true };
+      const groupSSL = document.getElementById('groupSSL');
+      const groupDNS = document.getElementById('groupDNS');
+      const groupWhois = document.getElementById('groupWhois');
+      if (groupSSL) { groupSSL.style.display = tb.ssl ? '' : 'none'; }
+      if (groupDNS) { groupDNS.style.display = tb.dns ? '' : 'none'; }
+      if (groupWhois) { groupWhois.style.display = tb.whois ? '' : 'none'; }
+
       // Autostart from active tab (only if input is empty)
       if (!input.value.trim()) {
         try {

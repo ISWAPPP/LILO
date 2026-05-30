@@ -1,5 +1,14 @@
 # Changelog — LILO Tools
 
+## 0.9.22 — 2026-05-30
+
+### Added
+- **DNS Toolbar Buttons Configuration**: Added configuration checkboxes under settings allowing users to hide or show specific DNS, SSL, and WHOIS toolbar buttons in the DNS tab.
+
+### Improved
+- **Cleanup Duplicate DNS Labels**: Renamed the settings card to "DNS Configuration" and removed the redundant "DNS Provider" text label, eliminating duplicate text in the layout.
+- **Fixed Settings Card SVG Icons**: Resolved an internationalization engine bug where `data-i18n` on settings card headers completely cleared and destroyed their inline SVG icons. The icons now render properly across all tabs and themes.
+
 ## 0.9.21 — 2026-05-26
 
 ### Improved

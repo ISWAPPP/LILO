@@ -116,7 +116,7 @@
         
         <!-- CARD 1: GENERAL SETTINGS -->
         <div class="settings-card">
-            <h3 data-i18n="settings_title">
+            <h3>
                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                 <span data-i18n="settings_title">Settings</span>
             </h3>
@@ -166,13 +166,12 @@
 
         <!-- CARD 2: DNS CONFIGURATION -->
         <div class="settings-card">
-            <h3 data-i18n="settings_dns">
+            <h3>
                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-                <span data-i18n="settings_dns">DNS Provider</span>
+                <span data-i18n="settings_dns_config">DNS Configuration</span>
             </h3>
 
             <div class="settings-group" style="margin-bottom: 14px;">
-                <label for="setting-dns-provider" data-i18n="settings_dns" style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);">DNS Provider</label>
                 <select id="setting-dns-provider" style="width: 100%; padding: 8px; border-radius: var(--radius-md); border: 1px solid var(--border-light); background: var(--bg-main); color: var(--text-main);">
                     <option value="google" data-i18n="settings_dns_google">Google (8.8.8.8)</option>
                     <option value="cloudflare" data-i18n="settings_dns_cloudflare">Cloudflare (1.1.1.1)</option>
@@ -216,11 +215,29 @@
                     </label>
                 </div>
             </div>
+
+            <div class="settings-group" style="margin-top: 14px;">
+                <label style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);" data-i18n="settings_dns_buttons">DNS Toolbar Buttons</label>
+                <div class="query-chips-grid" style="grid-template-columns: repeat(3, 1fr);">
+                    <label class="query-chip">
+                        <input type="checkbox" id="setting-btn-ssl">
+                        <div class="query-chip-inner" data-i18n="dns_ssl">SSL</div>
+                    </label>
+                    <label class="query-chip">
+                        <input type="checkbox" id="setting-btn-dns">
+                        <div class="query-chip-inner" data-i18n="dns_dns">DNS</div>
+                    </label>
+                    <label class="query-chip">
+                        <input type="checkbox" id="setting-btn-whois">
+                        <div class="query-chip-inner" data-i18n="dns_whois">Whois</div>
+                    </label>
+                </div>
+            </div>
         </div>
 
         <!-- CARD 3: THEME AND APPEARANCE -->
         <div class="settings-card">
-            <h3 data-i18n="settings_theme">
+            <h3>
                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>
                 <span data-i18n="settings_theme">Theme</span>
             </h3>
@@ -268,7 +285,7 @@
 
         <!-- CARD 4: DATA MANAGEMENT -->
         <div class="settings-card">
-            <h3 data-i18n="settings_data_title">
+            <h3>
                 <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
                 <span data-i18n="settings_data_title">Data Management</span>
             </h3>

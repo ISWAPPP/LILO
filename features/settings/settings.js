@@ -37,6 +37,15 @@ export function initSettingsFeature() {
       if (qDKIM) { qDKIM.checked = dq.dkim; }
       if (qDMARC) { qDMARC.checked = dq.dmarc; }
       
+      const tb = settings.dnsToolbarButtons || { ssl: true, dns: true, whois: true };
+      const tbSsl = document.getElementById('setting-btn-ssl');
+      const tbDns = document.getElementById('setting-btn-dns');
+      const tbWhois = document.getElementById('setting-btn-whois');
+
+      if (tbSsl) { tbSsl.checked = tb.ssl; }
+      if (tbDns) { tbDns.checked = tb.dns; }
+      if (tbWhois) { tbWhois.checked = tb.whois; }
+      
       // Theme Palette logic
       const themeSwatches = document.querySelectorAll('.theme-swatch');
       let currentTheme = settings.theme || 'auto';
@@ -102,6 +111,11 @@ export function initSettingsFeature() {
             dkim: qDKIM?.checked,
             dmarc: qDMARC?.checked
           },
+          dnsToolbarButtons: {
+            ssl: tbSsl?.checked,
+            dns: tbDns?.checked,
+            whois: tbWhois?.checked
+          },
           ...updatedSettings
         };
         await Settings.save(newSettings);
@@ -116,6 +130,15 @@ export function initSettingsFeature() {
         document.documentElement.style.setProperty('--cached-height', `${newSettings.windowHeight}px`);
         localStorage.setItem('lilo_height_cache', newSettings.windowHeight);
         
+        // Update toolbar buttons visibility immediately
+        const activeTb = newSettings.dnsToolbarButtons || { ssl: true, dns: true, whois: true };
+        const groupSSL = document.getElementById('groupSSL');
+        const groupDNS = document.getElementById('groupDNS');
+        const groupWhois = document.getElementById('groupWhois');
+        if (groupSSL) { groupSSL.style.display = activeTb.ssl ? '' : 'none'; }
+        if (groupDNS) { groupDNS.style.display = activeTb.dns ? '' : 'none'; }
+        if (groupWhois) { groupWhois.style.display = activeTb.whois ? '' : 'none'; }
+        
         Utils.showToast(I18n.t('toast_saved'));
       };
  
@@ -125,6 +148,11 @@ export function initSettingsFeature() {
       
       const queryCheckboxes = [qA, qAAAA, qMX, qNS, qTXT, qSPF, qDKIM, qDMARC];
       queryCheckboxes.forEach(cb => {
+        cb?.addEventListener('change', () => handleSave());
+      });
+
+      const tbCheckboxes = [tbSsl, tbDns, tbWhois];
+      tbCheckboxes.forEach(cb => {
         cb?.addEventListener('change', () => handleSave());
       });
       

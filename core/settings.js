@@ -8,7 +8,8 @@ const defaultSettings = {
   windowHeight: 300,
   dnsHistoryLimit: 4,
   passgen: { lower: true, upper: true, numbers: true, symbols: false, excludeSimilar: false, length: 16 },
-  dnsQueries: { a: true, aaaa: false, mx: true, txt: false, spf: false, dkim: false, dmarc: false, ns: true }
+  dnsQueries: { a: true, aaaa: false, mx: true, txt: false, spf: false, dkim: false, dmarc: false, ns: true },
+  dnsToolbarButtons: { ssl: true, dns: true, whois: true }
 };
 
 function mergeSettings(saved) {
@@ -17,6 +18,7 @@ function mergeSettings(saved) {
     ...saved,
     passgen: { ...defaultSettings.passgen, ...saved.passgen },
     dnsQueries: { ...defaultSettings.dnsQueries, ...saved.dnsQueries },
+    dnsToolbarButtons: { ...defaultSettings.dnsToolbarButtons, ...saved.dnsToolbarButtons },
   };
 }
 
@@ -42,6 +44,7 @@ export const Settings = {
       ...settings,
       passgen: { ...settings.passgen },
       dnsQueries: { ...settings.dnsQueries },
+      dnsToolbarButtons: { ...settings.dnsToolbarButtons },
     };
 
     return new Promise((resolve) => {
