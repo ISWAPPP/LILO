@@ -31,14 +31,22 @@ export const Api = {
     window.liloApiCallsLog = window.liloApiCallsLog || [];
     
     let urlLabel = String(url);
-    if (urlLabel.includes('dns.google/resolve')) {
-      urlLabel = 'DNS Query (Google)';
-    } else if (urlLabel.includes('1.1.1.1/dns-query')) {
-      urlLabel = 'DNS Query (Cloudflare)';
-    } else if (urlLabel.includes('ip-api.com')) {
-      urlLabel = 'IP Geo Check';
-    } else if (urlLabel.includes('ssl-checker.io') || urlLabel.includes('api.cert.ist')) {
-      urlLabel = 'SSL Expiry Check';
+    try {
+      const baseOrigin = typeof window !== 'undefined' && window.location ? window.location.origin : 'chrome-extension://lilo';
+      const parsedUrl = new URL(urlLabel, baseOrigin);
+      const host = parsedUrl.hostname.toLowerCase();
+      const path = parsedUrl.pathname;
+      if (host === 'dns.google' && path === '/resolve') {
+        urlLabel = 'DNS Query (Google)';
+      } else if (host === '1.1.1.1' && path === '/dns-query') {
+        urlLabel = 'DNS Query (Cloudflare)';
+      } else if (host === 'ip-api.com' || host === 'www.ip-api.com') {
+        urlLabel = 'IP Geo Check';
+      } else if (host === 'ssl-checker.io' || host === 'api.cert.ist') {
+        urlLabel = 'SSL Expiry Check';
+      }
+    } catch (e) {
+      // Fallback to original label if URL parsing fails (e.g. non-URL logs)
     }
     
     window.liloApiCallsLog.unshift({
