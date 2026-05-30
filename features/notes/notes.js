@@ -257,7 +257,7 @@ function startEditing(id) {
     input.focus();
     input.selectionStart = input.value.length;
     input.style.height = 'auto';
-    input.style.height = (input.scrollHeight + 2) + 'px';
+    input.style.height = `${input.scrollHeight + 2}px`;
   }
 }
 
@@ -345,7 +345,7 @@ function setupNoteEvents() {
   list.addEventListener('input', (e) => {
     if (e.target.classList.contains('note-edit-input')) {
       e.target.style.height = 'auto';
-      e.target.style.height = (e.target.scrollHeight + 2) + 'px';
+      e.target.style.height = `${e.target.scrollHeight + 2}px`;
     }
     if (e.target.classList.contains('note-height-slider')) {
       const item = e.target.closest('.note-item');
@@ -474,7 +474,7 @@ export function initNotesFeature() {
 
       addInput?.addEventListener('input', () => {
         addInput.style.height = 'auto';
-        addInput.style.height = (addInput.scrollHeight + 2) + 'px';
+        addInput.style.height = `${addInput.scrollHeight + 2}px`;
         if (!addInput.value) {
            addInput.style.height = ''; // reset to default
         }

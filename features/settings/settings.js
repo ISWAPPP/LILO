@@ -72,7 +72,7 @@ export function initSettingsFeature() {
       if (heightSlider) {
         heightSlider.value = settings.windowHeight || 600;
         if (heightVal) {
-          heightVal.textContent = (settings.windowHeight || 600) + 'px';
+          heightVal.textContent = `${settings.windowHeight || 600}px`;
         }
       }
       if (historyLimitSlider) {
@@ -113,7 +113,7 @@ export function initSettingsFeature() {
         Theme.apply(newSettings.theme);
         
         // Update height
-        document.documentElement.style.setProperty('--cached-height', newSettings.windowHeight + 'px');
+        document.documentElement.style.setProperty('--cached-height', `${newSettings.windowHeight}px`);
         localStorage.setItem('lilo_height_cache', newSettings.windowHeight);
         
         Utils.showToast(I18n.t('toast_saved'));
@@ -139,9 +139,9 @@ export function initSettingsFeature() {
       
       heightSlider?.addEventListener('input', () => {
         if (heightVal) {
-          heightVal.textContent = heightSlider.value + 'px';
+          heightVal.textContent = `${heightSlider.value}px`;
         }
-        document.documentElement.style.setProperty('--cached-height', heightSlider.value + 'px');
+        document.documentElement.style.setProperty('--cached-height', `${heightSlider.value}px`);
       });
       heightSlider?.addEventListener('change', () => handleSave());
       
