@@ -27,7 +27,9 @@ export function initDnsFeature() {
   // --- Asynchronously check SSL certificate validity days ---
   const updateSSLButton = async (domain) => {
     const sslBtn = document.getElementById('copySSL');
-    if (!sslBtn) return;
+    if (!sslBtn) {
+      return;
+    }
 
     const isIp = Utils.isValidIP(domain);
     if (isIp) {
@@ -147,7 +149,9 @@ export function initDnsFeature() {
     if (!Utils.isValidDomain(domain) && !isIp) {
       output.innerHTML = DnsRenderer.error(I18n.t('dns_error_invalid'));
       Object.keys(links).forEach(key => {
-        if (links[key].a) links[key].a.classList.add('disabled');
+        if (links[key].a) {
+          links[key].a.classList.add('disabled');
+        }
         if (links[key].btn) {
           links[key].btn.classList.add('disabled');
           if (key === 'ssl') {

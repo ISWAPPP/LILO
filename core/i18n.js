@@ -293,7 +293,7 @@ export const I18n = {
               }
             }
             
-            el.appendChild(document.createTextNode(' ' + btnText));
+            el.appendChild(document.createTextNode(` ${btnText}`));
         } else {
           el.textContent = this.t(key);
         }

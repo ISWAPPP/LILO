@@ -149,21 +149,21 @@ export const Api = {
           return data.result.days_left !== undefined ? data.result.days_left : null;
         }
         return null;
-      } else {
-        // Default to certist
-        const res = await fetchWithTimeout(`https://api.cert.ist/${encodeURIComponent(domain)}`, { timeout: 6000 });
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-        const data = await res.json();
-        if (data?.certificate?.validity_dates?.not_after) {
-          const expiryDate = new Date(data.certificate.validity_dates.not_after);
-          const diffTime = expiryDate.getTime() - Date.now();
-          const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-          return diffDays;
-        }
-        return null;
       }
+
+      // Default to certist
+      const res = await fetchWithTimeout(`https://api.cert.ist/${encodeURIComponent(domain)}`, { timeout: 6000 });
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      const data = await res.json();
+      if (data?.certificate?.validity_dates?.not_after) {
+        const expiryDate = new Date(data.certificate.validity_dates.not_after);
+        const diffTime = expiryDate.getTime() - Date.now();
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays;
+      }
+      return null;
     } catch (err) {
       console.error('SSL check failed:', err);
       return null;
