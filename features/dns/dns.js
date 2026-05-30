@@ -24,6 +24,50 @@ export function initDnsFeature() {
 
   let lastRequest = 0;
 
+  // --- Asynchronously check SSL certificate validity days ---
+  const updateSSLButton = async (domain) => {
+    const sslBtn = document.getElementById('copySSL');
+    if (!sslBtn) {
+      return;
+    }
+
+    const isIp = Utils.isValidIP(domain);
+    if (isIp) {
+      sslBtn.removeAttribute('data-ssl-days');
+      const span = sslBtn.querySelector('span');
+      sslBtn.innerHTML = `${span ? span.outerHTML : ''} SSL`;
+      return;
+    }
+
+    sslBtn.setAttribute('data-ssl-days', 'loading');
+    const span = sslBtn.querySelector('span');
+    const iconHTML = span ? span.outerHTML : '';
+    sslBtn.innerHTML = `${iconHTML} SSL...`;
+
+    const days = await Api.getSslDays(domain);
+
+    // Verify domain hasn't changed in input since the request was initiated
+    const currentDomain = Utils.cleanDomain(input.value.split(':')[0]);
+    if (currentDomain !== domain) {
+      return;
+    }
+
+    if (days !== null) {
+      let text = '';
+      if (days < 0) {
+        sslBtn.setAttribute('data-ssl-days', 'expired');
+        text = I18n.t('dns_ssl_expired');
+      } else {
+        sslBtn.setAttribute('data-ssl-days', days);
+        text = I18n.t('dns_ssl_days').replace('{days}', days);
+      }
+      sslBtn.innerHTML = `${iconHTML} ${text}`;
+    } else {
+      sslBtn.removeAttribute('data-ssl-days');
+      sslBtn.innerHTML = `${iconHTML} SSL`;
+    }
+  };
+
   // --- External links and copy handlers update ---
   // This function activates toolbar buttons and assigns target URLs.
   // It also sets up handlers for copying these URLs to clipboard.
@@ -57,11 +101,14 @@ export function initDnsFeature() {
         }
       };
     });
+
+    // Start fetching SSL certificate days
+    updateSSLButton(domain);
   };
 
   // --- Main DNS check ---
   // Performs a series of parallel API requests to gather domain info
-  const checkDNS = async () => {
+  const checkDNS = async (saveToHistory = true) => {
     const rawValue = input.value.trim();
     if (!rawValue) {
       return;
@@ -102,8 +149,17 @@ export function initDnsFeature() {
     if (!Utils.isValidDomain(domain) && !isIp) {
       output.innerHTML = DnsRenderer.error(I18n.t('dns_error_invalid'));
       Object.keys(links).forEach(key => {
-        if (links[key].a) links[key].a.classList.add('disabled');
-        if (links[key].btn) links[key].btn.classList.add('disabled');
+        if (links[key].a) {
+          links[key].a.classList.add('disabled');
+        }
+        if (links[key].btn) {
+          links[key].btn.classList.add('disabled');
+          if (key === 'ssl') {
+            links[key].btn.removeAttribute('data-ssl-days');
+            const span = links[key].btn.querySelector('span');
+            links[key].btn.innerHTML = `${span ? span.outerHTML : ''} SSL`;
+          }
+        }
       });
       return;
     }
@@ -169,12 +225,16 @@ export function initDnsFeature() {
         return r;
       }));
 
-      let mainGeo = null;
+      let ipGeos = [];
       if (ips && ips.length > 0) {
-        mainGeo = await Api.getIpGeo(ips[0]);
+        const geoResults = await Promise.allSettled(ips.map(ip => Api.getIpGeo(ip)));
+        ipGeos = geoResults.map(r => (r.status === 'fulfilled' ? r.value : null));
       }
 
+      const data = await chrome.storage.local.get(['lilo_dns_history']);
+
       output.innerHTML = DnsRenderer.results({
+        domain,
         ips,
         ipv6,
         mx: MX.Answer === null ? null : mxResolved,
@@ -182,15 +242,73 @@ export function initDnsFeature() {
         dmarc: DMARC.Answer === null ? null : (DMARC.Answer || []),
         dkim: DKIM.Answer === null ? null : (DKIM.Answer || []),
         ns: NS.Answer === null ? null : (NS.Answer || []),
-        mainGeo,
+        ipGeos,
         dq
       });
+
+      if (saveToHistory) {
+        // Save to history (keep top N, unique)
+        const settings = await Settings.load();
+        const limit = settings.dnsHistoryLimit || 4;
+        let hist = data.lilo_dns_history || [];
+        hist = [domain, ...hist.filter(d => d !== domain)].slice(0, limit);
+        await chrome.storage.local.set({ lilo_dns_history: hist });
+      }
+
+      renderQuickAccess();
     } catch (err) {
       console.error('DNS check failed:', err);
       output.innerHTML = DnsRenderer.error(I18n.t('dns_error_network'));
     } finally {
       btn.disabled = false;
     }
+  };
+
+  // --- Quick Access History logic ---
+  const renderQuickAccess = async () => {
+    const data = await chrome.storage.local.get(['lilo_dns_history']);
+    const settings = await Settings.load();
+    const limit = settings.dnsHistoryLimit || 4;
+    const history = (data.lilo_dns_history || []).slice(0, limit);
+
+    const container = document.getElementById('dns-quick-access');
+    const histList = document.getElementById('dns-history-list');
+
+    if (history.length === 0) {
+      container.style.display = 'none';
+      return;
+    }
+    container.style.display = 'flex';
+
+    histList.innerHTML = history.map(dom => `
+      <span class="dns-chip hist-chip" data-domain="${Utils.escapeHTML(dom)}">
+        ${Utils.escapeHTML(dom)}
+        <span class="remove-chip" data-domain="${Utils.escapeHTML(dom)}">✕</span>
+      </span>
+    `).join('');
+
+    // Attach click listeners to chips
+    container.querySelectorAll('.dns-chip').forEach(chip => {
+      chip.onclick = (e) => {
+        if (e.target.classList.contains('remove-chip')) {
+          e.stopPropagation();
+          const dom = e.target.getAttribute('data-domain');
+          removeQuickAccessItem(dom);
+          return;
+        }
+        const dom = chip.getAttribute('data-domain');
+        input.value = dom;
+        checkDNS(false);
+      };
+    });
+  };
+
+  const removeQuickAccessItem = async (dom) => {
+    const data = await chrome.storage.local.get('lilo_dns_history');
+    let hist = data.lilo_dns_history || [];
+    hist = hist.filter(d => d !== dom);
+    await chrome.storage.local.set({ lilo_dns_history: hist });
+    renderQuickAccess();
   };
 
   // --- Tab registration ---
@@ -203,13 +321,51 @@ export function initDnsFeature() {
         }
       });
 
-      // Click on result-row — copy value
+      // Click on output elements (copy)
       output.addEventListener('click', async (e) => {
         const row = e.target.closest('.result-row');
         if (!row) {
           return;
         }
 
+        // Find all single values inside this card
+        const singleValEls = row.querySelectorAll('.dns-single-val');
+
+        // If there is only 1 value, click anywhere on the card copies that single value!
+        if (singleValEls.length === 1) {
+          const singleValEl = singleValEls[0];
+          const textToCopy = singleValEl.innerText.trim();
+          if (textToCopy) {
+            const ok = await Utils.copyToClipboard(textToCopy);
+            if (ok) {
+              row.classList.add('copied');
+              setTimeout(() => row.classList.remove('copied'), 800);
+            }
+          }
+          return;
+        }
+
+        // If there are multiple values, check if clicked on a specific row
+        const valRowEl = e.target.closest('.dns-val-row');
+        if (valRowEl) {
+          const singleValEl = valRowEl.querySelector('.dns-single-val');
+          if (singleValEl) {
+            const textToCopy = singleValEl.innerText.trim();
+            if (textToCopy) {
+              const ok = await Utils.copyToClipboard(textToCopy);
+              if (ok) {
+                valRowEl.classList.add('copied');
+                setTimeout(() => valRowEl.classList.remove('copied'), 800);
+
+                row.classList.add('copied-partially');
+                setTimeout(() => row.classList.remove('copied-partially'), 800);
+              }
+            }
+            return;
+          }
+        }
+
+        // Else, clicked on the general card area outside specific rows (when multiple values exist) -> copy all!
         const valueEl = row.querySelector('.result-value');
         if (!valueEl) {
           return;
@@ -224,9 +380,6 @@ export function initDnsFeature() {
           return;
         }
 
-        // For MX records, priority text could be removed if needed, 
-        // but priority is usually useful. innerText preserves it.
-
         const ok = await Utils.copyToClipboard(textToCopy);
         if (ok) {
           row.classList.add('copied');
@@ -237,6 +390,17 @@ export function initDnsFeature() {
 
     async onActivate() {
       input.focus();
+      renderQuickAccess();
+
+      // Update toolbar buttons visibility
+      const settings = await Settings.load();
+      const tb = settings.dnsToolbarButtons || { ssl: true, dns: true, whois: true };
+      const groupSSL = document.getElementById('groupSSL');
+      const groupDNS = document.getElementById('groupDNS');
+      const groupWhois = document.getElementById('groupWhois');
+      if (groupSSL) { groupSSL.style.display = tb.ssl ? '' : 'none'; }
+      if (groupDNS) { groupDNS.style.display = tb.dns ? '' : 'none'; }
+      if (groupWhois) { groupWhois.style.display = tb.whois ? '' : 'none'; }
 
       // Autostart from active tab (only if input is empty)
       if (!input.value.trim()) {

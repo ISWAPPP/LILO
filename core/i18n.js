@@ -1,5 +1,5 @@
 export const I18n = {
-  currentLang: 'uk', // Default
+  currentLang: 'en',
 
   translations: {
     uk: {
@@ -8,6 +8,8 @@ export const I18n = {
       'tab_notes': 'NOTES',
       'tab_settings': 'НАЛАШТУВАННЯ',
       'dns_ssl': 'SSL',
+      'dns_ssl_days': '{days} дн.',
+      'dns_ssl_expired': 'Закінчився',
       'dns_dns': 'DNS',
       'dns_whois': 'Whois',
       'dns_placeholder': 'example.com',
@@ -15,6 +17,10 @@ export const I18n = {
       'dns_output_wait': 'Очікування...',
       'dns_error_invalid': 'Некоректний домен або IP',
       'dns_error_network': 'Помилка з\'єднання',
+      'dns_group_addressing': 'Адресація та Маршрутизація',
+      'dns_group_mail': 'Поштові сервери (MX)',
+      'dns_group_security': 'Безпека та Автентифікація',
+      'dns_group_txt': 'Інші текстові записи (TXT)',
       'pics_warning': 'Зображення зберігаються на сторонніх серверах. Не поширюйте приватну інформацію!',
       'pics_paste_prefix': 'Натисніть ',
       'pics_paste_suffix': ' щоб вставити скріншот',
@@ -23,6 +29,8 @@ export const I18n = {
       'passgen_placeholder': '...',
       'passgen_tooltip': 'Натисніть щоб скопіювати',
       'passgen_refresh': 'Згенерувати новий',
+      'passgen_no_similar': 'Без схожих',
+      'pics_uploading': 'Завантаження',
       'notes_placeholder': 'Нова нотатка...',
       'feedback_title': 'Є ідеї як покращити LILO?',
       'feedback_text': 'Залиште свій відгук, щоб зробити плагін ще кращим!',
@@ -40,10 +48,16 @@ export const I18n = {
       'settings_startup_pics': 'PICS',
       'settings_startup_notes': 'NOTES',
       'settings_dns': 'DNS Провайдер',
+      'settings_dns_config': 'Конфігурація DNS',
       'settings_dns_queries': 'Запити DNS',
+      'settings_dns_buttons': 'Кнопки швидкого доступу DNS',
       'settings_window_height': 'Максимальна висота вікна (px)',
+      'settings_history_limit': 'Макс. доменів в історії DNS',
       'settings_dns_google': 'Google (8.8.8.8)',
       'settings_dns_cloudflare': 'Cloudflare (1.1.1.1)',
+      'settings_ssl_provider_label': 'Провайдер перевірки SSL',
+      'settings_ssl_certist': 'api.cert.ist (CORS-сумісний)',
+      'settings_ssl_sslchecker': 'ssl-checker.io',
       'settings_theme': 'Тема оформлення',
       'settings_theme_auto': 'Автоматично (браузер)',
       'settings_theme_light': 'Світла',
@@ -99,6 +113,7 @@ export const I18n = {
       'notes_move_down': 'Вниз',
       'notes_empty': 'Нотаток ще немає',
       'notes_edit_placeholder': 'Текст нотатки...',
+      'notes_max_lines': 'Макс. рядків',
       'notes_title_edit': 'Редагувати',
       'notes_title_delete': 'Видалити',
       'notes_title_save': 'Зберегти',
@@ -117,6 +132,8 @@ export const I18n = {
       'tab_notes': 'NOTES',
       'tab_settings': 'SETTINGS',
       'dns_ssl': 'SSL',
+      'dns_ssl_days': '{days} days',
+      'dns_ssl_expired': 'Expired',
       'dns_dns': 'DNS',
       'dns_whois': 'Whois',
       'dns_placeholder': 'example.com',
@@ -124,6 +141,10 @@ export const I18n = {
       'dns_output_wait': 'Waiting...',
       'dns_error_invalid': 'Invalid domain or IP',
       'dns_error_network': 'Connection error',
+      'dns_group_addressing': 'Addressing & Routing',
+      'dns_group_mail': 'Mail Exchange (MX)',
+      'dns_group_security': 'Security & Validation',
+      'dns_group_txt': 'Other Text Records (TXT)',
       'pics_warning': 'Images are stored on third-party servers. Do not share private information!',
       'pics_paste_prefix': 'Press ',
       'pics_paste_suffix': ' to paste screenshot',
@@ -132,6 +153,8 @@ export const I18n = {
       'passgen_placeholder': '...',
       'passgen_tooltip': 'Click to copy',
       'passgen_refresh': 'Generate new',
+      'passgen_no_similar': 'No similar',
+      'pics_uploading': 'Uploading',
       'notes_placeholder': 'New note...',
       'feedback_title': 'Have ideas to improve LILO?',
       'feedback_text': 'Leave your feedback to make the plugin even better!',
@@ -149,10 +172,16 @@ export const I18n = {
       'settings_startup_pics': 'PICS',
       'settings_startup_notes': 'NOTES',
       'settings_dns': 'DNS Provider',
+      'settings_dns_config': 'DNS Configuration',
       'settings_dns_queries': 'DNS Queries',
+      'settings_dns_buttons': 'DNS Toolbar Buttons',
       'settings_window_height': 'Maximum Window Height (px)',
+      'settings_history_limit': 'Max DNS History Domains',
       'settings_dns_google': 'Google (8.8.8.8)',
       'settings_dns_cloudflare': 'Cloudflare (1.1.1.1)',
+      'settings_ssl_provider_label': 'SSL Checker Provider',
+      'settings_ssl_certist': 'api.cert.ist (CORS compliant)',
+      'settings_ssl_sslchecker': 'ssl-checker.io',
       'settings_theme': 'Theme',
       'settings_theme_auto': 'Auto (Browser)',
       'settings_theme_light': 'Light',
@@ -208,6 +237,7 @@ export const I18n = {
       'notes_move_down': 'Move Down',
       'notes_empty': 'No notes yet',
       'notes_edit_placeholder': 'Note text...',
+      'notes_max_lines': 'Max lines',
       'notes_title_edit': 'Edit',
       'notes_title_delete': 'Delete',
       'notes_title_save': 'Save',
@@ -250,7 +280,20 @@ export const I18n = {
             const icon = el.querySelector('span');
             el.textContent = '';
             el.appendChild(icon);
-            el.appendChild(document.createTextNode(' ' + this.t(key)));
+            
+            let btnText = this.t(key);
+            if (el.id === 'copySSL' && el.hasAttribute('data-ssl-days')) {
+              const daysVal = el.getAttribute('data-ssl-days');
+              if (daysVal === 'expired') {
+                btnText = this.t('dns_ssl_expired');
+              } else if (daysVal === 'loading') {
+                btnText = 'SSL...';
+              } else if (daysVal !== '') {
+                btnText = this.t('dns_ssl_days').replace('{days}', daysVal);
+              }
+            }
+            
+            el.appendChild(document.createTextNode(` ${btnText}`));
         } else {
           el.textContent = this.t(key);
         }

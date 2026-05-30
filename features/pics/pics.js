@@ -51,9 +51,12 @@ export function initPicsFeature() {
 
     const reader = new FileReader();
     reader.onload = async (e) => {
-      statusBox.innerHTML = PicsRenderer.preview(e.target.result);
-      
-      const url = await Api.uploadImage(file);
+      const dataUrl = e.target.result;
+      statusBox.innerHTML = PicsRenderer.preview(dataUrl, 0);
+
+      const url = await Api.uploadImage(file, (percent) => {
+        statusBox.innerHTML = PicsRenderer.preview(dataUrl, percent);
+      });
       if (url) {
         await Utils.copyToClipboard(url);
         statusBox.innerHTML = PicsRenderer.success(url);

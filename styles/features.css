@@ -4,18 +4,18 @@
    DNS FEATURE
    ============================================================ */
 #output {
-    margin-top: 16px;
+    margin-top: 10px;
 }
 
 .results-container {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
 }
 
 .result-row {
     display: flex;
-    padding: 10px 12px;
+    padding: 8px 10px;
     align-items: baseline;
     cursor: pointer;
     border-radius: var(--radius-md);
@@ -61,13 +61,6 @@
     font-size: 0.75em;
     margin-right: 6px;
     font-weight: 600;
-}
-
-.geo-tag {
-    font-size: 0.85em;
-    color: var(--text-muted);
-    display: inline-block;
-    margin-top: 4px;
 }
 
 .geo-info {
@@ -130,23 +123,35 @@
 }
 
 /* ============================================================
-   NOTES FEATURE — PASSWORD GENERATOR
+   PICS FEATURE — UPLOAD PROGRESS
    ============================================================ */
+.pics-upload-progress-track {
+  height: 4px;
+  background: var(--bg-main);
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.pics-upload-progress-bar {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: width 0.15s ease;
+}
+
+.pics-upload-progress-label {
+  margin: 6px 0 0;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
 .passgen-section {
     border: 1px solid var(--border-light);
     border-radius: var(--radius-lg);
     padding: 16px;
     margin-bottom: 16px;
     background: var(--bg-sec);
-}
-
-.passgen-label {
-    font-weight: 600;
-    font-size: 11px;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 10px;
-    letter-spacing: 0.5px;
 }
 
 .passgen-output {
@@ -334,11 +339,6 @@
     color: var(--note-text);
     cursor: pointer;
     line-height: 1.4;
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    overflow: hidden;
 }
 
 /* Actions */
@@ -432,41 +432,6 @@
 }
 
 /* Zen Browser Style Theme Palette */
-.zen-mode-toggles {
-    display: flex;
-    gap: 5px;
-    background: var(--bg-sec);
-    padding: 3px;
-    border-radius: 8px;
-    border: 1px solid var(--border-light);
-}
-
-.zen-mode-btn {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    font-size: 16px;
-    width: 32px;
-    height: 32px;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s, transform 0.1s;
-    color: var(--text-main);
-    padding: 0;
-}
-
-.zen-mode-btn:hover {
-    background: var(--bg-tertiary);
-}
-
-.zen-mode-btn.active {
-    background: var(--bg-main);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    transform: scale(1.05);
-}
-
 .zen-palette-container {
     display: flex;
     align-items: center;
@@ -549,4 +514,398 @@
 .theme-swatch.active {
     transform: scale(1.15);
     box-shadow: 0 0 0 3px var(--bg-sec), 0 0 0 5px var(--text-main);
+}
+
+/* ===== NEW DNS CARDS & LOGICAL GROUPS ===== */
+.dns-group-card {
+    background: var(--bg-sec);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-card);
+    padding: 8px;
+    margin-bottom: 0;
+    box-shadow: var(--card-shadow);
+    animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.dns-group-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border-bottom: 1px solid var(--border-light);
+    padding-bottom: 4px;
+    margin-bottom: 6px;
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+}
+
+.dns-group-header svg.icon {
+    width: 14px;
+    height: 14px;
+    stroke: var(--accent);
+}
+
+.dns-record-block {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 4px 6px;
+    border-radius: var(--radius-md);
+    background: var(--bg-main);
+    border: 1px solid var(--border-light);
+    margin-bottom: 3px;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    position: relative;
+    user-select: text;
+    -webkit-user-select: text;
+}
+
+.dns-record-block:last-child {
+    margin-bottom: 0;
+}
+
+.dns-record-block:hover {
+    border-color: var(--border-focus);
+    background: var(--bg-tertiary);
+}
+
+.dns-record-block.copied {
+    background: var(--success-bg) !important;
+    border-color: var(--success-text) !important;
+}
+
+.dns-record-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2px;
+}
+
+.dns-record-label {
+    font-size: 10px;
+    font-weight: 800;
+    color: var(--accent);
+    background: var(--bg-sec);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid var(--border-light);
+    text-transform: uppercase;
+}
+
+.dns-record-copy-indicator {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 2px;
+}
+
+.dns-record-block:hover .dns-record-copy-indicator {
+    opacity: 0.7;
+}
+
+.dns-record-block.copied .dns-record-copy-indicator {
+    opacity: 1;
+    color: var(--success-text);
+}
+
+.dns-record-value {
+    font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
+    font-size: 11px;
+    line-height: 1.5;
+    word-break: break-all;
+    white-space: pre-wrap;
+    overflow-x: auto;
+    color: var(--text-main);
+}
+
+.geo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-light);
+    padding: 1px 5px;
+    border-radius: 10px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--text-muted);
+    margin-bottom: 0;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+/* Individual value hover and selection styling */
+.dns-val-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+    padding: 2px 4px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 2px;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.dns-val-row:last-child {
+    margin-bottom: 0;
+}
+
+.dns-val-row:hover {
+    background: var(--bg-sec) !important;
+    border-color: var(--border-light) !important;
+}
+
+.dns-val-row.copied {
+    background: var(--success-bg) !important;
+    border-color: var(--success-text) !important;
+}
+
+.dns-single-val {
+    font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 1px 4px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: text;
+    -webkit-user-select: text;
+}
+
+.dns-record-block.copied-partially {
+    border-color: var(--success-text) !important;
+}
+
+/* Copy indicator icon toggle styling */
+.dns-record-block .copy-icon {
+    display: inline-block !important;
+}
+.dns-record-block .check-icon {
+    display: none !important;
+}
+.dns-record-block.copied .copy-icon {
+    display: none !important;
+}
+.dns-record-block.copied .check-icon {
+    display: inline-block !important;
+    color: var(--success-text) !important;
+}
+
+/* Premium styled DNS domain input matching the results domain header, but thinner */
+#domain_input {
+    font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--bg-sec) !important;
+    height: 38px !important;
+    padding: 8px 12px !important;
+    border-color: var(--border-light) !important;
+    border-right: none !important;
+    transition: all 0.2s ease !important;
+}
+
+#domain_input:focus {
+    background: var(--bg-tertiary) !important;
+    border-color: var(--border-focus) !important;
+}
+
+
+/* ===== DNS QUICK ACCESS PINBOARD & CHIPS ===== */
+.dns-quick-access {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 8px;
+    margin-bottom: 10px;
+    padding: 0 4px;
+}
+
+#output {
+    margin-top: 10px !important;
+}
+
+.dns-quick-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dns-quick-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    width: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.dns-chips-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    flex: 1;
+}
+
+.dns-chip {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 1px 5px;
+    border-radius: 4px;
+    border: 1px solid var(--border-light);
+    background: var(--bg-sec);
+    color: var(--text-main);
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    user-select: none;
+    -webkit-user-select: none;
+}
+
+.dns-chip:hover {
+    border-color: var(--accent);
+    background: var(--bg-tertiary);
+    color: var(--accent);
+    transform: translateY(-0.5px);
+}
+
+.dns-chip .remove-chip {
+    opacity: 0.5;
+    font-size: 8px;
+    padding: 0 1px;
+    transition: opacity 0.15s ease;
+}
+
+.dns-chip:hover .remove-chip {
+    opacity: 0.9;
+}
+
+.dns-chip .remove-chip:hover {
+    color: var(--error-text);
+}
+
+
+
+/* ===== NOTES MARKDOWN & RICH VIEW ===== */
+.note-markdown-body {
+    flex: 1;
+    width: 100%;
+    font-size: 13px;
+    line-height: 1.4;
+    color: var(--note-text);
+    word-break: break-word;
+    text-align: left;
+}
+
+.note-markdown-body pre {
+    background: rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-light);
+    border-radius: 4px;
+    padding: 4px 6px;
+    margin: 4px 0;
+    overflow-x: auto;
+    font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
+    font-size: 11px;
+}
+
+body.theme-dark .note-markdown-body pre,
+[class*="theme-"].theme-dark-style .note-markdown-body pre {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.note-markdown-body code {
+    font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
+    font-size: 11px;
+    padding: 1px 3px;
+    border-radius: 3px;
+    background: var(--bg-tertiary);
+    color: var(--accent);
+}
+
+.note-markdown-body ul {
+    margin: 4px 0 4px 16px;
+    padding: 0;
+    list-style-type: disc;
+}
+
+.note-markdown-body li {
+    margin-bottom: 2px;
+}
+
+.note-markdown-body strong {
+    font-weight: 700;
+}
+
+.note-markdown-body a {
+    color: var(--accent);
+    text-decoration: underline;
+}
+
+.note-view-toggle-btn {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--note-text);
+    opacity: 0.7;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.note-view-toggle-btn:hover {
+    color: var(--note-btn-hover-color);
+    background: var(--note-btn-hover-bg);
+    opacity: 1;
+}
+
+/* Style for height range slider in edit mode */
+.note-height-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 90px !important;
+    background: var(--border-light);
+    border-radius: 2px;
+    outline: none;
+    transition: background 0.2s;
+}
+
+.note-height-slider::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 4px;
+    cursor: pointer;
+    background: var(--border-light);
+    border-radius: 2px;
+}
+
+.note-height-slider::-webkit-slider-thumb {
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    -webkit-appearance: none;
+    margin-top: -3px;
+    transition: transform 0.1s ease;
+}
+
+.note-height-slider::-webkit-slider-thumb:hover {
+    transform: scale(1.2);
 }

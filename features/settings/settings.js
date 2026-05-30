@@ -13,8 +13,11 @@ export function initSettingsFeature() {
       const langSelect = document.getElementById('setting-language');
       const startupSelect = document.getElementById('setting-startup-tab');
       const dnsSelect = document.getElementById('setting-dns-provider');
+      const sslSelect = document.getElementById('setting-ssl-provider');
       const heightSlider = document.getElementById('setting-window-height');
       const heightVal = document.getElementById('setting-window-height-val');
+      const historyLimitSlider = document.getElementById('setting-history-limit');
+      const historyLimitVal = document.getElementById('setting-history-limit-val');
 
       const dq = settings.dnsQueries || { a: true, aaaa: false, mx: true, txt: false, spf: false, dkim: false, dmarc: false, ns: true };
       const qA = document.getElementById('setting-query-a');
@@ -26,36 +29,41 @@ export function initSettingsFeature() {
       const qDKIM = document.getElementById('setting-query-dkim');
       const qDMARC = document.getElementById('setting-query-dmarc');
 
-      if (qA) qA.checked = dq.a;
-      if (qAAAA) qAAAA.checked = dq.aaaa;
-      if (qMX) qMX.checked = dq.mx;
-      if (qNS) qNS.checked = dq.ns;
-      if (qTXT) qTXT.checked = dq.txt;
-      if (qSPF) qSPF.checked = dq.spf;
-      if (qDKIM) qDKIM.checked = dq.dkim;
-      if (qDMARC) qDMARC.checked = dq.dmarc;
+      if (qA) { qA.checked = dq.a; }
+      if (qAAAA) { qAAAA.checked = dq.aaaa; }
+      if (qMX) { qMX.checked = dq.mx; }
+      if (qNS) { qNS.checked = dq.ns; }
+      if (qTXT) { qTXT.checked = dq.txt; }
+      if (qSPF) { qSPF.checked = dq.spf; }
+      if (qDKIM) { qDKIM.checked = dq.dkim; }
+      if (qDMARC) { qDMARC.checked = dq.dmarc; }
+      
+      const tb = settings.dnsToolbarButtons || { ssl: true, dns: true, whois: true };
+      const tbSsl = document.getElementById('setting-btn-ssl');
+      const tbDns = document.getElementById('setting-btn-dns');
+      const tbWhois = document.getElementById('setting-btn-whois');
+
+      if (tbSsl) { tbSsl.checked = tb.ssl; }
+      if (tbDns) { tbDns.checked = tb.dns; }
+      if (tbWhois) { tbWhois.checked = tb.whois; }
       
       // Theme Palette logic
       const themeSwatches = document.querySelectorAll('.theme-swatch');
-      const modeBtns = document.querySelectorAll('.zen-mode-btn');
       let currentTheme = settings.theme || 'auto';
       
       const updateThemeActiveState = (themeValue) => {
         themeSwatches.forEach(swatch => {
           swatch.classList.toggle('active', swatch.dataset.value === themeValue);
         });
-        modeBtns.forEach(btn => {
-          btn.classList.toggle('active', btn.dataset.value === themeValue);
-        });
       };
       
       updateThemeActiveState(currentTheme);
-
+ 
       // Horizontal scroll logic for Zen palette
       const paletteScroll = document.getElementById('setting-theme-palette');
       const btnScrollLeft = document.getElementById('zen-scroll-left');
       const btnScrollRight = document.getElementById('zen-scroll-right');
-
+ 
       if (btnScrollLeft && paletteScroll) {
         btnScrollLeft.addEventListener('click', () => {
           paletteScroll.scrollBy({ left: -120, behavior: 'smooth' });
@@ -67,15 +75,24 @@ export function initSettingsFeature() {
           paletteScroll.scrollBy({ left: 120, behavior: 'smooth' });
         });
       }
-
-      if (langSelect) langSelect.value = settings.language;
-      if (startupSelect) startupSelect.value = settings.startupTab;
-      if (dnsSelect) dnsSelect.value = settings.dnsProvider || 'google';
+ 
+      if (langSelect) { langSelect.value = settings.language; }
+      if (startupSelect) { startupSelect.value = settings.startupTab; }
+      if (dnsSelect) { dnsSelect.value = settings.dnsProvider || 'google'; }
+      if (sslSelect) { sslSelect.value = settings.sslProvider || 'certist'; }
       if (heightSlider) {
         heightSlider.value = settings.windowHeight || 600;
-        if (heightVal) heightVal.textContent = (settings.windowHeight || 600) + 'px';
+        if (heightVal) {
+          heightVal.textContent = `${settings.windowHeight || 600}px`;
+        }
       }
-
+      if (historyLimitSlider) {
+        historyLimitSlider.value = settings.dnsHistoryLimit || 4;
+        if (historyLimitVal) {
+          historyLimitVal.textContent = settings.dnsHistoryLimit || 4;
+        }
+      }
+ 
       const handleSave = async (updatedSettings = {}) => {
         const current = await Settings.load();
         const newSettings = {
@@ -84,7 +101,9 @@ export function initSettingsFeature() {
           theme: currentTheme,
           startupTab: startupSelect?.value || 'last',
           dnsProvider: dnsSelect?.value || 'google',
-          windowHeight: parseInt(heightSlider?.value || '600'),
+          sslProvider: sslSelect?.value || 'certist',
+          windowHeight: parseInt(heightSlider?.value || '600', 10),
+          dnsHistoryLimit: parseInt(historyLimitSlider?.value || '4', 10),
           dnsQueries: {
             a: qA?.checked,
             aaaa: qAAAA?.checked,
@@ -94,6 +113,11 @@ export function initSettingsFeature() {
             spf: qSPF?.checked,
             dkim: qDKIM?.checked,
             dmarc: qDMARC?.checked
+          },
+          dnsToolbarButtons: {
+            ssl: tbSsl?.checked,
+            dns: tbDns?.checked,
+            whois: tbWhois?.checked
           },
           ...updatedSettings
         };
@@ -106,18 +130,33 @@ export function initSettingsFeature() {
         Theme.apply(newSettings.theme);
         
         // Update height
-        document.documentElement.style.setProperty('--cached-height', newSettings.windowHeight + 'px');
+        document.documentElement.style.setProperty('--cached-height', `${newSettings.windowHeight}px`);
         localStorage.setItem('lilo_height_cache', newSettings.windowHeight);
+        
+        // Update toolbar buttons visibility immediately
+        const activeTb = newSettings.dnsToolbarButtons || { ssl: true, dns: true, whois: true };
+        const groupSSL = document.getElementById('groupSSL');
+        const groupDNS = document.getElementById('groupDNS');
+        const groupWhois = document.getElementById('groupWhois');
+        if (groupSSL) { groupSSL.style.display = activeTb.ssl ? '' : 'none'; }
+        if (groupDNS) { groupDNS.style.display = activeTb.dns ? '' : 'none'; }
+        if (groupWhois) { groupWhois.style.display = activeTb.whois ? '' : 'none'; }
         
         Utils.showToast(I18n.t('toast_saved'));
       };
-
+ 
       langSelect?.addEventListener('change', () => handleSave());
       startupSelect?.addEventListener('change', () => handleSave());
       dnsSelect?.addEventListener('change', () => handleSave());
+      sslSelect?.addEventListener('change', () => handleSave());
       
       const queryCheckboxes = [qA, qAAAA, qMX, qNS, qTXT, qSPF, qDKIM, qDMARC];
       queryCheckboxes.forEach(cb => {
+        cb?.addEventListener('change', () => handleSave());
+      });
+
+      const tbCheckboxes = [tbSsl, tbDns, tbWhois];
+      tbCheckboxes.forEach(cb => {
         cb?.addEventListener('change', () => handleSave());
       });
       
@@ -129,29 +168,29 @@ export function initSettingsFeature() {
           handleSave({ theme: newTheme });
         });
       });
-
-      modeBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const newTheme = e.currentTarget.dataset.value;
-          currentTheme = newTheme;
-          updateThemeActiveState(newTheme);
-          handleSave({ theme: newTheme });
-        });
-      });
       
       heightSlider?.addEventListener('input', () => {
-        if (heightVal) heightVal.textContent = heightSlider.value + 'px';
-        document.documentElement.style.setProperty('--cached-height', heightSlider.value + 'px');
+        if (heightVal) {
+          heightVal.textContent = `${heightSlider.value}px`;
+        }
+        document.documentElement.style.setProperty('--cached-height', `${heightSlider.value}px`);
       });
       heightSlider?.addEventListener('change', () => handleSave());
-
+      
+      historyLimitSlider?.addEventListener('input', () => {
+        if (historyLimitVal) {
+          historyLimitVal.textContent = historyLimitSlider.value;
+        }
+      });
+      historyLimitSlider?.addEventListener('change', () => handleSave());
+ 
       // Data Management
       const btnExport = document.getElementById('btn-export-data');
       const btnImport = document.getElementById('btn-import-data');
       const btnReset = document.getElementById('btn-reset-settings');
       const btnClear = document.getElementById('btn-clear-data');
       const fileImport = document.getElementById('file-import');
-
+ 
       btnExport?.addEventListener('click', async () => {
         const data = {};
         await new Promise(r => chrome.storage.local.get(null, res => { Object.assign(data, res); r(); }));
@@ -164,19 +203,21 @@ export function initSettingsFeature() {
         URL.revokeObjectURL(url);
         Utils.showToast(I18n.t('toast_exported'));
       });
-
+ 
       btnImport?.addEventListener('click', () => {
         fileImport?.click();
       });
-
+ 
       fileImport?.addEventListener('change', (e) => {
         const file = e.target.files[0];
-        if (!file) return;
+        if (!file) { return; }
         const reader = new FileReader();
         reader.onload = async (event) => {
           try {
             const data = JSON.parse(event.target.result);
-            if (typeof data !== 'object' || data === null) throw new Error('Invalid format');
+            if (typeof data !== 'object' || data === null) {
+              throw new Error('Invalid format');
+            }
             
             const allowedKeys = Object.values(Config.storage);
             const filteredData = {};
@@ -186,9 +227,12 @@ export function initSettingsFeature() {
               }
             }
             
-            if (Object.keys(filteredData).length === 0) throw new Error('No valid data found');
+            if (Object.keys(filteredData).length === 0) {
+              throw new Error('No valid data found');
+            }
             
             await new Promise(r => chrome.storage.local.set(filteredData, r));
+            Settings.invalidate();
             Utils.showToast(I18n.t('toast_imported'));
             setTimeout(() => location.reload(), 1000);
           } catch (err) {
@@ -197,17 +241,19 @@ export function initSettingsFeature() {
         };
         reader.readAsText(file);
       });
- 
+  
       btnReset?.addEventListener('click', async () => {
-        if (!confirm(I18n.t('settings_confirm_reset'))) return;
+        if (!confirm(I18n.t('settings_confirm_reset'))) { return; }
         await new Promise(r => chrome.storage.local.remove('lilo_settings', r));
+        Settings.invalidate();
         Utils.showToast(I18n.t('toast_reset'));
         setTimeout(() => location.reload(), 800);
       });
- 
+  
       btnClear?.addEventListener('click', async () => {
-        if (!confirm(I18n.t('settings_confirm_clear'))) return;
+        if (!confirm(I18n.t('settings_confirm_clear'))) { return; }
         await new Promise(r => chrome.storage.local.clear(r));
+        Settings.invalidate();
         localStorage.clear();
         Utils.showToast(I18n.t('toast_cleared'));
         setTimeout(() => location.reload(), 800);
