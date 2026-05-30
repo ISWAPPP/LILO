@@ -87,14 +87,18 @@ export const Api = {
       xhr.timeout = 15000;
 
       xhr.upload.addEventListener('progress', (e) => {
-        if (!onProgress) return;
+        if (!onProgress) {
+          return;
+        }
         if (e.lengthComputable) {
           onProgress(Math.min(100, Math.round((e.loaded / e.total) * 100)));
         }
       });
 
       xhr.addEventListener('load', () => {
-        if (onProgress) onProgress(100);
+        if (onProgress) {
+          onProgress(100);
+        }
         if (xhr.status < 200 || xhr.status >= 300) {
           console.error('Server error:', xhr.responseText);
           resolve(null);

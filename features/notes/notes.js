@@ -29,20 +29,32 @@ function generatePassword() {
   const cfg = Config.passgen;
   let charset = '';
 
-  if (document.getElementById('opt-lower')?.checked)   charset += cfg.charsets.lower;
-  if (document.getElementById('opt-upper')?.checked)   charset += cfg.charsets.upper;
-  if (document.getElementById('opt-numbers')?.checked)  charset += cfg.charsets.numbers;
-  if (document.getElementById('opt-symbols')?.checked)  charset += cfg.charsets.symbols;
+  if (document.getElementById('opt-lower')?.checked) {
+    charset += cfg.charsets.lower;
+  }
+  if (document.getElementById('opt-upper')?.checked) {
+    charset += cfg.charsets.upper;
+  }
+  if (document.getElementById('opt-numbers')?.checked) {
+    charset += cfg.charsets.numbers;
+  }
+  if (document.getElementById('opt-symbols')?.checked) {
+    charset += cfg.charsets.symbols;
+  }
 
-  if (!charset) charset = cfg.charsets.lower; // Fallback
+  if (!charset) {
+    charset = cfg.charsets.lower; // Fallback
+  }
 
   if (document.getElementById('opt-no-similar')?.checked) {
     const similar = new Set(cfg.similarChars.split(''));
     charset = [...charset].filter(ch => !similar.has(ch)).join('');
-    if (!charset) charset = cfg.charsets.lower;
+    if (!charset) {
+      charset = cfg.charsets.lower;
+    }
   }
 
-  const length = parseInt(document.getElementById('passgen-length')?.value) || cfg.defaultLength;
+  const length = parseInt(document.getElementById('passgen-length')?.value, 10) || cfg.defaultLength;
   
   let password = '';
   const bufferSize = Math.max(length * 2, 64);
@@ -68,21 +80,41 @@ function generatePassword() {
 
 function calculateStrength(password, opts) {
   let score = 0;
-  if (password.length >= 6) score += 1;
-  if (password.length >= 10) score += 1;
-  if (password.length >= 14) score += 1;
+  if (password.length >= 6) {
+    score += 1;
+  }
+  if (password.length >= 10) {
+    score += 1;
+  }
+  if (password.length >= 14) {
+    score += 1;
+  }
   
   let variety = 0;
-  if (opts.lower) variety++;
-  if (opts.upper) variety++;
-  if (opts.numbers) variety++;
-  if (opts.symbols) variety++;
+  if (opts.lower) {
+    variety++;
+  }
+  if (opts.upper) {
+    variety++;
+  }
+  if (opts.numbers) {
+    variety++;
+  }
+  if (opts.symbols) {
+    variety++;
+  }
   
-  if (variety >= 3) score += 1;
-  if (variety === 4) score += 1;
+  if (variety >= 3) {
+    score += 1;
+  }
+  if (variety === 4) {
+    score += 1;
+  }
 
   const meter = document.getElementById('passgen-strength-meter');
-  if (!meter) return;
+  if (!meter) {
+    return;
+  }
 
   meter.className = 'passgen-strength-meter'; // reset
   if (password.length === 0) {
@@ -121,13 +153,17 @@ let passwordInitialized = false;
 
 async function renderNotes() {
   const list = document.getElementById('notes-list');
-  if (!list) return;
+  if (!list) {
+    return;
+  }
   list.innerHTML = NotesRenderer.notesList(notes);
 }
 
 async function addNote(text) {
   const trimmed = text.trim();
-  if (!trimmed) return;
+  if (!trimmed) {
+    return;
+  }
 
   notes.unshift({ id: crypto.randomUUID(), text: trimmed });
   saveNotes();
@@ -178,10 +214,14 @@ async function moveNoteDown(id) {
 
 async function copyNote(id) {
   const note = notes.find(n => n.id === id);
-  if (!note) return;
+  if (!note) {
+    return;
+  }
 
   const ok = await Utils.copyToClipboard(note.text);
-  if (!ok) return;
+  if (!ok) {
+    return;
+  }
 
   // Visual feedback
   const item = document.querySelector(`.note-item[data-id="${id}"]`);
@@ -193,10 +233,14 @@ async function copyNote(id) {
 
 function startEditing(id) {
   const note = notes.find(n => n.id === id);
-  if (!note) return;
+  if (!note) {
+    return;
+  }
 
   const item = document.querySelector(`.note-item[data-id="${id}"]`);
-  if (!item) return;
+  if (!item) {
+    return;
+  }
 
   item.outerHTML = NotesRenderer.noteItemEditing(note);
 
@@ -221,11 +265,15 @@ function startEditing(id) {
 
 function setupNoteEvents() {
   const list = document.getElementById('notes-list');
-  if (!list) return;
+  if (!list) {
+    return;
+  }
 
   list.addEventListener('click', (e) => {
     const item = e.target.closest('.note-item');
-    if (!item) return;
+    if (!item) {
+      return;
+    }
     const id = item.dataset.id;
 
     // Edit button
@@ -281,7 +329,7 @@ function setupNoteEvents() {
     if (e.target.closest('.note-save-btn')) {
       const input = item.querySelector('.note-edit-input');
       const slider = item.querySelector('.note-height-slider');
-      const lines = slider ? parseInt(slider.value) : 20;
+      const lines = slider ? parseInt(slider.value, 10) : 20;
       const color = item.dataset.selectedColor !== undefined ? item.dataset.selectedColor : (notes.find(n => n.id === id)?.color || '');
       updateNoteWithColor(id, input?.value || '', color, lines);
       return;
@@ -318,7 +366,7 @@ function setupNoteEvents() {
       const item = e.target.closest('.note-item');
       const id = item?.dataset.id;
       const slider = item?.querySelector('.note-height-slider');
-      const lines = slider ? parseInt(slider.value) : 20;
+      const lines = slider ? parseInt(slider.value, 10) : 20;
       const color = item?.dataset.selectedColor !== undefined ? item.dataset.selectedColor : (notes.find(n => n.id === id)?.color || '');
       updateNoteWithColor(id, e.target.value || '', color, lines);
     }
@@ -342,13 +390,27 @@ export function initNotesFeature() {
       const lengthSlider = document.getElementById('passgen-length');
       const lengthVal = document.getElementById('passgen-length-val');
 
-      if (elLower) elLower.checked = pg.lower;
-      if (elUpper) elUpper.checked = pg.upper;
-      if (elNum) elNum.checked = pg.numbers;
-      if (elSym) elSym.checked = pg.symbols;
-      if (elNoSimilar) elNoSimilar.checked = pg.excludeSimilar;
-      if (lengthSlider) lengthSlider.value = pg.length;
-      if (lengthVal) lengthVal.textContent = pg.length;
+      if (elLower) {
+        elLower.checked = pg.lower;
+      }
+      if (elUpper) {
+        elUpper.checked = pg.upper;
+      }
+      if (elNum) {
+        elNum.checked = pg.numbers;
+      }
+      if (elSym) {
+        elSym.checked = pg.symbols;
+      }
+      if (elNoSimilar) {
+        elNoSimilar.checked = pg.excludeSimilar;
+      }
+      if (lengthSlider) {
+        lengthSlider.value = pg.length;
+      }
+      if (lengthVal) {
+        lengthVal.textContent = pg.length;
+      }
 
       const savePassgenSettings = async () => {
         const current = await Settings.load();
@@ -360,7 +422,7 @@ export function initNotesFeature() {
             numbers: elNum?.checked,
             symbols: elSym?.checked,
             excludeSimilar: elNoSimilar?.checked,
-            length: parseInt(lengthSlider?.value) || 16
+            length: parseInt(lengthSlider?.value, 10) || 16
           }
         });
       };
@@ -385,7 +447,9 @@ export function initNotesFeature() {
       // Click on password = copy (like notes)
       const passgenResult = document.getElementById('passgen-result');
       passgenResult?.addEventListener('click', async () => {
-        if (!passgenResult.value) return;
+        if (!passgenResult.value) {
+          return;
+        }
         const ok = await Utils.copyToClipboard(passgenResult.value);
         if (ok) {
           const section = passgenResult.closest('.passgen-section');

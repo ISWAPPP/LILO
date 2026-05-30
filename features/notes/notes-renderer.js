@@ -6,13 +6,15 @@ import { I18n } from '../../core/i18n.js';
 export const NotesRenderer = {
   /** Secure Regex-based Markdown Parser */
   parseMarkdown(text) {
-    if (!text) return '';
+    if (!text) {
+      return '';
+    }
     // 1. Escape HTML for strict XSS protection
     let html = Utils.escapeHTML(text);
 
     // 2. Code blocks (do first to isolate content)
     const codeBlocks = [];
-    html = html.replace(/```(?:[a-zA-Z0-9]+)?\n([\s\S]*?)\n```/g, (match, code) => {
+    html = html.replace(/```(?:[a-zA-Z0-9]+)?\n([\s\S]*?)\n```/g, (_match, code) => {
       const id = `__CODE_BLOCK_${codeBlocks.length}__`;
       codeBlocks.push(`<pre><code>${code}</code></pre>`);
       return id;
@@ -56,7 +58,7 @@ export const NotesRenderer = {
       if (line.startsWith('__CODE_BLOCK_') || line === '<ul>' || line === '</ul>' || line.startsWith('<li>')) {
         return line;
       }
-      return line + '<br>';
+      return `${line}<br>`;
     }).join('');
 
     // 7. Restore code blocks

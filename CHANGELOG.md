@@ -1,25 +1,25 @@
-# Changelog — LILO Tools
+﻿# Changelog — LILO Tools
 
-## [0.9.21] — 2026-05-26
+## 0.9.21 — 2026-05-26
 
 ### Improved
 - **English-by-Default Labeling**: Fully localized all slider controls via core translation dictionaries (using "Max lines" for English by default).
 - **Default Height to Maximum (20 lines)**: Notes now default to the maximum height of 20 lines (full height display) when created, and users can explicitly slide it down to compress long notes.
 - **Wider, High-Precision Slider**: Expanded the slider's physical interactive width from 50px to 90px in edit mode to permit comfortable, high-precision height control.
 
-## [0.9.20] — 2026-05-26
+## 0.9.20 — 2026-05-26
 
 ### Added
 - **Adjustable Note Display Height Slider**: Integrated an interactive range slider in note edit mode, allowing users to customize each note's maximum display height between 2 and 20 lines.
 - **Default Display Height Constraint**: Set a strict 2-line maximum display height default for all notes, turning long markdown text blocks into compact, scrollable cards to conserve popup real estate.
 
-## [0.9.19] — 2026-05-26
+## 0.9.19 — 2026-05-26
 
 ### Improved
 - **Sleek Thinner DNS Domain Input**: Reduced the thickness (height) of the DNS input field and the GO button from 48px to a highly-refined 38px, optimizing vertical space usage.
 - **Restored Balanced Full-Width Layout**: Returned the input field and history chips container to their natural full-width sizing inside the extension window, maintaining a uniform and premium grid structure.
 
-## [0.9.18] — 2026-05-26
+## 0.9.18 — 2026-05-26
 
 ### Added
 - **Smart DNS History Filtering**: History is now saved only on plugin activation (automatic tab lookup) or manual search trigger (GO/Enter). Navigating via history tags performs queries without mutating or re-triggering history logs.
@@ -28,13 +28,13 @@
 - **Optimized Layout Width**: Narrowed the DNS input row and centered it for a highly-refined and balanced aesthetic.
 - **Symmetric Spacing**: Optimized vertical spacing between the input bar, history clouds, and domain records to form a cleaner visual column.
 
-## [0.9.17] — 2026-05-26
+## 0.9.17 — 2026-05-26
 
 ### Improved
 - **Unified Domain Input Styling**: Redesigned the primary DNS input field to inherit the premium, monospace styling of the results domain header (taller 48px height, monospace font family, accent text color, and soft secondary background).
 - **Eliminated Domain Duplication**: Removed the redundant results header from the query output container, keeping exactly one beautifully styled domain field visible at the top of the interface.
 
-## [0.9.16] — 2026-05-26
+## 0.9.16 — 2026-05-26
 
 ### Removed
 - **DNS Favorites Panel & Star Button**: Completely removed all traces of the domain pinning/favorites feature, the star icon (★) from search results, and related storage mechanisms, simplifying the DNS tab down to essential lookup history.
@@ -42,14 +42,14 @@
 ### Improved
 - **Modern Textless History Icon**: Replaced the history emoji (🕒) with a custom vector SVG clock icon that fits perfectly with the modern design guidelines.
 
-## [0.9.15] — 2026-05-26
+## 0.9.15 — 2026-05-26
 
 ### Added
 - **Interactive DNS Pinboard (Favorites & History)**: Created a tag cloud quick-access row under the search input displaying favorited domains (starred with ★) and recently searched domains (🕒). Clicking any chip instantly triggers a DNS query; items can be easily removed.
 - **Dynamic Note Markdown Rendering**: Notes now automatically render as rich text with styling for bold text (`**`), list items (`-`), inline code (`` ` ``), and syntax-styled multi-line code blocks (`` ``` ``), while maintaining simple raw textarea editing on click.
 - **Zero-Friction Notes Clipboard Integration**: Maintained raw Markdown format for clipboard copy operations upon note selection, ensuring clean text-scraping for developers.
 
-## [0.9.14] — 2026-05-26
+## 0.9.14 — 2026-05-26
 
 ### Added
 - **Unified A/NS DNS Grouping**: Redesigned A and NS query results to merge multiple records logically under single consolidated cards instead of rendering distinct separate blocks.
@@ -61,7 +61,7 @@
 - **Dual Copy Clipboard Delegation**: Upgraded copy delegation to selectively copy individual values when clicking specific IP/NS rows, and copy all addresses separated by a newline when clicking the card header or outer borders.
 - **Modern Textless Copy Indicators**: Replaced raw copy-warning spans with elegant, textless inline double SVGs that smoothly transition from a copy icon to a green validation checkmark upon successful copying, completely eliminating false hover notifications.
 
-## [0.9.13] — 2026-05-23
+## 0.9.13 — 2026-05-23
 
 ### Added
 - **DNS Geolocation for All A Records**: Each IPv4 address now shows its own country and city when available.
@@ -77,7 +77,7 @@
 - **DNS History Placeholder**: Removed unused `#history-list` container from the DNS tab.
 - **Encryption Claims**: Manifest description no longer mentions encrypted notes (notes are stored locally in plain text).
 
-## [0.9.12] — 2026-05-15
+## 0.9.12 — 2026-05-15
 
 ### Fixed
 - **DKIM Validation Subdomain**: Corrected the DKIM lookup mechanism to query the `default._domainkey` subdomain instead of the root domain.
@@ -86,7 +86,7 @@
 - **DNS Record Filtering**: Enhanced the DNS results renderer to filter out DKIM-related records from the general TXT results block, preventing duplicate information display.
 - **Tab Hover Bug**: Fixed a visual glitch where the top navigation tabs appeared darker than intended when hovered or selected, by switching the hover overlay from a static black overlay to the dynamic theme secondary background color.
 
-## [0.9.11] — 2026-05-11
+## 0.9.11 — 2026-05-11
 
 ### Security
 - **XSS Prevention in PICS**: All user/server-controlled URLs in the PICS tab (previews, uploads, history grid) are now escaped via `Utils.escapeHTML` to prevent DOM-based XSS.
@@ -102,13 +102,13 @@
 - **Password Generator Behavior**: Password is now generated once on notes tab activation rather than resetting on every single tab switch.
 - **Code Quality and Cleanup**: Added missing `'clear'` translation key, removed unused iteration arguments in `noteItem` mapping, documented theme-init duplication context, and added comments detailing popup bootstrap steps.
 
-## [0.9.10] — 2026-05-10
+## 0.9.10 — 2026-05-10
 
 ### Fixed
 - **Note Editing Painting Glitch**: Resolved a Blink browser engine rendering issue where a note's custom background reverted to default on element replacement (`outerHTML`) in `startEditing` until hovered. Now, inline CSS properties and variables are forcefully pushed directly via JavaScript CSSOM to ensure immediate color applying.
 - **Focus Background Reset**: Fixed a bug where clicking inside a custom-colored note's textarea (placing the cursor) reset the background to the standard theme background. Introduced a specific `.note-edit-input:focus` selector in `styles/features.css` that overrides the global `textarea:focus` rule and holds the custom `--note-bg` color while active.
 
-## [0.9.9] — 2026-05-10
+## 0.9.9 — 2026-05-10
 
 ### Added
 - **Expanded Theme Swatches**: Added 11 brand-new, high-quality theme palettes (including Sand, Breeze, Autumn, Navy, Blood, Monochrome, Terminal, Amber, Midnight, Synthwave, and Neon Cyan), bringing the total library to 29 beautifully curated options.
@@ -122,7 +122,7 @@
 ### Fixed
 - **Note Action Buttons Contrast**: Overhauled note items and color picker rendering in `features/notes/notes-renderer.js` and `styles/features.css` using modern CSS custom properties (`--note-bg`, `--note-text`, etc.). Note action panels, shadows, and control buttons now dynamically inherit the note's custom background, fully eliminating visibility bugs (like black-on-dark buttons) when applying custom colors under dark themes.
 
-## [0.9.8] — 2026-05-10
+## 0.9.8 — 2026-05-10
 
 ### Added
 - **Configurable DNS Queries**: Introduced checkboxes in the Settings tab enabling users to select which records (`A`, `AAAA`, `MX`, `NS`, `TXT`, `SPF`, `DKIM`, `DMARC`) the extension queries. Unchecked queries are completely bypassed, preventing redundant DoH API network requests.
@@ -133,7 +133,7 @@
 - **Full-Width Notes Layout**: Overhauled Note list item elements to let text span the full 100% width. Action buttons (move, edit, delete) now float absolutely in the top-right corner on hover, using a matching background blend-shadow to overlay gracefully on top of the text.
 - **Popup Height Calculation Fix**: Adjusted body container height formula (`calc(var(--cached-height, 600px) - 20px)`) to account for top and bottom margins, ensuring that when utilizing minimum height, the bottom margin and contents are never clipped.
 
-## [0.9.7] — 2026-05-09
+## 0.9.7 — 2026-05-09
 
 ### Added
 - **Dynamic Note Auto-Resizing**: Notes input textareas (both for adding and editing) now automatically stretch and shrink to match the content length. Added `+ 2px` border-box offset to guarantee flicker-free resizing.
@@ -151,13 +151,13 @@
 - **DNS MX Mail Server Domain Resolving**: Sanitized the trailing dot (`.`) character frequently appended to standard MX record lookups to ensure subsequent A-record resolving queries are completely compatible with DoH providers.
 - **CSS Flexbox Textarea Height Constraint**: Overrode `flex: 1` height priority with `flex: none` on the edit note textarea, unlocking full dynamic height resizing within vertical flex grids.
 
-## [0.9.6] — 2026-05-09
+## 0.9.6 — 2026-05-09
  
 ### Improved
 - **Modern Minimalist SVGs**: Replaced all interface emojis (gear, lock, globe, profile, warnings, clipboard, arrows, sparkles, sun, moon, trash, etc.) with elegant, lightweight inline SVG vector icons that perfectly scale and adapt to all 18 theme palettes.
 - **Enhanced Alignments**: Programmed perfect flex-alignment for warning symbols, labels, and text across tabs to ensure a completely symmetric, premium user experience.
  
-## [0.9.5] — 2026-05-08
+## 0.9.5 — 2026-05-08
  
 ### Added
 - **Expanded Theme Library**: Added 4 more modern premium themes (Sakura, Solarized Light, Solarized Dark, and Oceanic), bringing the total selection of highly curated UI palettes to 18.
@@ -167,7 +167,7 @@
 - **Complete Internationalization (I18n) Compliance**: Replaced all remaining hardcoded Ukrainian strings across modules (including settings confirm modals, clipboard copy badges, placeholder inputs, list empty messages, and drag-and-drop/offline warning text) with fully translated equivalents.
 - **UI Contrast Optimization**: Replaced hardcoded white text for the primary DIG button with a dynamic `--accent-text` color custom-property to guarantee perfect readability and high contrast on both light-background and bright-background themes (e.g., Forest, Cyberpunk, Sea).
  
-## [0.9.4] — 2026-05-08
+## 0.9.4 — 2026-05-08
 
 ### Added
 - **PICS Drag & Drop & Upload History**: You can now drop image files directly into the upload area or click to open the file picker. Added a local image preview during uploads, and a grid showing the 5 most recently uploaded images (clicking them copies their URL instantly).
@@ -182,7 +182,7 @@
 - **Clean Button Grids**: Redesigned the data management buttons in settings into structured rows.
 - **Full Localization**: The shortcut navigation guides and the PICS upload history sections now dynamically adjust to your language settings.
 
-## [0.9.3] — 2026-05-08
+## 0.9.3 — 2026-05-08
 
 ### Added
 - **Password Generator Preferences**: The extension now remembers your preferred password length and character set configurations across sessions.
@@ -200,12 +200,12 @@
 - **Enhanced DNS Resilience**: Replaced `Promise.all` with `Promise.allSettled` for batch DNS queries, ensuring a partial record failure (e.g., TXT record) does not block the entire lookup.
 - **API Error Handling**: Added HTTP status checks in `fetch` calls to gracefully handle non-JSON or server error responses.
 
-## [0.9.2] — 2026-05-04
+## 0.9.2 — 2026-05-04
 
 ### Security
 - **XSS Protection**: Fixed a "DOM text reinterpreted as HTML" vulnerability in the i18n module. Replaced unsafe `innerHTML` assignments with a robust logic using `DOMParser` for HTML strings and `textContent` for plain text.
 
-## [0.9.1] — 2026-05-03
+## 0.9.1 — 2026-05-03
 
 ### Added
 - **Zen Browser UI Replication**: Completely redesigned the theme selection interface to match the Zen Browser "Edit Theme" palette.
@@ -216,7 +216,7 @@
 - **UI Layout**: Increased padding in the theme palette to prevent clipping of selected swatches.
 - **Content Security Policy (CSP)**: Resolved a critical error in Chrome where inline scripts were blocked. Moved theme detection logic to a separate file (`core/theme-init.js`).
 
-## [0.8] — 2026-05-03
+## 0.8 — 2026-05-03
 
 ### Added
 - **Window Height Setting**: Added a slider in the settings tab to control the maximum height of the extension window.
@@ -225,7 +225,7 @@
 - **Theme Override Bug**: Fixed an issue where the dark theme CSS variables would unintentionally override custom themes (like Forest, Paper, Sea) when the system preferred dark mode.
 - **Notes UI**: Notes now visually truncate to display only the first two lines to keep the list compact.
 
-## [0.7] — 2026-05-01
+## 0.7 — 2026-05-01
 
 ### Added
 - **Premium UI Enhancements**: Integrated a custom "Glow" spinner and smooth fade-in-up animations for results.
@@ -236,7 +236,7 @@
 - **Theme Refinement**: Optimized color palettes for success (copy) and error states across all themes (Dark, Forest, Paper, Sea).
 - **Code Quality**: Refactored the DNS module to separate rendering from logic and moved inline styles to CSS classes.
 
-## [0.6] — 2026-05-01
+## 0.6 — 2026-05-01
 
 ### Added
 - **IP Geolocation**: Integrated `ip-api.com` to provide location data for domains and IP addresses.
@@ -244,7 +244,7 @@
 - **MX Target Resolution**: MX records now show the resolved IP addresses of their mail servers.
 - **Smart Copying**: Geolocation data and auxiliary MX IPs are now excluded when copying results to the clipboard for cleaner data handling.
 
-## [0.5] — 2026-05-01
+## 0.5 — 2026-05-01
 
 ### Added
 - **Secure Password Generator**: Switched to a cryptographically strong algorithm that eliminates modulo bias.
@@ -257,7 +257,7 @@
 ### Removed
 - **Dead Code**: Cleaned up the codebase by removing the unused `httpPing` function.
 
-## [0.4] — 2026-05-01
+## 0.4 — 2026-05-01
 
 ### Added
 - **Multi-Theme Support**: Introduced 5 custom UI themes (Light, Dark, Forest, Paper, Sea) and an "Auto" mode that follows system preferences.
@@ -267,7 +267,7 @@
 ### Removed
 - **Recurring Feedback Popup**: Removed the modal that appeared on first visit and every 8 hours.
 
-## [0.3] — 2026-04-30
+## 0.3 — 2026-04-30
 
 ### Added
 - **Settings Page**: Implemented a full user interface for extension management.
@@ -284,7 +284,7 @@
 ### Removed
 - **IPAPI.co**: Removed the geolocation module due to CORS issues and 403 Forbidden errors.
 
-## [0.2] — 2026-04-21
+## 0.2 — 2026-04-21
 - Initial modular architecture.
 - Core DNS, PICS, and NOTES functionality.
 - Basic UI with dark theme support.

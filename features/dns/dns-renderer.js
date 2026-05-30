@@ -5,7 +5,7 @@ import { I18n } from '../../core/i18n.js';
 
 export const DnsRenderer = {
   /** Full block of DNS check results. */
-  results({ domain, ips, ipv6, mx, txt, dmarc, dkim, ns, ipGeos, dq }) {
+  results({ ips, ipv6, mx, txt, dmarc, dkim, ns, ipGeos, dq }) {
     let html = `<div class="results-container animate-fade-in-up">`;
     
     // Group 1: Addressing & Routing (A, AAAA, NS)
@@ -22,7 +22,7 @@ export const DnsRenderer = {
           </div>`;
       
       if (hasA) {
-        let valRows = ips.map((ip, i) => {
+        const valRows = ips.map((ip, i) => {
           const geo = ipGeos?.[i];
           let geoHtml = '';
           if (geo) {
@@ -44,7 +44,7 @@ export const DnsRenderer = {
       }
       
       if (hasAAAA) {
-        let valRows = ipv6.map(ip => `<div class="dns-val-row"><span class="dns-single-val" title="Клікніть щоб скопіювати тільки цю адресу">${Utils.escapeHTML(ip)}</span></div>`).join('');
+        const valRows = ipv6.map(ip => `<div class="dns-val-row"><span class="dns-single-val" title="Клікніть щоб скопіювати тільки цю адресу">${Utils.escapeHTML(ip)}</span></div>`).join('');
 
         html += `
           <div class="result-row dns-record-block">
@@ -59,7 +59,7 @@ export const DnsRenderer = {
       }
       
       if (hasNS) {
-        let valRows = ns.map(r => `<div class="dns-val-row"><span class="dns-single-val" title="Клікніть щоб скопіювати тільки цей запис">${Utils.escapeHTML(r.data)}</span></div>`).join('');
+        const valRows = ns.map(r => `<div class="dns-val-row"><span class="dns-single-val" title="Клікніть щоб скопіювати тільки цей запис">${Utils.escapeHTML(r.data)}</span></div>`).join('');
 
         html += `
           <div class="result-row dns-record-block">
@@ -86,7 +86,7 @@ export const DnsRenderer = {
             <span>${I18n.t('dns_group_mail')}</span>
           </div>`;
       
-      const sortedMx = [...mx].sort((a, b) => (parseInt(a.data) || 0) - (parseInt(b.data) || 0));
+      const sortedMx = [...mx].sort((a, b) => (parseInt(a.data, 10) || 0) - (parseInt(b.data, 10) || 0));
       sortedMx.forEach(r => {
         const [prio, ...srv] = r.data.split(' ');
         let geoInfo = '';
@@ -225,7 +225,7 @@ export const DnsRenderer = {
       return '—';
     }
     return records
-      .sort((a, b) => (parseInt(a.data) || 0) - (parseInt(b.data) || 0))
+      .sort((a, b) => (parseInt(a.data, 10) || 0) - (parseInt(b.data, 10) || 0))
       .map(r => {
         const [prio, ...srv] = r.data.split(' ');
         let result = '';
@@ -306,7 +306,7 @@ export const DnsRenderer = {
             <svg class="check-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
           </span>
         </div>
-        <div class="result-value dns-record-value">${Utils.escapeHTML(geo.isp)}${geo.org && geo.org !== geo.isp ? ' (' + Utils.escapeHTML(geo.org) + ')' : ''}</div>
+        <div class="result-value dns-record-value">${Utils.escapeHTML(geo.isp)}${geo.org && geo.org !== geo.isp ? ` (${Utils.escapeHTML(geo.org)})` : ''}</div>
       </div>`;
       
     html += `
