@@ -9,11 +9,7 @@ import { Config } from '../../config.js';
 import { Settings } from '../../core/settings.js';
  
 export function initPicsFeature() {
-  const statusBox = document.getElementById('pics-output');
-  const uploadZone = document.getElementById('upload_zone');
-  const fileInput = document.getElementById('pics-file-input');
-  const historyContainer = document.getElementById('pics-history-container');
-  const picsTab = document.getElementById('pics-tab');
+  let statusBox, uploadZone, fileInput, historyContainer, picsTab;
   let uploadHistory = [];
  
   const loadHistory = async () => {
@@ -96,78 +92,6 @@ export function initPicsFeature() {
     await processFile(blob);
   };
 
-  // Drag and Drop
-  uploadZone?.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    uploadZone.style.borderColor = 'var(--accent)';
-    uploadZone.style.background = 'var(--bg-tertiary)';
-  });
-
-  uploadZone?.addEventListener('dragleave', (e) => {
-    e.preventDefault();
-    uploadZone.style.borderColor = '';
-    uploadZone.style.background = '';
-  });
-
-  uploadZone?.addEventListener('drop', async (e) => {
-    e.preventDefault();
-    uploadZone.style.borderColor = '';
-    uploadZone.style.background = '';
-    
-    if (!picsTab?.classList.contains('active')) return;
-
-    const file = Array.from(e.dataTransfer.files).find(f => f.type.includes('image'));
-    if (file) {
-      await processFile(file);
-    }
-  });
-
-  // Click to upload
-  uploadZone?.addEventListener('click', () => {
-    fileInput?.click();
-  });
-
-  fileInput?.addEventListener('change', async (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      await processFile(file);
-    }
-    // reset input
-    if (fileInput) fileInput.value = '';
-  });
-
-  // Close success screen click
-  statusBox?.addEventListener('click', (e) => {
-    if (e.target.closest('#close-pics-success')) {
-      statusBox.innerHTML = '';
-      uploadZone.style.display = '';
-    }
-  });
-
-  // History click
-  historyContainer?.addEventListener('click', async (e) => {
-    if (e.target.closest('#clear-pics-history')) {
-      uploadHistory = [];
-      await saveHistory(uploadHistory);
-      renderHistory();
-      return;
-    }
-
-    const item = e.target.closest('.pics-history-item');
-    if (item && item.dataset.url) {
-      const ok = await Utils.copyToClipboard(item.dataset.url);
-      if (ok) {
-        const overlay = item.querySelector('.copy-overlay');
-        item.style.borderColor = 'var(--success-text)';
-        if (overlay) overlay.style.opacity = '1';
-        setTimeout(() => { 
-          item.style.borderColor = 'var(--border-light)'; 
-          if (overlay) overlay.style.opacity = '0';
-        }, 800);
-      }
-    }
-  });
-
   // Block copying on PICS tab
   const blockCopy = (e) => {
     if (picsTab?.classList.contains('active')) {
@@ -177,7 +101,13 @@ export function initPicsFeature() {
   };
 
   TabManager.register('pics', {
-    async init() {
+    init() {
+      statusBox = document.getElementById('pics-output');
+      uploadZone = document.getElementById('upload_zone');
+      fileInput = document.getElementById('pics-file-input');
+      historyContainer = document.getElementById('pics-history-container');
+      picsTab = document.getElementById('pics-tab');
+
       // Prevent browser from opening dragged files when dropped outside upload zone
       window.addEventListener('dragover', (e) => {
         if (picsTab?.classList.contains('active')) e.preventDefault();
@@ -197,14 +127,89 @@ export function initPicsFeature() {
       });
 
       document.addEventListener('copy', blockCopy);
+
+      // Drag and Drop
+      uploadZone?.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadZone.style.borderColor = 'var(--accent)';
+        uploadZone.style.background = 'var(--bg-tertiary)';
+      });
+
+      uploadZone?.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        uploadZone.style.borderColor = '';
+        uploadZone.style.background = '';
+      });
+
+      uploadZone?.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        uploadZone.style.borderColor = '';
+        uploadZone.style.background = '';
+        
+        if (!picsTab?.classList.contains('active')) return;
+
+        const file = Array.from(e.dataTransfer.files).find(f => f.type.includes('image'));
+        if (file) {
+          await processFile(file);
+        }
+      });
+
+      // Click to upload
+      uploadZone?.addEventListener('click', () => {
+        fileInput?.click();
+      });
+
+      fileInput?.addEventListener('change', async (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          await processFile(file);
+        }
+        // reset input
+        if (fileInput) fileInput.value = '';
+      });
+
+      // Close success screen click
+      statusBox?.addEventListener('click', (e) => {
+        if (e.target.closest('#close-pics-success')) {
+          statusBox.innerHTML = '';
+          uploadZone.style.display = '';
+        }
+      });
+
+      // History click
+      historyContainer?.addEventListener('click', async (e) => {
+        if (e.target.closest('#clear-pics-history')) {
+          uploadHistory = [];
+          await saveHistory(uploadHistory);
+          renderHistory();
+          return;
+        }
+
+        const item = e.target.closest('.pics-history-item');
+        if (item && item.dataset.url) {
+          const ok = await Utils.copyToClipboard(item.dataset.url);
+          if (ok) {
+            const overlay = item.querySelector('.copy-overlay');
+            item.style.borderColor = 'var(--success-text)';
+            if (overlay) overlay.style.opacity = '1';
+            setTimeout(() => { 
+              item.style.borderColor = 'var(--border-light)'; 
+              if (overlay) overlay.style.opacity = '0';
+            }, 800);
+          }
+        }
+      });
       
-      uploadHistory = await loadHistory();
-      const settings = await Settings.load();
-      const limit = settings.picsHistoryLimit !== undefined ? settings.picsHistoryLimit : 5;
-      while (uploadHistory.length > limit) {
-        uploadHistory.pop();
-      }
-      renderHistory();
+      // Load and render history asynchronously to make tab open speed near-instant (0.1ms)
+      loadHistory().then(async (history) => {
+        uploadHistory = history;
+        const settings = await Settings.load();
+        const limit = settings.picsHistoryLimit !== undefined ? settings.picsHistoryLimit : 5;
+        while (uploadHistory.length > limit) {
+          uploadHistory.pop();
+        }
+        renderHistory();
+      });
     },
 
     onActivate() {

@@ -12,16 +12,8 @@ import { I18n } from '../../core/i18n.js';
 import { Settings } from '../../core/settings.js';
 
 export function initDnsFeature() {
-  const input = document.getElementById('domain_input');
-  const output = document.getElementById('output');
-  const btn = document.getElementById('btnDIG');
-
-  const links = {
-    ssl: { a: document.getElementById('linkSSL'), btn: document.getElementById('copySSL') },
-    dns: { a: document.getElementById('linkDNS'), btn: document.getElementById('copyDNS') },
-    whois: { a: document.getElementById('linkWhois'), btn: document.getElementById('copyWhois') },
-  };
-
+  let input, output, btn;
+  let links = {};
   let lastRequest = 0;
 
   // --- Asynchronously check SSL certificate validity days ---
@@ -326,6 +318,16 @@ export function initDnsFeature() {
   // --- Tab registration ---
   TabManager.register('dns', {
     init() {
+      input = document.getElementById('domain_input');
+      output = document.getElementById('output');
+      btn = document.getElementById('btnDIG');
+
+      links = {
+        ssl: { a: document.getElementById('linkSSL'), btn: document.getElementById('copySSL') },
+        dns: { a: document.getElementById('linkDNS'), btn: document.getElementById('copyDNS') },
+        whois: { a: document.getElementById('linkWhois'), btn: document.getElementById('copyWhois') },
+      };
+
       btn.addEventListener('click', checkDNS);
       input.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {

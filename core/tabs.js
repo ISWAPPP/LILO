@@ -3,6 +3,7 @@
 import { Settings } from './settings.js';
 
 const registry = new Map();
+const lazyLoaders = new Map();
 const initialized = new Set();
 let activeTab = null;
 
@@ -14,6 +15,11 @@ export const TabManager = {
    */
   register(name, handler) {
     registry.set(name, handler);
+  },
+
+  /** Registers a lazy loader callback for a tab. */
+  registerLazy(name, loader) {
+    lazyLoaders.set(name, loader);
   },
 
   tabLoadTimes: {},
@@ -47,8 +53,6 @@ export const TabManager = {
   async switchTo(name, skipSave = false) {
     if (name === activeTab) return;
 
-    const handler = registry.get(name);
-
     // Deactivate current
     if (activeTab) {
       registry.get(activeTab)?.onDeactivate?.();
@@ -71,6 +75,13 @@ export const TabManager = {
 
     activeTab = name;
 
+    // Lazily import the feature module if registered as lazy and not loaded yet
+    if (lazyLoaders.has(name) && !registry.has(name)) {
+      await lazyLoaders.get(name)();
+    }
+
+    const handler = registry.get(name);
+
     // Lazily initialize the tab if not done already
     if (handler && !initialized.has(name)) {
       const start = performance.now();
@@ -88,3 +99,4 @@ export const TabManager = {
     }
   },
 };
+

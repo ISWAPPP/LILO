@@ -1,21 +1,16 @@
 // popup.js — thin controller. Feature initialization only.
 
 import { TabManager } from './core/tabs.js';
-import { initDnsFeature } from './features/dns/dns.js';
-import { initPicsFeature } from './features/pics/pics.js';
-import { initNotesFeature } from './features/notes/notes.js';
 import { Settings } from './core/settings.js';
 import { I18n } from './core/i18n.js';
 import { Theme } from './core/theme.js';
-import { initSettingsFeature } from './features/settings/settings.js';
-import { Api } from './core/api.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // Step 1: Register features with TabManager (no init() calls yet).
-  initDnsFeature();
-  initPicsFeature();
-  initNotesFeature();
-  initSettingsFeature();
+  // Step 1: Register lazy loaders with TabManager.
+  TabManager.registerLazy('dns', () => import('./features/dns/dns.js').then(m => m.initDnsFeature()));
+  TabManager.registerLazy('pics', () => import('./features/pics/pics.js').then(m => m.initPicsFeature()));
+  TabManager.registerLazy('notes', () => import('./features/notes/notes.js').then(m => m.initNotesFeature()));
+  TabManager.registerLazy('settings', () => import('./features/settings/settings.js').then(m => m.initSettingsFeature()));
 
   // Step 2: Load settings, apply i18n and theme before rendering.
   const settings = await Settings.load();
