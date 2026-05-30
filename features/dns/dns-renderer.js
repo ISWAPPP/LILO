@@ -28,7 +28,7 @@ export const DnsRenderer = {
           if (geo) {
             geoHtml = `<span class="geo-badge no-copy" style="margin-bottom: 0; margin-right: 6px;">${Utils.getFlagEmoji(geo.countryCode)} ${Utils.escapeHTML(geo.country)}, ${Utils.escapeHTML(geo.city)}</span>`;
           }
-          return `<div class="dns-val-row">${geoHtml}<span class="dns-single-val" title="Клікніть щоб скопіювати тільки цю адресу">${Utils.escapeHTML(ip)}</span></div>`;
+          return `<div class="dns-val-row">${geoHtml}<span class="dns-single-val" title="Click to copy only this address">${Utils.escapeHTML(ip)}</span></div>`;
         }).join('');
 
         html += `
@@ -44,7 +44,7 @@ export const DnsRenderer = {
       }
       
       if (hasAAAA) {
-        const valRows = ipv6.map(ip => `<div class="dns-val-row"><span class="dns-single-val" title="Клікніть щоб скопіювати тільки цю адресу">${Utils.escapeHTML(ip)}</span></div>`).join('');
+        const valRows = ipv6.map(ip => `<div class="dns-val-row"><span class="dns-single-val" title="Click to copy only this address">${Utils.escapeHTML(ip)}</span></div>`).join('');
 
         html += `
           <div class="result-row dns-record-block">
@@ -59,7 +59,7 @@ export const DnsRenderer = {
       }
       
       if (hasNS) {
-        const valRows = ns.map(r => `<div class="dns-val-row"><span class="dns-single-val" title="Клікніть щоб скопіювати тільки цей запис">${Utils.escapeHTML(r.data)}</span></div>`).join('');
+        const valRows = ns.map(r => `<div class="dns-val-row"><span class="dns-single-val" title="Click to copy only this record">${Utils.escapeHTML(r.data)}</span></div>`).join('');
 
         html += `
           <div class="result-row dns-record-block">

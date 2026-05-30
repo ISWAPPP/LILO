@@ -6,6 +6,7 @@ const defaultSettings = {
   startupTab: 'last',
   dnsProvider: 'google',
   windowHeight: 300,
+  dnsHistoryLimit: 4,
   passgen: { lower: true, upper: true, numbers: true, symbols: false, excludeSimilar: false, length: 16 },
   dnsQueries: { a: true, aaaa: false, mx: true, txt: false, spf: false, dkim: false, dmarc: false, ns: true }
 };

@@ -191,9 +191,11 @@ export function initDnsFeature() {
       });
 
       if (saveToHistory) {
-        // Save to history (keep top 4, unique)
+        // Save to history (keep top N, unique)
+        const settings = await Settings.load();
+        const limit = settings.dnsHistoryLimit || 4;
         let hist = data.lilo_dns_history || [];
-        hist = [domain, ...hist.filter(d => d !== domain)].slice(0, 4);
+        hist = [domain, ...hist.filter(d => d !== domain)].slice(0, limit);
         await chrome.storage.local.set({ lilo_dns_history: hist });
       }
 
@@ -209,7 +211,9 @@ export function initDnsFeature() {
   // --- Quick Access History logic ---
   const renderQuickAccess = async () => {
     const data = await chrome.storage.local.get(['lilo_dns_history']);
-    const history = data.lilo_dns_history || [];
+    const settings = await Settings.load();
+    const limit = settings.dnsHistoryLimit || 4;
+    const history = (data.lilo_dns_history || []).slice(0, limit);
 
     const container = document.getElementById('dns-quick-access');
     const histList = document.getElementById('dns-history-list');

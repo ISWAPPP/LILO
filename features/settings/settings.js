@@ -15,6 +15,8 @@ export function initSettingsFeature() {
       const dnsSelect = document.getElementById('setting-dns-provider');
       const heightSlider = document.getElementById('setting-window-height');
       const heightVal = document.getElementById('setting-window-height-val');
+      const historyLimitSlider = document.getElementById('setting-history-limit');
+      const historyLimitVal = document.getElementById('setting-history-limit-val');
 
       const dq = settings.dnsQueries || { a: true, aaaa: false, mx: true, txt: false, spf: false, dkim: false, dmarc: false, ns: true };
       const qA = document.getElementById('setting-query-a');
@@ -37,15 +39,11 @@ export function initSettingsFeature() {
       
       // Theme Palette logic
       const themeSwatches = document.querySelectorAll('.theme-swatch');
-      const modeBtns = document.querySelectorAll('.zen-mode-btn');
       let currentTheme = settings.theme || 'auto';
       
       const updateThemeActiveState = (themeValue) => {
         themeSwatches.forEach(swatch => {
           swatch.classList.toggle('active', swatch.dataset.value === themeValue);
-        });
-        modeBtns.forEach(btn => {
-          btn.classList.toggle('active', btn.dataset.value === themeValue);
         });
       };
       
@@ -75,6 +73,10 @@ export function initSettingsFeature() {
         heightSlider.value = settings.windowHeight || 600;
         if (heightVal) heightVal.textContent = (settings.windowHeight || 600) + 'px';
       }
+      if (historyLimitSlider) {
+        historyLimitSlider.value = settings.dnsHistoryLimit || 4;
+        if (historyLimitVal) historyLimitVal.textContent = settings.dnsHistoryLimit || 4;
+      }
 
       const handleSave = async (updatedSettings = {}) => {
         const current = await Settings.load();
@@ -85,6 +87,7 @@ export function initSettingsFeature() {
           startupTab: startupSelect?.value || 'last',
           dnsProvider: dnsSelect?.value || 'google',
           windowHeight: parseInt(heightSlider?.value || '600'),
+          dnsHistoryLimit: parseInt(historyLimitSlider?.value || '4'),
           dnsQueries: {
             a: qA?.checked,
             aaaa: qAAAA?.checked,
@@ -129,21 +132,17 @@ export function initSettingsFeature() {
           handleSave({ theme: newTheme });
         });
       });
-
-      modeBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const newTheme = e.currentTarget.dataset.value;
-          currentTheme = newTheme;
-          updateThemeActiveState(newTheme);
-          handleSave({ theme: newTheme });
-        });
-      });
       
       heightSlider?.addEventListener('input', () => {
         if (heightVal) heightVal.textContent = heightSlider.value + 'px';
         document.documentElement.style.setProperty('--cached-height', heightSlider.value + 'px');
       });
       heightSlider?.addEventListener('change', () => handleSave());
+      
+      historyLimitSlider?.addEventListener('input', () => {
+        if (historyLimitVal) historyLimitVal.textContent = historyLimitSlider.value;
+      });
+      historyLimitSlider?.addEventListener('change', () => handleSave());
 
       // Data Management
       const btnExport = document.getElementById('btn-export-data');
