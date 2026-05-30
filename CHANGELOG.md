@@ -1,5 +1,22 @@
 # Changelog — LILO Tools
 
+## 0.9.25 — 2026-05-30
+
+### Improved
+- **Unified Rounded Corners (Design Tokens)**: Standardized all hardcoded border-radius sizes across components (buttons, input rows, tabs, checkboxes, lists, badges, and markdown code elements) to utilize global design token variables (`--radius-sm`, `--radius-md`, `--radius-lg`, `--radius-card`). Introduced a new `--radius-sm: 3px` variable to elegantly round sub-badges, checkboxes, and inline code fields.
+- **Ultra-Compact Spacing**: Comprehensively minimized paddings, margins, gaps, and loaders across tabs, cards, options, and lists. Cut down the PICS upload zone padding by 50%, shortened tab heights and empty areas, and eliminated wasted vertical space, creating a highly professional and dense developer layout.
+
+## 0.9.24 — 2026-05-30
+
+### Added
+- **Theme-Adaptive SSL Expiry Coloring**: The SSL expiration text and icon now dynamically change color based on the number of days remaining on the certificate. Under 10 days displays in theme-specific red, under 20 days in theme-specific warning amber/yellow, and anything above in theme-specific green. Highly adapted to look gorgeous across all 29 theme palettes.
+
+### Removed
+- **Maximum Window Height Setting**: Completely removed the "Maximum Window Height (px)" setting and slider control. The popup height now automatically scales and adjusts cleanly to the active tab's content.
+
+### Improved
+- **Disabled WHOIS Toolbar Button by Default**: Updated default configuration so that the WHOIS button in the DNS toolbar is not selected/enabled by default.
+
 ## 0.9.23 — 2026-05-30
 
 ### Added

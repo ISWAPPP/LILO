@@ -34,12 +34,14 @@ export function initDnsFeature() {
     const isIp = Utils.isValidIP(domain);
     if (isIp) {
       sslBtn.removeAttribute('data-ssl-days');
+      sslBtn.removeAttribute('data-ssl-status');
       const span = sslBtn.querySelector('span');
       sslBtn.innerHTML = `${span ? span.outerHTML : ''} SSL`;
       return;
     }
 
     sslBtn.setAttribute('data-ssl-days', 'loading');
+    sslBtn.removeAttribute('data-ssl-status');
     const span = sslBtn.querySelector('span');
     const iconHTML = span ? span.outerHTML : '';
     sslBtn.innerHTML = `${iconHTML} SSL...`;
@@ -56,14 +58,23 @@ export function initDnsFeature() {
       let text = '';
       if (days < 0) {
         sslBtn.setAttribute('data-ssl-days', 'expired');
+        sslBtn.setAttribute('data-ssl-status', 'error');
         text = I18n.t('dns_ssl_expired');
       } else {
         sslBtn.setAttribute('data-ssl-days', days);
+        if (days <= 10) {
+          sslBtn.setAttribute('data-ssl-status', 'error');
+        } else if (days <= 20) {
+          sslBtn.setAttribute('data-ssl-status', 'warning');
+        } else {
+          sslBtn.setAttribute('data-ssl-status', 'success');
+        }
         text = I18n.t('dns_ssl_days').replace('{days}', days);
       }
       sslBtn.innerHTML = `${iconHTML} ${text}`;
     } else {
       sslBtn.removeAttribute('data-ssl-days');
+      sslBtn.removeAttribute('data-ssl-status');
       sslBtn.innerHTML = `${iconHTML} SSL`;
     }
   };
@@ -156,6 +167,7 @@ export function initDnsFeature() {
           links[key].btn.classList.add('disabled');
           if (key === 'ssl') {
             links[key].btn.removeAttribute('data-ssl-days');
+            links[key].btn.removeAttribute('data-ssl-status');
             const span = links[key].btn.querySelector('span');
             links[key].btn.innerHTML = `${span ? span.outerHTML : ''} SSL`;
           }
@@ -394,7 +406,7 @@ export function initDnsFeature() {
 
       // Update toolbar buttons visibility
       const settings = await Settings.load();
-      const tb = settings.dnsToolbarButtons || { ssl: true, dns: true, whois: true };
+      const tb = settings.dnsToolbarButtons || { ssl: true, dns: true, whois: false };
       const groupSSL = document.getElementById('groupSSL');
       const groupDNS = document.getElementById('groupDNS');
       const groupWhois = document.getElementById('groupWhois');

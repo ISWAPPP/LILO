@@ -25,8 +25,9 @@ export const PicsRenderer = {
   success(url) {
     const safeUrl = Utils.escapeHTML(url);
     return `
-      <div class="img-result">
-        <p class="img-success" style="display: flex; align-items: center; justify-content: center; gap: 4px; color: var(--success-text);">
+      <div class="img-result" style="position: relative;">
+        <button id="close-pics-success" style="position: absolute; top: 6px; right: 8px; background: transparent; border: none; font-size: 16px; color: var(--text-muted); cursor: pointer; padding: 0; line-height: 1;">&times;</button>
+        <p class="img-success" style="display: flex; align-items: center; justify-content: center; gap: 4px; color: var(--success-text); margin-top: 0;">
           <svg class="icon icon-inline icon-success" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px; display: inline-block; vertical-align: middle;"><polyline points="20 6 9 17 4 12"></polyline></svg>
           <span>${I18n.t('copied')}</span>
         </p>

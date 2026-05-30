@@ -14,8 +14,6 @@ export function initSettingsFeature() {
       const startupSelect = document.getElementById('setting-startup-tab');
       const dnsSelect = document.getElementById('setting-dns-provider');
       const sslSelect = document.getElementById('setting-ssl-provider');
-      const heightSlider = document.getElementById('setting-window-height');
-      const heightVal = document.getElementById('setting-window-height-val');
       const historyLimitSlider = document.getElementById('setting-history-limit');
       const historyLimitVal = document.getElementById('setting-history-limit-val');
 
@@ -38,7 +36,7 @@ export function initSettingsFeature() {
       if (qDKIM) { qDKIM.checked = dq.dkim; }
       if (qDMARC) { qDMARC.checked = dq.dmarc; }
       
-      const tb = settings.dnsToolbarButtons || { ssl: true, dns: true, whois: true };
+      const tb = settings.dnsToolbarButtons || { ssl: true, dns: true, whois: false };
       const tbSsl = document.getElementById('setting-btn-ssl');
       const tbDns = document.getElementById('setting-btn-dns');
       const tbWhois = document.getElementById('setting-btn-whois');
@@ -80,12 +78,7 @@ export function initSettingsFeature() {
       if (startupSelect) { startupSelect.value = settings.startupTab; }
       if (dnsSelect) { dnsSelect.value = settings.dnsProvider || 'google'; }
       if (sslSelect) { sslSelect.value = settings.sslProvider || 'certist'; }
-      if (heightSlider) {
-        heightSlider.value = settings.windowHeight || 600;
-        if (heightVal) {
-          heightVal.textContent = `${settings.windowHeight || 600}px`;
-        }
-      }
+
       if (historyLimitSlider) {
         historyLimitSlider.value = settings.dnsHistoryLimit || 4;
         if (historyLimitVal) {
@@ -102,7 +95,6 @@ export function initSettingsFeature() {
           startupTab: startupSelect?.value || 'last',
           dnsProvider: dnsSelect?.value || 'google',
           sslProvider: sslSelect?.value || 'certist',
-          windowHeight: parseInt(heightSlider?.value || '600', 10),
           dnsHistoryLimit: parseInt(historyLimitSlider?.value || '4', 10),
           dnsQueries: {
             a: qA?.checked,
@@ -129,12 +121,8 @@ export function initSettingsFeature() {
         // Update theme
         Theme.apply(newSettings.theme);
         
-        // Update height
-        document.documentElement.style.setProperty('--cached-height', `${newSettings.windowHeight}px`);
-        localStorage.setItem('lilo_height_cache', newSettings.windowHeight);
-        
         // Update toolbar buttons visibility immediately
-        const activeTb = newSettings.dnsToolbarButtons || { ssl: true, dns: true, whois: true };
+        const activeTb = newSettings.dnsToolbarButtons || { ssl: true, dns: true, whois: false };
         const groupSSL = document.getElementById('groupSSL');
         const groupDNS = document.getElementById('groupDNS');
         const groupWhois = document.getElementById('groupWhois');
@@ -169,13 +157,7 @@ export function initSettingsFeature() {
         });
       });
       
-      heightSlider?.addEventListener('input', () => {
-        if (heightVal) {
-          heightVal.textContent = `${heightSlider.value}px`;
-        }
-        document.documentElement.style.setProperty('--cached-height', `${heightSlider.value}px`);
-      });
-      heightSlider?.addEventListener('change', () => handleSave());
+
       
       historyLimitSlider?.addEventListener('input', () => {
         if (historyLimitVal) {

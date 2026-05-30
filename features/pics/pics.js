@@ -40,20 +40,25 @@ export function initPicsFeature() {
  
     if (file.size > 10 * 1024 * 1024) {
       statusBox.innerHTML = PicsRenderer.error(I18n.t('pics_error_too_large'));
+      uploadZone.style.display = '';
       return;
     }
  
     // Check offline
     if (typeof navigator !== 'undefined' && !navigator.onLine) {
        statusBox.innerHTML = PicsRenderer.error(I18n.t('pics_error_no_internet'));
+       uploadZone.style.display = '';
        return;
     }
-
+ 
     const reader = new FileReader();
     reader.onload = async (e) => {
       const dataUrl = e.target.result;
+      
+      // Hide upload zone during uploading
+      uploadZone.style.display = 'none';
       statusBox.innerHTML = PicsRenderer.preview(dataUrl, 0);
-
+ 
       const url = await Api.uploadImage(file, (percent) => {
         statusBox.innerHTML = PicsRenderer.preview(dataUrl, percent);
       });
@@ -67,6 +72,7 @@ export function initPicsFeature() {
         await saveHistory(uploadHistory);
         renderHistory();
       } else {
+        uploadZone.style.display = '';
         statusBox.innerHTML = PicsRenderer.error();
       }
     };
@@ -121,6 +127,14 @@ export function initPicsFeature() {
     }
     // reset input
     if (fileInput) fileInput.value = '';
+  });
+
+  // Close success screen click
+  statusBox?.addEventListener('click', (e) => {
+    if (e.target.closest('#close-pics-success')) {
+      statusBox.innerHTML = '';
+      uploadZone.style.display = '';
+    }
   });
 
   // History click

@@ -57,7 +57,7 @@
     background: var(--accent);
     color: white;
     padding: 2px 6px;
-    border-radius: 10px;
+    border-radius: var(--radius-sm);
     font-size: 0.75em;
     margin-right: 6px;
     font-weight: 600;
@@ -74,12 +74,12 @@
    ============================================================ */
 .upload-zone {
     border: 2px dashed var(--border-light);
-    padding: 40px 20px;
+    padding: 20px 12px;
     text-align: center;
     border-radius: var(--radius-lg);
     background: var(--bg-sec);
     transition: all 0.2s;
-    margin-top: 10px;
+    margin-top: 6px;
 }
 
 .upload-zone:hover,
@@ -96,7 +96,7 @@
 
 .img-result {
     border: 1px solid var(--border-light);
-    padding: 12px;
+    padding: 8px;
     border-radius: var(--radius-md);
     background: var(--bg-sec);
     text-align: center;
@@ -105,8 +105,8 @@
 
 .img-result img {
     max-width: 100%;
-    border-radius: 4px;
-    margin-bottom: 12px;
+    border-radius: var(--radius-md);
+    margin-bottom: 6px;
     box-shadow: var(--shadow-sm);
 }
 
@@ -149,14 +149,14 @@
 .passgen-section {
     border: 1px solid var(--border-light);
     border-radius: var(--radius-lg);
-    padding: 16px;
-    margin-bottom: 16px;
+    padding: 12px;
+    margin-bottom: 10px;
     background: var(--bg-sec);
 }
 
 .passgen-output {
     display: flex;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     box-shadow: var(--shadow-sm);
     border-radius: var(--radius-md);
 }
@@ -204,8 +204,8 @@
 
 .passgen-options {
     display: flex;
-    gap: 16px;
-    margin-bottom: 12px;
+    gap: 8px 12px;
+    margin-bottom: 8px;
     flex-wrap: wrap;
 }
 
@@ -225,7 +225,7 @@
     width: 14px;
     height: 14px;
     border: 1px solid var(--border-light);
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
     background: var(--bg-main);
     cursor: pointer;
     position: relative;
@@ -273,7 +273,7 @@
    ============================================================ */
 .notes-add {
     display: flex;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     box-shadow: var(--shadow-sm);
     border-radius: var(--radius-md);
 }
@@ -296,7 +296,7 @@
 .notes-empty {
     text-align: center;
     color: var(--text-muted);
-    padding: 24px;
+    padding: 16px 12px;
     font-size: 13px;
     background: var(--bg-sec);
     border-radius: var(--radius-md);
@@ -352,7 +352,7 @@
     transition: opacity 0.2s;
     background: var(--note-bg);
     padding: 4px;
-    border-radius: 6px;
+    border-radius: var(--radius-lg);
     box-shadow: -5px 0 10px 5px var(--note-bg);
 }
 
@@ -370,7 +370,7 @@
     height: 28px;
     padding: 0;
     border: none;
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     background: transparent;
     color: var(--note-text);
     opacity: 0.7;
@@ -416,7 +416,7 @@
     padding: 6px 10px;
     min-height: 32px;
     border: 1px solid var(--border-light);
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     font-size: 13px;
     resize: none;
     overflow: hidden;
@@ -437,8 +437,8 @@
     align-items: center;
     gap: 8px;
     background: var(--bg-sec);
-    padding: 12px 8px;
-    border-radius: 12px;
+    padding: 8px;
+    border-radius: var(--radius-lg);
     border: 1px solid var(--border-light);
     position: relative;
 }
@@ -521,7 +521,7 @@
     background: var(--bg-sec);
     border: 1px solid var(--border-light);
     border-radius: var(--radius-card);
-    padding: 8px;
+    padding: 6px;
     margin-bottom: 0;
     box-shadow: var(--card-shadow);
     animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -532,8 +532,8 @@
     align-items: center;
     gap: 8px;
     border-bottom: 1px solid var(--border-light);
-    padding-bottom: 4px;
-    margin-bottom: 6px;
+    padding-bottom: 2px;
+    margin-bottom: 4px;
     font-size: 11px;
     text-transform: uppercase;
     font-weight: 700;
@@ -632,7 +632,7 @@
     background: var(--bg-tertiary);
     border: 1px solid var(--border-light);
     padding: 1px 5px;
-    border-radius: 10px;
+    border-radius: var(--radius-sm);
     font-size: 10px;
     font-weight: 600;
     color: var(--text-muted);
@@ -724,8 +724,8 @@
     display: flex;
     flex-direction: column;
     gap: 5px;
-    margin-top: 8px;
-    margin-bottom: 10px;
+    margin-top: 6px;
+    margin-bottom: 8px;
     padding: 0 4px;
 }
 
@@ -762,7 +762,7 @@
     font-size: 10px;
     font-weight: 700;
     padding: 1px 5px;
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     border: 1px solid var(--border-light);
     background: var(--bg-sec);
     color: var(--text-main);
@@ -813,7 +813,7 @@
 .note-markdown-body pre {
     background: rgba(0, 0, 0, 0.05);
     border: 1px solid var(--border-light);
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     padding: 4px 6px;
     margin: 4px 0;
     overflow-x: auto;
@@ -830,7 +830,7 @@ body.theme-dark .note-markdown-body pre,
     font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
     font-size: 11px;
     padding: 1px 3px;
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
     background: var(--bg-tertiary);
     color: var(--accent);
 }
@@ -859,7 +859,7 @@ body.theme-dark .note-markdown-body pre,
     height: 28px;
     padding: 0;
     border: none;
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     background: transparent;
     color: var(--note-text);
     opacity: 0.7;
