@@ -45,7 +45,7 @@ export const Api = {
       } else if (host === 'ssl-checker.io' || host === 'api.cert.ist') {
         urlLabel = 'SSL Expiry Check';
       }
-    } catch (e) {
+    } catch {
       // Fallback to original label if URL parsing fails (e.g. non-URL logs)
     }
     
