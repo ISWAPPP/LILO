@@ -6,6 +6,7 @@ import { TabManager } from '../../core/tabs.js';
 import { PicsRenderer } from './pics-renderer.js';
 import { I18n } from '../../core/i18n.js';
 import { Config } from '../../config.js';
+import { Settings } from '../../core/settings.js';
  
 export function initPicsFeature() {
   const statusBox = document.getElementById('pics-output');
@@ -68,7 +69,13 @@ export function initPicsFeature() {
         
         // Add to history
         uploadHistory.unshift({ url, date: Date.now() });
-        if (uploadHistory.length > 5) uploadHistory.pop();
+        
+        const settings = await Settings.load();
+        const limit = settings.picsHistoryLimit !== undefined ? settings.picsHistoryLimit : 5;
+        while (uploadHistory.length > limit) {
+          uploadHistory.pop();
+        }
+        
         await saveHistory(uploadHistory);
         renderHistory();
       } else {
@@ -192,6 +199,11 @@ export function initPicsFeature() {
       document.addEventListener('copy', blockCopy);
       
       uploadHistory = await loadHistory();
+      const settings = await Settings.load();
+      const limit = settings.picsHistoryLimit !== undefined ? settings.picsHistoryLimit : 5;
+      while (uploadHistory.length > limit) {
+        uploadHistory.pop();
+      }
       renderHistory();
     },
 

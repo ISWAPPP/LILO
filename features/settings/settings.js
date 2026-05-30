@@ -16,6 +16,8 @@ export function initSettingsFeature() {
       const sslSelect = document.getElementById('setting-ssl-provider');
       const historyLimitSlider = document.getElementById('setting-history-limit');
       const historyLimitVal = document.getElementById('setting-history-limit-val');
+      const picsHistoryLimitSlider = document.getElementById('setting-pics-history-limit');
+      const picsHistoryLimitVal = document.getElementById('setting-pics-history-limit-val');
 
       const dq = settings.dnsQueries || { a: true, aaaa: false, mx: true, txt: false, spf: false, dkim: false, dmarc: false, ns: true };
       const qA = document.getElementById('setting-query-a');
@@ -85,6 +87,13 @@ export function initSettingsFeature() {
           historyLimitVal.textContent = settings.dnsHistoryLimit || 4;
         }
       }
+
+      if (picsHistoryLimitSlider) {
+        picsHistoryLimitSlider.value = settings.picsHistoryLimit || 5;
+        if (picsHistoryLimitVal) {
+          picsHistoryLimitVal.textContent = settings.picsHistoryLimit || 5;
+        }
+      }
  
       const handleSave = async (updatedSettings = {}) => {
         const current = await Settings.load();
@@ -96,6 +105,7 @@ export function initSettingsFeature() {
           dnsProvider: dnsSelect?.value || 'google',
           sslProvider: sslSelect?.value || 'certist',
           dnsHistoryLimit: parseInt(historyLimitSlider?.value || '4', 10),
+          picsHistoryLimit: parseInt(picsHistoryLimitSlider?.value || '5', 10),
           dnsQueries: {
             a: qA?.checked,
             aaaa: qAAAA?.checked,
@@ -165,6 +175,13 @@ export function initSettingsFeature() {
         }
       });
       historyLimitSlider?.addEventListener('change', () => handleSave());
+
+      picsHistoryLimitSlider?.addEventListener('input', () => {
+        if (picsHistoryLimitVal) {
+          picsHistoryLimitVal.textContent = picsHistoryLimitSlider.value;
+        }
+      });
+      picsHistoryLimitSlider?.addEventListener('change', () => handleSave());
  
       // Data Management
       const btnExport = document.getElementById('btn-export-data');

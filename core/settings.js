@@ -7,6 +7,7 @@ const defaultSettings = {
   dnsProvider: 'google',
   sslProvider: 'certist',
   dnsHistoryLimit: 4,
+  picsHistoryLimit: 5,
   passgen: { lower: true, upper: true, numbers: true, symbols: false, excludeSimilar: false, length: 16 },
   dnsQueries: { a: true, aaaa: false, mx: true, txt: false, spf: false, dkim: false, dmarc: false, ns: true },
   dnsToolbarButtons: { ssl: true, dns: true, whois: false }

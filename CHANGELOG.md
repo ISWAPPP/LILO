@@ -1,5 +1,12 @@
 # Changelog — LILO Tools
 
+## 0.9.26 — 2026-05-30
+
+### Added
+- **Real-Time API Diagnostic Logging & Debug Overlay**: Added live tracking for DoH API queries (Google/Cloudflare DNS), IP Geolocation lookups, and SSL expiry queries with precise latency, execution timestamps, and network status. Configured unified state listeners to instantly redraw metrics inside the diagnostic overlay upon API completions.
+- **Dynamic Local Time Tracking**: Integrated live local time tracking (`Current Local Time`) directly in the debug console, updated dynamically every second, and embedded directly inside the Markdown diagnostic reports.
+- **Configurable Image History Limit (Buffer)**: Introduced a dynamic image history buffer limit (`picsHistoryLimit`) adjustable via settings range slider (1 to 20 images). Optimized historical database to immediately crop list sizes to target limits when navigating to the PICS tab.
+
 ## 0.9.25 — 2026-05-30
 
 ### Improved

@@ -4,6 +4,8 @@ import { Config } from '../config.js';
 import { Settings } from './settings.js';
 
 async function fetchWithTimeout(resource, options = {}) {
+  window.liloApiCallsCount = (window.liloApiCallsCount || 0) + 1;
+  const start = performance.now();
   const { timeout = 8000 } = options;
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeout);
@@ -13,14 +15,47 @@ async function fetchWithTimeout(resource, options = {}) {
       signal: controller.signal
     });
     clearTimeout(id);
+    const latency = performance.now() - start;
+    Api.recordCall(resource, latency, response.status);
     return response;
   } catch (error) {
     clearTimeout(id);
+    const latency = performance.now() - start;
+    Api.recordCall(resource, latency, error.message || 'Timeout/Error');
     throw error;
   }
 }
 
 export const Api = {
+  recordCall(url, latency, status) {
+    window.liloApiCallsLog = window.liloApiCallsLog || [];
+    
+    let urlLabel = String(url);
+    if (urlLabel.includes('dns.google/resolve')) {
+      urlLabel = 'DNS Query (Google)';
+    } else if (urlLabel.includes('1.1.1.1/dns-query')) {
+      urlLabel = 'DNS Query (Cloudflare)';
+    } else if (urlLabel.includes('ip-api.com')) {
+      urlLabel = 'IP Geo Check';
+    } else if (urlLabel.includes('ssl-checker.io') || urlLabel.includes('api.cert.ist')) {
+      urlLabel = 'SSL Expiry Check';
+    }
+    
+    window.liloApiCallsLog.unshift({
+      timestamp: new Date().toLocaleTimeString(),
+      label: urlLabel,
+      latency: latency,
+      status: status
+    });
+    if (window.liloApiCallsLog.length > 10) {
+      window.liloApiCallsLog.pop();
+    }
+
+    if (window.updateLiloDebugMetrics) {
+      window.updateLiloDebugMetrics();
+    }
+  },
+
   /** Retrieves the domain of the active Chrome tab. */
   async getActiveTabDomain() {
     if (typeof chrome === 'undefined' || !chrome.tabs) {
@@ -77,6 +112,8 @@ export const Api = {
 
   /** Uploads an image to freeimage.host. Optional onProgress(0–100). */
   uploadImage(blob, onProgress) {
+    window.liloApiCallsCount = (window.liloApiCallsCount || 0) + 1;
+    const start = performance.now();
     const formData = new FormData();
     formData.append('key', Config.api.imgApiKey);
     formData.append('source', blob);
@@ -97,6 +134,8 @@ export const Api = {
       });
 
       xhr.addEventListener('load', () => {
+        const latency = performance.now() - start;
+        Api.recordCall('Image Upload', latency, xhr.status);
         if (onProgress) {
           onProgress(100);
         }
@@ -120,11 +159,15 @@ export const Api = {
       });
 
       xhr.addEventListener('error', () => {
+        const latency = performance.now() - start;
+        Api.recordCall('Image Upload', latency, 'Network Error');
         console.error('Upload failed: network error');
         resolve(null);
       });
 
       xhr.addEventListener('timeout', () => {
+        const latency = performance.now() - start;
+        Api.recordCall('Image Upload', latency, 'Timeout');
         console.error('Upload failed: timeout');
         resolve(null);
       });
