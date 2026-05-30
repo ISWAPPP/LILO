@@ -64,7 +64,6 @@
 }
 
 /* ===== TOOLBAR (SSL/DNS/Whois) ===== */
-/* ===== TOOLBAR (SSL/DNS/Whois) ===== */
 .toolbar {
     display: flex;
     gap: 8px;
@@ -271,7 +270,7 @@ svg.icon-large {
 }
 
 /* ===== NEW MODERN CARDS ===== */
-.lilo-card, .settings-card {
+.settings-card {
     background: var(--bg-sec);
     border: 1px solid var(--border-light);
     border-radius: var(--radius-card);
@@ -281,7 +280,7 @@ svg.icon-large {
     transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-.lilo-card:hover, .settings-card:hover {
+.settings-card:hover {
     border-color: var(--border-focus);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
 }

@@ -127,6 +127,10 @@ button:disabled {
     background: var(--accent);
     color: var(--accent-text, white);
     border-color: var(--accent);
+    height: 38px;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 0 16px;
 }
 
 #btnDIG:hover:not(:disabled) {
