@@ -297,9 +297,6 @@ export function initDnsFeature() {
                 valRowEl.classList.add('copied');
                 setTimeout(() => valRowEl.classList.remove('copied'), 800);
 
-                singleValEl.classList.add('copied');
-                setTimeout(() => singleValEl.classList.remove('copied'), 800);
-
                 row.classList.add('copied-partially');
                 setTimeout(() => row.classList.remove('copied-partially'), 800);
               }

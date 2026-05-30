@@ -736,17 +736,6 @@
     -webkit-user-select: text;
 }
 
-.dns-single-val:hover {
-    background: var(--bg-tertiary) !important;
-    color: var(--accent) !important;
-}
-
-.dns-single-val.copied {
-    background: var(--success-bg) !important;
-    color: var(--success-text) !important;
-    box-shadow: 0 0 0 1px var(--success-text);
-}
-
 .dns-record-block.copied-partially {
     border-color: var(--success-text) !important;
 }
