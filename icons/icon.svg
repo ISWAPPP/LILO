@@ -1,6 +1,2 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="LILO Tools">
-  <rect width="128" height="128" rx="28" fill="#2563eb"/>
-  <circle cx="64" cy="52" r="28" fill="none" stroke="#ffffff" stroke-width="6"/>
-  <path d="M64 24 L64 80 M40 52 L88 52" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
-  <text x="64" y="108" font-family="system-ui,sans-serif" font-size="22" font-weight="700" fill="#ffffff" text-anchor="middle">LILO</text>
-</svg>
+<?xml version="1.0" encoding="utf-8"?><!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+<svg width="800px" height="800px" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" class="iconify iconify--twemoji" preserveAspectRatio="xMidYMid meet"><path fill="#10B981" d="M36 32a4 4 0 0 1-4 4H4a4 4 0 0 1-4-4V4a4 4 0 0 1 4-4h28a4 4 0 0 1 4 4v28z"></path><path fill="#FFF" d="M12.792 9.156c0-1.55.992-2.418 2.325-2.418c1.333 0 2.325.868 2.325 2.418V24.72h5.52c1.58 0 2.263 1.179 2.232 2.232c-.061 1.025-.868 2.048-2.231 2.048H15.21c-1.519 0-2.418-.992-2.418-2.543V9.156z"></path></svg>
