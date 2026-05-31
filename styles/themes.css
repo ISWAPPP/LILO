@@ -518,3 +518,27 @@
     --error-bg: rgba(255, 0, 128, 0.15);
     --error-text: #ff0080;
 }
+
+/* Warning/Amber text overrides for Dark and Neon theme groups */
+.theme-dark,
+.theme-nord,
+.theme-gruvbox,
+.theme-coffee,
+.theme-autumn,
+.theme-oceanic,
+.theme-navy,
+.theme-sea,
+.theme-solarized-dark,
+.theme-forest,
+.theme-sunset,
+.theme-blood,
+.theme-monochrome,
+.theme-terminal,
+.theme-amber,
+.theme-midnight,
+.theme-dracula,
+.theme-synthwave,
+.theme-cyberpunk,
+.theme-neon-cyan {
+    --warning-text: #f59e0b;
+}

@@ -3,6 +3,8 @@
 import { Settings } from './settings.js';
 
 const registry = new Map();
+const lazyLoaders = new Map();
+const initialized = new Set();
 let activeTab = null;
 
 export const TabManager = {
@@ -15,8 +17,15 @@ export const TabManager = {
     registry.set(name, handler);
   },
 
-  /** Initializes tab UI and calls init() on all registered features. */
-  init(initialTab = null) {
+  /** Registers a lazy loader callback for a tab. */
+  registerLazy(name, loader) {
+    lazyLoaders.set(name, loader);
+  },
+
+  tabLoadTimes: {},
+
+  /** Initializes tab UI and sets up lazy loading. */
+  async init(initialTab = null) {
     document.querySelectorAll('.tab-link').forEach(btn => {
       btn.addEventListener('click', () => this.switchTo(btn.dataset.tab));
     });
@@ -30,24 +39,18 @@ export const TabManager = {
       }
     });
 
-    // Initialize all registered features
-    for (const [, handler] of registry) {
-      handler.init?.();
-    }
-
     if (initialTab) {
-      this.switchTo(initialTab, true); // true = don't save to storage initially
+      await this.switchTo(initialTab, true); // true = don't save to storage initially
     } else {
       // Activate default tab
       const defaultBtn = document.querySelector('.tab-link.active');
       if (defaultBtn) {
-        activeTab = defaultBtn.dataset.tab;
-        registry.get(activeTab)?.onActivate?.();
+        await this.switchTo(defaultBtn.dataset.tab, true);
       }
     }
   },
 
-  switchTo(name, skipSave = false) {
+  async switchTo(name, skipSave = false) {
     if (name === activeTab) return;
 
     // Deactivate current
@@ -71,10 +74,29 @@ export const TabManager = {
     document.getElementById(`${name}-tab`)?.classList.add('active');
 
     activeTab = name;
-    registry.get(name)?.onActivate?.();
+
+    // Lazily import the feature module if registered as lazy and not loaded yet
+    if (lazyLoaders.has(name) && !registry.has(name)) {
+      await lazyLoaders.get(name)();
+    }
+
+    const handler = registry.get(name);
+
+    // Lazily initialize the tab if not done already
+    if (handler && !initialized.has(name)) {
+      const start = performance.now();
+      initialized.add(name);
+      await handler.init?.();
+      const duration = performance.now() - start;
+      this.tabLoadTimes[name] = duration;
+      this.onTabInitialized?.(name, duration);
+    }
+
+    handler?.onActivate?.();
 
     if (!skipSave && name !== 'settings') {
       Settings.setLastTab(name);
     }
   },
 };
+

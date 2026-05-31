@@ -128,34 +128,42 @@
             <div class="passgen-output">
                 <input type="text" id="passgen-result" readonly placeholder="..." data-i18n="passgen_placeholder"
                     title="Click to copy" data-i18n-title="passgen_tooltip">
-                <button id="passgen-refresh" title="Generate new" data-i18n-title="passgen_refresh"
-                    style="display: flex; align-items: center; justify-content: center;">
+                <button id="passgen-refresh" title="Generate new" data-i18n-title="passgen_refresh">
                     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
+                        stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="23 4 23 10 17 10"></polyline>
                         <polyline points="1 20 1 14 7 14"></polyline>
                         <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
                     </svg>
                 </button>
-            </div>
-            <div class="passgen-strength-container"
-                style="margin-bottom: 12px; height: 4px; background: var(--bg-main); border-radius: 2px; overflow: hidden;">
                 <div id="passgen-strength-meter" class="passgen-strength-meter"></div>
             </div>
-            <div class="passgen-options"
-                style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap; margin-bottom: 0;">
-                <div style="display: flex; gap: 10px; flex-shrink: 0; flex-wrap: wrap;">
-                    <label><input type="checkbox" id="opt-lower" checked> a-z</label>
-                    <label><input type="checkbox" id="opt-upper" checked> A-Z</label>
-                    <label><input type="checkbox" id="opt-numbers" checked> 0-9</label>
-                    <label><input type="checkbox" id="opt-symbols"> !@#</label>
-                    <label><input type="checkbox" id="opt-no-similar"><span data-i18n="passgen_no_similar">No
-                            similar</span></label>
+            <div class="passgen-options-row">
+                <div class="passgen-chips-group">
+                    <label class="passgen-chip">
+                        <input type="checkbox" id="opt-lower" checked>
+                        <div class="passgen-chip-inner">a-z</div>
+                    </label>
+                    <label class="passgen-chip">
+                        <input type="checkbox" id="opt-upper" checked>
+                        <div class="passgen-chip-inner">A-Z</div>
+                    </label>
+                    <label class="passgen-chip">
+                        <input type="checkbox" id="opt-numbers" checked>
+                        <div class="passgen-chip-inner">0-9</div>
+                    </label>
+                    <label class="passgen-chip">
+                        <input type="checkbox" id="opt-symbols">
+                        <div class="passgen-chip-inner">!@#</div>
+                    </label>
+                    <label class="passgen-chip">
+                        <input type="checkbox" id="opt-no-similar">
+                        <div class="passgen-chip-inner" data-i18n="passgen_no_similar">No similar</div>
+                    </label>
                 </div>
-                <div class="passgen-length" style="display: flex; align-items: center; gap: 8px; flex: 1;">
-                    <input type="range" id="passgen-length" min="4" max="64" value="16"
-                        style="flex: 1; min-width: 50px;">
-                    <span id="passgen-length-val" style="width: 20px; text-align: right; font-weight: 600;">16</span>
+                <div class="passgen-length-container">
+                    <input type="range" id="passgen-length" min="4" max="64" value="16">
+                    <span id="passgen-length-val">16</span>
                 </div>
             </div>
         </div>
@@ -229,18 +237,6 @@
                 </select>
             </div>
 
-            <div class="settings-group">
-                <label for="setting-window-height"
-                    style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);"
-                    data-i18n="settings_window_height">Maximum Window Height (px)</label>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <input type="range" id="setting-window-height" min="300" max="600" step="10" value="300"
-                        style="flex: 1; accent-color: var(--accent);">
-                    <span id="setting-window-height-val"
-                        style="font-weight: 700; width: 40px; text-align: right; color: var(--accent);">300px</span>
-                </div>
-            </div>
-
             <div class="settings-group" style="margin-top: 12px;">
                 <label for="setting-history-limit"
                     style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);"
@@ -250,6 +246,18 @@
                         style="flex: 1; accent-color: var(--accent);">
                     <span id="setting-history-limit-val"
                         style="font-weight: 700; width: 40px; text-align: right; color: var(--accent);">4</span>
+                </div>
+            </div>
+
+            <div class="settings-group" style="margin-top: 12px;">
+                <label for="setting-pics-history-limit"
+                    style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);"
+                    data-i18n="settings_pics_history_limit">Max Image History Buffer</label>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <input type="range" id="setting-pics-history-limit" min="1" max="20" step="1" value="5"
+                        style="flex: 1; accent-color: var(--accent);">
+                    <span id="setting-pics-history-limit-val"
+                        style="font-weight: 700; width: 40px; text-align: right; color: var(--accent);">5</span>
                 </div>
             </div>
         </div>
@@ -517,6 +525,93 @@
                     <polyline points="10 9 9 9 8 9"></polyline>
                 </svg> Changelog
             </a>
+        </div>
+    </div>
+
+    <!-- CARD 5: DEBUG CONSOLE (Hidden by default, shown globally on all tabs) -->
+    <div id="debug-card" class="settings-card" style="display: none; border-color: var(--accent); background: var(--bg-secondary); margin-top: 15px; margin-bottom: 10px;">
+        <h3 style="color: var(--accent); display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; margin-top: 0;">
+            <span style="display: flex; align-items: center; gap: 8px;">
+                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px;">
+                    <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                    <line x1="8" y1="21" x2="16" y2="21"></line>
+                    <line x1="12" y1="17" x2="12" y2="21"></line>
+                </svg>
+                <span>LILO Debug Console</span>
+            </span>
+            <span style="font-size: 9px; background: var(--accent); color: var(--bg-main); padding: 2px 6px; border-radius: var(--radius-sm); font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">Developer</span>
+        </h3>
+
+        <div class="debug-metrics" style="font-family: monospace; font-size: 11px; display: flex; flex-direction: column; gap: 8px; color: var(--text-main);">
+            <!-- Section 1: Performance -->
+            <div style="font-weight: 700; color: var(--accent); border-bottom: 1px solid var(--border-light); padding-bottom: 2px; margin-top: 5px;">[1] PERFORMANCE & LATENCY</div>
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border-light); padding-bottom: 4px; padding-left: 6px;">
+                <span style="color: var(--text-muted);">Popup Startup Time:</span>
+                <span id="metric-startup" style="font-weight: 700;">-</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border-light); padding-bottom: 4px; padding-left: 6px;">
+                <span style="color: var(--text-muted);">Active Provider (DNS):</span>
+                <span id="metric-dns-provider" style="font-weight: 700;">-</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border-light); padding-bottom: 4px; padding-left: 6px; align-items: flex-start;">
+                <span style="color: var(--text-muted);">Tab Load Metrics:</span>
+                <span id="metric-tab-times" style="font-weight: 700; text-align: right; white-space: pre-line; line-height: 1.3;">-</span>
+            </div>
+
+            <!-- Section 2: Storage Diagnostics -->
+            <div style="font-weight: 700; color: var(--accent); border-bottom: 1px solid var(--border-light); padding-bottom: 2px; margin-top: 8px;">[2] STORAGE DIAGNOSTIC STATS</div>
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border-light); padding-bottom: 4px; padding-left: 6px;">
+                <span style="color: var(--text-muted);">Local Storage Usage:</span>
+                <span id="metric-storage-size" style="font-weight: 700;">-</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border-light); padding-bottom: 4px; padding-left: 6px;">
+                <span style="color: var(--text-muted);">Stored Notes Count:</span>
+                <span id="metric-notes-count" style="font-weight: 700;">0 notes</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border-light); padding-bottom: 4px; padding-left: 6px;">
+                <span style="color: var(--text-muted);">Pics History Count:</span>
+                <span id="metric-pics-count" style="font-weight: 700;">0 images</span>
+            </div>
+
+            <!-- Section 3: API Response Timings -->
+            <div style="font-weight: 700; color: var(--accent); border-bottom: 1px solid var(--border-light); padding-bottom: 2px; margin-top: 8px;">[3] API LATENCY LOGS</div>
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border-light); padding-bottom: 4px; padding-left: 6px;">
+                <span style="color: var(--text-muted);">Session HTTP Requests:</span>
+                <span id="metric-api-calls" style="font-weight: 700;">0 requests</span>
+            </div>
+            <div id="metric-api-details-container" style="max-height: 90px; overflow-y: auto; padding: 4px 6px; background: rgba(100, 100, 100, 0.05); border-radius: var(--radius-sm); line-height: 1.4; border: 1px solid var(--border-light); font-size: 10px;">
+                <div style="color: var(--text-muted); text-align: center; padding: 4px 0;">No API calls logged in this session</div>
+            </div>
+
+            <!-- Section 4: System Info -->
+            <div style="font-weight: 700; color: var(--accent); border-bottom: 1px solid var(--border-light); padding-bottom: 2px; margin-top: 8px;">[4] SYSTEM & ENVIRONMENT</div>
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border-light); padding-bottom: 4px; padding-left: 6px;">
+                <span style="color: var(--text-muted);">Extension Version:</span>
+                <span id="metric-ext-version" style="font-weight: 700;">-</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border-light); padding-bottom: 4px; padding-left: 6px;">
+                <span style="color: var(--text-muted);">Viewport & DOM:</span>
+                <span id="metric-viewport" style="font-weight: 700;">-</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border-light); padding-bottom: 4px; padding-left: 6px;">
+                <span style="color: var(--text-muted);">Current Local Time:</span>
+                <span id="metric-local-time" style="font-weight: 700;">-</span>
+            </div>
+        </div>
+
+        <div style="margin-top: 15px; display: flex; gap: 6px;">
+            <button id="btn-debug-clear-storage" class="data-mgmt-btn" style="flex: 1; padding: 6px 4px; font-size: 10px; display: flex; align-items: center; justify-content: center; gap: 2px; background: var(--bg-main); border: 1px solid var(--border-light); color: var(--text-main); font-weight: 600; cursor: pointer; border-radius: var(--radius-md);" title="Reset Storage">
+                Reset Storage
+            </button>
+            <button id="btn-debug-copy-report" class="data-mgmt-btn" style="flex: 1.2; padding: 6px 4px; font-size: 10px; display: flex; align-items: center; justify-content: center; gap: 4px; background: var(--accent); border: 1px solid var(--accent); color: white; font-weight: 700; cursor: pointer; border-radius: var(--radius-md);" title="Copy MD Report to Clipboard">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width: 11px; height: 11px;">
+                    <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path>
+                    <rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect>
+                </svg> Copy Report
+            </button>
+            <button id="btn-debug-reload" class="data-mgmt-btn" style="flex: 1; padding: 6px 4px; font-size: 10px; display: flex; align-items: center; justify-content: center; gap: 2px; background: var(--bg-main); border: 1px solid var(--border-light); color: var(--text-main); font-weight: 600; cursor: pointer; border-radius: var(--radius-md);" title="Reload App">
+                Reload App
+            </button>
         </div>
     </div>
     <div id="toast-container"></div>

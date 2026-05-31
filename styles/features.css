@@ -57,7 +57,7 @@
     background: var(--accent);
     color: white;
     padding: 2px 6px;
-    border-radius: 10px;
+    border-radius: var(--radius-sm);
     font-size: 0.75em;
     margin-right: 6px;
     font-weight: 600;
@@ -74,12 +74,12 @@
    ============================================================ */
 .upload-zone {
     border: 2px dashed var(--border-light);
-    padding: 40px 20px;
+    padding: 20px 12px;
     text-align: center;
     border-radius: var(--radius-lg);
     background: var(--bg-sec);
     transition: all 0.2s;
-    margin-top: 10px;
+    margin-top: 6px;
 }
 
 .upload-zone:hover,
@@ -96,7 +96,7 @@
 
 .img-result {
     border: 1px solid var(--border-light);
-    padding: 12px;
+    padding: 8px;
     border-radius: var(--radius-md);
     background: var(--bg-sec);
     text-align: center;
@@ -105,8 +105,8 @@
 
 .img-result img {
     max-width: 100%;
-    border-radius: 4px;
-    margin-bottom: 12px;
+    border-radius: var(--radius-md);
+    margin-bottom: 6px;
     box-shadow: var(--shadow-sm);
 }
 
@@ -149,36 +149,88 @@
 .passgen-section {
     border: 1px solid var(--border-light);
     border-radius: var(--radius-lg);
-    padding: 16px;
-    margin-bottom: 16px;
+    padding: 8px 10px;
+    margin-bottom: 10px;
     background: var(--bg-sec);
 }
 
 .passgen-output {
+    position: relative;
     display: flex;
-    margin-bottom: 12px;
+    height: 32px;
+    margin-bottom: 8px;
     box-shadow: var(--shadow-sm);
     border-radius: var(--radius-md);
+    border: 1px solid var(--border-light);
+    background: var(--bg-main);
+    overflow: hidden;
+    transition: all 0.2s ease;
 }
 
 .passgen-output input {
-    text-align: center;
-    font-size: 14px;
-    font-weight: 500;
+    flex: 1;
+    border: none !important;
+    height: 100% !important;
+    padding: 0 10px !important;
+    background: transparent !important;
+    text-align: left !important;
+    font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: var(--text-main);
     cursor: pointer;
+    box-shadow: none !important;
+}
+
+.passgen-output input:focus {
+    background: transparent !important;
+}
+
+#passgen-refresh {
+    flex: 0 0 auto;
+    border: none !important;
+    border-left: 1px solid var(--border-light) !important;
+    border-radius: 0 !important;
+    height: 100% !important;
+    width: 32px !important;
+    padding: 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-sec) !important;
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+}
+
+#passgen-refresh:hover {
+    background: var(--bg-tertiary) !important;
+    color: var(--text-main);
+}
+
+.passgen-section.copied .passgen-output {
+    background: var(--success-bg) !important;
+    border-color: var(--success-text) !important;
 }
 
 .passgen-section.copied .passgen-output input {
-    background: var(--success-bg);
-    color: var(--success-text);
-    border-color: var(--success-text);
+    color: var(--success-text) !important;
 }
 
-/* Password Strength Meter */
+.passgen-section.copied #passgen-refresh {
+    border-left-color: var(--success-text) !important;
+    background: var(--success-bg) !important;
+    color: var(--success-text) !important;
+}
+
+/* Password Strength Meter in unified input */
 .passgen-strength-meter {
-    height: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
     width: 0%;
     transition: all 0.3s ease;
+    z-index: 10;
 }
 
 .passgen-strength-meter.weak {
@@ -199,73 +251,96 @@
 .passgen-strength-meter.very-strong {
     width: 100%;
     background: var(--success-text);
-    box-shadow: 0 0 5px var(--success-text);
+    box-shadow: 0 -1px 3px var(--success-text);
 }
 
-.passgen-options {
+/* Ultra-Compact Options Row */
+.passgen-options-row {
     display: flex;
-    gap: 16px;
-    margin-bottom: 12px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
     flex-wrap: wrap;
 }
 
-/* Custom checkbox */
-.passgen-options label {
+.passgen-chips-group {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+/* Ultra-compact pill chips */
+.passgen-chip {
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.passgen-chip input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.passgen-chip-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 24px;
+    padding: 0 6px;
+    background: var(--bg-main);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 700;
+    transition: all 0.2s ease;
+    user-select: none;
+    box-shadow: var(--shadow-sm);
+}
+
+.passgen-chip:hover .passgen-chip-inner {
+    border-color: var(--border-focus);
+    color: var(--text-main);
+    background: var(--bg-tertiary);
+}
+
+.passgen-chip input[type="checkbox"]:checked + .passgen-chip-inner {
+    background: var(--accent);
+    color: var(--accent-text, #fff);
+    border-color: var(--accent);
+    box-shadow: 0 2px 4px rgb(0 0 0 / 10%);
+}
+
+/* Ultra-compact slider container */
+.passgen-length-container {
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    color: var(--text-main);
-}
-
-.passgen-options input[type="checkbox"] {
-    appearance: none;
-    width: 14px;
-    height: 14px;
-    border: 1px solid var(--border-light);
-    border-radius: 3px;
-    background: var(--bg-main);
-    cursor: pointer;
-    position: relative;
-    transition: all 0.2s;
-}
-
-.passgen-options input[type="checkbox"]:checked {
-    background: var(--accent);
-    border-color: var(--accent);
-}
-
-.passgen-options input[type="checkbox"]:checked::after {
-    content: '';
-    position: absolute;
-    left: 4px;
-    top: 1px;
-    width: 3px;
-    height: 7px;
-    border: solid white;
-    border-width: 0 1.5px 1.5px 0;
-    transform: rotate(45deg);
-}
-
-.passgen-length {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 13px;
-    font-weight: 500;
-}
-
-.passgen-length input[type="range"] {
     flex: 1;
-    accent-color: var(--accent);
+    min-width: 80px;
+    height: 24px;
 }
 
-.passgen-length span:last-child {
-    width: 24px;
+.passgen-length-container input[type="range"] {
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border-light);
+    accent-color: var(--accent);
+    cursor: pointer;
+    outline: none;
+}
+
+#passgen-length-val {
+    font-family: 'SF Mono', Menlo, monospace;
+    font-size: 11px;
+    font-weight: 700;
+    width: 18px;
     text-align: right;
-    color: var(--text-muted);
+    color: var(--accent);
+    flex-shrink: 0;
 }
 
 /* ============================================================
@@ -273,7 +348,7 @@
    ============================================================ */
 .notes-add {
     display: flex;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     box-shadow: var(--shadow-sm);
     border-radius: var(--radius-md);
 }
@@ -287,6 +362,7 @@
 
 #note-input {
     overflow: hidden;
+    min-height: 44px;
 }
 
 .notes-add button:hover {
@@ -296,7 +372,7 @@
 .notes-empty {
     text-align: center;
     color: var(--text-muted);
-    padding: 24px;
+    padding: 16px 12px;
     font-size: 13px;
     background: var(--bg-sec);
     border-radius: var(--radius-md);
@@ -352,7 +428,7 @@
     transition: opacity 0.2s;
     background: var(--note-bg);
     padding: 4px;
-    border-radius: 6px;
+    border-radius: var(--radius-lg);
     box-shadow: -5px 0 10px 5px var(--note-bg);
 }
 
@@ -370,7 +446,7 @@
     height: 28px;
     padding: 0;
     border: none;
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     background: transparent;
     color: var(--note-text);
     opacity: 0.7;
@@ -416,7 +492,7 @@
     padding: 6px 10px;
     min-height: 32px;
     border: 1px solid var(--border-light);
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     font-size: 13px;
     resize: none;
     overflow: hidden;
@@ -437,8 +513,8 @@
     align-items: center;
     gap: 8px;
     background: var(--bg-sec);
-    padding: 12px 8px;
-    border-radius: 12px;
+    padding: 8px;
+    border-radius: var(--radius-lg);
     border: 1px solid var(--border-light);
     position: relative;
 }
@@ -521,7 +597,7 @@
     background: var(--bg-sec);
     border: 1px solid var(--border-light);
     border-radius: var(--radius-card);
-    padding: 8px;
+    padding: 6px;
     margin-bottom: 0;
     box-shadow: var(--card-shadow);
     animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -532,8 +608,8 @@
     align-items: center;
     gap: 8px;
     border-bottom: 1px solid var(--border-light);
-    padding-bottom: 4px;
-    margin-bottom: 6px;
+    padding-bottom: 2px;
+    margin-bottom: 4px;
     font-size: 11px;
     text-transform: uppercase;
     font-weight: 700;
@@ -632,7 +708,7 @@
     background: var(--bg-tertiary);
     border: 1px solid var(--border-light);
     padding: 1px 5px;
-    border-radius: 10px;
+    border-radius: var(--radius-sm);
     font-size: 10px;
     font-weight: 600;
     color: var(--text-muted);
@@ -724,8 +800,8 @@
     display: flex;
     flex-direction: column;
     gap: 5px;
-    margin-top: 8px;
-    margin-bottom: 10px;
+    margin-top: 6px;
+    margin-bottom: 8px;
     padding: 0 4px;
 }
 
@@ -762,7 +838,7 @@
     font-size: 10px;
     font-weight: 700;
     padding: 1px 5px;
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     border: 1px solid var(--border-light);
     background: var(--bg-sec);
     color: var(--text-main);
@@ -813,7 +889,7 @@
 .note-markdown-body pre {
     background: rgba(0, 0, 0, 0.05);
     border: 1px solid var(--border-light);
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     padding: 4px 6px;
     margin: 4px 0;
     overflow-x: auto;
@@ -830,7 +906,7 @@ body.theme-dark .note-markdown-body pre,
     font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
     font-size: 11px;
     padding: 1px 3px;
-    border-radius: 3px;
+    border-radius: var(--radius-sm);
     background: var(--bg-tertiary);
     color: var(--accent);
 }
@@ -859,7 +935,7 @@ body.theme-dark .note-markdown-body pre,
     height: 28px;
     padding: 0;
     border: none;
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     background: transparent;
     color: var(--note-text);
     opacity: 0.7;

@@ -14,10 +14,10 @@ export function initSettingsFeature() {
       const startupSelect = document.getElementById('setting-startup-tab');
       const dnsSelect = document.getElementById('setting-dns-provider');
       const sslSelect = document.getElementById('setting-ssl-provider');
-      const heightSlider = document.getElementById('setting-window-height');
-      const heightVal = document.getElementById('setting-window-height-val');
       const historyLimitSlider = document.getElementById('setting-history-limit');
       const historyLimitVal = document.getElementById('setting-history-limit-val');
+      const picsHistoryLimitSlider = document.getElementById('setting-pics-history-limit');
+      const picsHistoryLimitVal = document.getElementById('setting-pics-history-limit-val');
 
       const dq = settings.dnsQueries || { a: true, aaaa: false, mx: true, txt: false, spf: false, dkim: false, dmarc: false, ns: true };
       const qA = document.getElementById('setting-query-a');
@@ -38,7 +38,7 @@ export function initSettingsFeature() {
       if (qDKIM) { qDKIM.checked = dq.dkim; }
       if (qDMARC) { qDMARC.checked = dq.dmarc; }
       
-      const tb = settings.dnsToolbarButtons || { ssl: true, dns: true, whois: true };
+      const tb = settings.dnsToolbarButtons || { ssl: true, dns: true, whois: false };
       const tbSsl = document.getElementById('setting-btn-ssl');
       const tbDns = document.getElementById('setting-btn-dns');
       const tbWhois = document.getElementById('setting-btn-whois');
@@ -80,16 +80,18 @@ export function initSettingsFeature() {
       if (startupSelect) { startupSelect.value = settings.startupTab; }
       if (dnsSelect) { dnsSelect.value = settings.dnsProvider || 'google'; }
       if (sslSelect) { sslSelect.value = settings.sslProvider || 'certist'; }
-      if (heightSlider) {
-        heightSlider.value = settings.windowHeight || 600;
-        if (heightVal) {
-          heightVal.textContent = `${settings.windowHeight || 600}px`;
-        }
-      }
+
       if (historyLimitSlider) {
         historyLimitSlider.value = settings.dnsHistoryLimit || 4;
         if (historyLimitVal) {
           historyLimitVal.textContent = settings.dnsHistoryLimit || 4;
+        }
+      }
+
+      if (picsHistoryLimitSlider) {
+        picsHistoryLimitSlider.value = settings.picsHistoryLimit || 5;
+        if (picsHistoryLimitVal) {
+          picsHistoryLimitVal.textContent = settings.picsHistoryLimit || 5;
         }
       }
  
@@ -102,8 +104,8 @@ export function initSettingsFeature() {
           startupTab: startupSelect?.value || 'last',
           dnsProvider: dnsSelect?.value || 'google',
           sslProvider: sslSelect?.value || 'certist',
-          windowHeight: parseInt(heightSlider?.value || '600', 10),
           dnsHistoryLimit: parseInt(historyLimitSlider?.value || '4', 10),
+          picsHistoryLimit: parseInt(picsHistoryLimitSlider?.value || '5', 10),
           dnsQueries: {
             a: qA?.checked,
             aaaa: qAAAA?.checked,
@@ -129,12 +131,8 @@ export function initSettingsFeature() {
         // Update theme
         Theme.apply(newSettings.theme);
         
-        // Update height
-        document.documentElement.style.setProperty('--cached-height', `${newSettings.windowHeight}px`);
-        localStorage.setItem('lilo_height_cache', newSettings.windowHeight);
-        
         // Update toolbar buttons visibility immediately
-        const activeTb = newSettings.dnsToolbarButtons || { ssl: true, dns: true, whois: true };
+        const activeTb = newSettings.dnsToolbarButtons || { ssl: true, dns: true, whois: false };
         const groupSSL = document.getElementById('groupSSL');
         const groupDNS = document.getElementById('groupDNS');
         const groupWhois = document.getElementById('groupWhois');
@@ -169,13 +167,7 @@ export function initSettingsFeature() {
         });
       });
       
-      heightSlider?.addEventListener('input', () => {
-        if (heightVal) {
-          heightVal.textContent = `${heightSlider.value}px`;
-        }
-        document.documentElement.style.setProperty('--cached-height', `${heightSlider.value}px`);
-      });
-      heightSlider?.addEventListener('change', () => handleSave());
+
       
       historyLimitSlider?.addEventListener('input', () => {
         if (historyLimitVal) {
@@ -183,6 +175,13 @@ export function initSettingsFeature() {
         }
       });
       historyLimitSlider?.addEventListener('change', () => handleSave());
+
+      picsHistoryLimitSlider?.addEventListener('input', () => {
+        if (picsHistoryLimitVal) {
+          picsHistoryLimitVal.textContent = picsHistoryLimitSlider.value;
+        }
+      });
+      picsHistoryLimitSlider?.addEventListener('change', () => handleSave());
  
       // Data Management
       const btnExport = document.getElementById('btn-export-data');
