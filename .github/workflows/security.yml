@@ -23,10 +23,10 @@ jobs:
       security-events: write
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Run ESLint
-        uses: reviewdog/action-eslint@v1
+        uses: reviewdog/action-eslint@2fee6dd72a5419ff4113f694e2068d2a03bb35dd # v1.22.0
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-review
@@ -39,9 +39,9 @@ jobs:
       contents: read
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - name: TruffleHog OSS
-        uses: trufflesecurity/trufflehog@main
+        uses: trufflesecurity/trufflehog@6c05c4a00b91aa542267d8e32a8254774799d68d # v3.95.3
         with:
           path: ./
           base: ""

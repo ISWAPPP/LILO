@@ -56,7 +56,7 @@ function generatePassword() {
 
   const length = parseInt(document.getElementById('passgen-length')?.value, 10) || cfg.defaultLength;
   
-  let password = '';
+  let generatedPass = '';
   const bufferSize = Math.max(length * 2, 64);
   const array = new Uint8Array(bufferSize);
   const maxValid = 256 - (256 % charset.length);
@@ -64,18 +64,18 @@ function generatePassword() {
   let bufferIndex = 0;
   crypto.getRandomValues(array);
 
-  while (password.length < length) {
+  while (generatedPass.length < length) {
     if (bufferIndex >= array.length) {
       crypto.getRandomValues(array);
       bufferIndex = 0;
     }
     const val = array[bufferIndex++];
     if (val < maxValid) {
-      password += charset[val % charset.length];
+      generatedPass += charset[val % charset.length];
     }
   }
 
-  return password;
+  return generatedPass;
 }
 
 function calculateStrength(password, opts) {

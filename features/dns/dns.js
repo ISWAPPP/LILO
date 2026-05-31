@@ -318,9 +318,9 @@ export function initDnsFeature() {
   // --- Tab registration ---
   TabManager.register('dns', {
     init() {
-      input = document.getElementById('domain_input');
+      input = document.getElementById('domain-input');
       output = document.getElementById('output');
-      btn = document.getElementById('btnDIG');
+      btn = document.getElementById('btn-dig');
 
       links = {
         ssl: { a: document.getElementById('linkSSL'), btn: document.getElementById('copySSL') },
