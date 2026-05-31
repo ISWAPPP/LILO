@@ -11,6 +11,7 @@ export function initSettingsFeature() {
       const settings = await Settings.load();
       
       const langSelect = document.getElementById('setting-language');
+      const fontSelect = document.getElementById('setting-font');
       const startupSelect = document.getElementById('setting-startup-tab');
       const dnsSelect = document.getElementById('setting-dns-provider');
       const sslSelect = document.getElementById('setting-ssl-provider');
@@ -77,6 +78,7 @@ export function initSettingsFeature() {
       }
  
       if (langSelect) { langSelect.value = settings.language; }
+      if (fontSelect) { fontSelect.value = settings.font || 'system'; }
       if (startupSelect) { startupSelect.value = settings.startupTab; }
       if (dnsSelect) { dnsSelect.value = settings.dnsProvider || 'google'; }
       if (sslSelect) { sslSelect.value = settings.sslProvider || 'certist'; }
@@ -100,6 +102,7 @@ export function initSettingsFeature() {
         const newSettings = {
           ...current,
           language: langSelect?.value || 'auto',
+          font: fontSelect?.value || 'system',
           theme: currentTheme,
           startupTab: startupSelect?.value || 'last',
           dnsProvider: dnsSelect?.value || 'google',
@@ -130,6 +133,7 @@ export function initSettingsFeature() {
         
         // Update theme
         Theme.apply(newSettings.theme);
+        Theme.applyFont(newSettings.font);
         
         // Update toolbar buttons visibility immediately
         const activeTb = newSettings.dnsToolbarButtons || { ssl: true, dns: true, whois: false };
@@ -144,6 +148,7 @@ export function initSettingsFeature() {
       };
  
       langSelect?.addEventListener('change', () => handleSave());
+      fontSelect?.addEventListener('change', () => handleSave());
       startupSelect?.addEventListener('change', () => handleSave());
       dnsSelect?.addEventListener('change', () => handleSave());
       sslSelect?.addEventListener('change', () => handleSave());

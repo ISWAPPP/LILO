@@ -38,5 +38,11 @@ export const Theme = {
 
     // Sync to localStorage for fast sync access in popup.html (prevents flashing)
     localStorage.setItem('lilo_theme_cache', themeName);
+  },
+
+  applyFont(fontName) {
+    const root = document.documentElement;
+    root.setAttribute('data-font', fontName);
+    localStorage.setItem('lilo_font_cache', fontName);
   }
 };

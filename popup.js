@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const settings = await Settings.load();
   await I18n.init(settings.language);
   Theme.init(settings.theme || 'auto');
+  Theme.applyFont(settings.font || 'system');
 
   // Verify tab match or resolve startup Tab async if it was a cold load
   if (settings.startupTab === 'last') {

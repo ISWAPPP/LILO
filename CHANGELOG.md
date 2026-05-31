@@ -4,6 +4,18 @@
 
 ### Added
 
+- **Interface Font Customization (9 premium faces)**: Added a font configuration
+  setting in the General Settings card allowing users to select their preferred
+  UI font.
+  - **Dynamic, Non-Flickering Applying**: Handled font initialization inside
+    `theme-init.js` to synchronously load and render the selected font face
+    instantly at bootstrap, eliminating FOUF (flash of unstyled font).
+  - **9 Curated Typography Faces**: Curated a rich selection of premium fonts
+    covering diverse aesthetic directions (Sans-Serif, Serif, Monospace, Playful, Heavy Display, etc.),
+    including Georgia (Elegant Serif), Garamond (Classic Book), Trebuchet MS (Modern Humanist),
+    Consolas (Technical Monospace), Comic Sans MS (Playful/Casual), and Verdana (Wide & Readable).
+  - **Seamless Cascading**: Standardized `font-family: inherit` across notes, inputs, textareas, and buttons.
+
 - **Ultra-Compact Password Generator UI**: Fully redesigned the password
   generator inside the NOTES tab to use a dense, unified two-row layout
   that saves over 40px of vertical popup space.

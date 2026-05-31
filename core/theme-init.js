@@ -10,4 +10,8 @@
     document.documentElement.classList.add(`theme-${actualTheme}`);
     document.documentElement.setAttribute('data-theme', actualTheme);
     document.documentElement.setAttribute('data-theme-setting', theme);
+
+    // Bootstrap font setting to prevent FOUF (flash of unstyled font)
+    const font = localStorage.getItem('lilo_font_cache') || 'system';
+    document.documentElement.setAttribute('data-font', font);
 })();
