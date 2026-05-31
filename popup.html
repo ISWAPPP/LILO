@@ -128,34 +128,42 @@
             <div class="passgen-output">
                 <input type="text" id="passgen-result" readonly placeholder="..." data-i18n="passgen_placeholder"
                     title="Click to copy" data-i18n-title="passgen_tooltip">
-                <button id="passgen-refresh" title="Generate new" data-i18n-title="passgen_refresh"
-                    style="display: flex; align-items: center; justify-content: center;">
+                <button id="passgen-refresh" title="Generate new" data-i18n-title="passgen_refresh">
                     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                        stroke-linecap="round" stroke-linejoin="round" style="width: 14px; height: 14px;">
+                        stroke-linecap="round" stroke-linejoin="round">
                         <polyline points="23 4 23 10 17 10"></polyline>
                         <polyline points="1 20 1 14 7 14"></polyline>
                         <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
                     </svg>
                 </button>
-            </div>
-            <div class="passgen-strength-container"
-                style="margin-bottom: 12px; height: 4px; background: var(--bg-main); border-radius: 2px; overflow: hidden;">
                 <div id="passgen-strength-meter" class="passgen-strength-meter"></div>
             </div>
-            <div class="passgen-options"
-                style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap; margin-bottom: 0;">
-                <div style="display: flex; gap: 10px; flex-shrink: 0; flex-wrap: wrap;">
-                    <label><input type="checkbox" id="opt-lower" checked> a-z</label>
-                    <label><input type="checkbox" id="opt-upper" checked> A-Z</label>
-                    <label><input type="checkbox" id="opt-numbers" checked> 0-9</label>
-                    <label><input type="checkbox" id="opt-symbols"> !@#</label>
-                    <label><input type="checkbox" id="opt-no-similar"><span data-i18n="passgen_no_similar">No
-                            similar</span></label>
+            <div class="passgen-options-row">
+                <div class="passgen-chips-group">
+                    <label class="passgen-chip">
+                        <input type="checkbox" id="opt-lower" checked>
+                        <div class="passgen-chip-inner">a-z</div>
+                    </label>
+                    <label class="passgen-chip">
+                        <input type="checkbox" id="opt-upper" checked>
+                        <div class="passgen-chip-inner">A-Z</div>
+                    </label>
+                    <label class="passgen-chip">
+                        <input type="checkbox" id="opt-numbers" checked>
+                        <div class="passgen-chip-inner">0-9</div>
+                    </label>
+                    <label class="passgen-chip">
+                        <input type="checkbox" id="opt-symbols">
+                        <div class="passgen-chip-inner">!@#</div>
+                    </label>
+                    <label class="passgen-chip">
+                        <input type="checkbox" id="opt-no-similar">
+                        <div class="passgen-chip-inner" data-i18n="passgen_no_similar">No similar</div>
+                    </label>
                 </div>
-                <div class="passgen-length" style="display: flex; align-items: center; gap: 8px; flex: 1;">
-                    <input type="range" id="passgen-length" min="4" max="64" value="16"
-                        style="flex: 1; min-width: 50px;">
-                    <span id="passgen-length-val" style="width: 20px; text-align: right; font-weight: 600;">16</span>
+                <div class="passgen-length-container">
+                    <input type="range" id="passgen-length" min="4" max="64" value="16">
+                    <span id="passgen-length-val">16</span>
                 </div>
             </div>
         </div>

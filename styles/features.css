@@ -149,36 +149,88 @@
 .passgen-section {
     border: 1px solid var(--border-light);
     border-radius: var(--radius-lg);
-    padding: 12px;
+    padding: 8px 10px;
     margin-bottom: 10px;
     background: var(--bg-sec);
 }
 
 .passgen-output {
+    position: relative;
     display: flex;
+    height: 32px;
     margin-bottom: 8px;
     box-shadow: var(--shadow-sm);
     border-radius: var(--radius-md);
+    border: 1px solid var(--border-light);
+    background: var(--bg-main);
+    overflow: hidden;
+    transition: all 0.2s ease;
 }
 
 .passgen-output input {
-    text-align: center;
-    font-size: 14px;
-    font-weight: 500;
+    flex: 1;
+    border: none !important;
+    height: 100% !important;
+    padding: 0 10px !important;
+    background: transparent !important;
+    text-align: left !important;
+    font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: var(--text-main);
     cursor: pointer;
+    box-shadow: none !important;
+}
+
+.passgen-output input:focus {
+    background: transparent !important;
+}
+
+#passgen-refresh {
+    flex: 0 0 auto;
+    border: none !important;
+    border-left: 1px solid var(--border-light) !important;
+    border-radius: 0 !important;
+    height: 100% !important;
+    width: 32px !important;
+    padding: 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-sec) !important;
+    color: var(--text-muted);
+    transition: all 0.2s ease;
+}
+
+#passgen-refresh:hover {
+    background: var(--bg-tertiary) !important;
+    color: var(--text-main);
+}
+
+.passgen-section.copied .passgen-output {
+    background: var(--success-bg) !important;
+    border-color: var(--success-text) !important;
 }
 
 .passgen-section.copied .passgen-output input {
-    background: var(--success-bg);
-    color: var(--success-text);
-    border-color: var(--success-text);
+    color: var(--success-text) !important;
 }
 
-/* Password Strength Meter */
+.passgen-section.copied #passgen-refresh {
+    border-left-color: var(--success-text) !important;
+    background: var(--success-bg) !important;
+    color: var(--success-text) !important;
+}
+
+/* Password Strength Meter in unified input */
 .passgen-strength-meter {
-    height: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 3px;
     width: 0%;
     transition: all 0.3s ease;
+    z-index: 10;
 }
 
 .passgen-strength-meter.weak {
@@ -199,73 +251,96 @@
 .passgen-strength-meter.very-strong {
     width: 100%;
     background: var(--success-text);
-    box-shadow: 0 0 5px var(--success-text);
+    box-shadow: 0 -1px 3px var(--success-text);
 }
 
-.passgen-options {
+/* Ultra-Compact Options Row */
+.passgen-options-row {
     display: flex;
-    gap: 8px 12px;
-    margin-bottom: 8px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
     flex-wrap: wrap;
 }
 
-/* Custom checkbox */
-.passgen-options label {
+.passgen-chips-group {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+}
+
+/* Ultra-compact pill chips */
+.passgen-chip {
+    position: relative;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.passgen-chip input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.passgen-chip-inner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 24px;
+    padding: 0 6px;
+    background: var(--bg-main);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 700;
+    transition: all 0.2s ease;
+    user-select: none;
+    box-shadow: var(--shadow-sm);
+}
+
+.passgen-chip:hover .passgen-chip-inner {
+    border-color: var(--border-focus);
+    color: var(--text-main);
+    background: var(--bg-tertiary);
+}
+
+.passgen-chip input[type="checkbox"]:checked + .passgen-chip-inner {
+    background: var(--accent);
+    color: var(--accent-text, #ffffff);
+    border-color: var(--accent);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Ultra-compact slider container */
+.passgen-length-container {
     display: flex;
     align-items: center;
     gap: 6px;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    color: var(--text-main);
-}
-
-.passgen-options input[type="checkbox"] {
-    appearance: none;
-    width: 14px;
-    height: 14px;
-    border: 1px solid var(--border-light);
-    border-radius: var(--radius-sm);
-    background: var(--bg-main);
-    cursor: pointer;
-    position: relative;
-    transition: all 0.2s;
-}
-
-.passgen-options input[type="checkbox"]:checked {
-    background: var(--accent);
-    border-color: var(--accent);
-}
-
-.passgen-options input[type="checkbox"]:checked::after {
-    content: '';
-    position: absolute;
-    left: 4px;
-    top: 1px;
-    width: 3px;
-    height: 7px;
-    border: solid white;
-    border-width: 0 1.5px 1.5px 0;
-    transform: rotate(45deg);
-}
-
-.passgen-length {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 13px;
-    font-weight: 500;
-}
-
-.passgen-length input[type="range"] {
     flex: 1;
-    accent-color: var(--accent);
+    min-width: 80px;
+    height: 24px;
 }
 
-.passgen-length span:last-child {
-    width: 24px;
+.passgen-length-container input[type="range"] {
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border-light);
+    accent-color: var(--accent);
+    cursor: pointer;
+    outline: none;
+}
+
+#passgen-length-val {
+    font-family: 'SF Mono', 'Menlo', monospace;
+    font-size: 11px;
+    font-weight: 700;
+    width: 18px;
     text-align: right;
-    color: var(--text-muted);
+    color: var(--accent);
+    flex-shrink: 0;
 }
 
 /* ============================================================

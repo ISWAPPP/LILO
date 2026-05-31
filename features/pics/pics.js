@@ -32,7 +32,7 @@ export function initPicsFeature() {
     }
   };
   const processFile = async (file) => {
-    if (!file || !file.type.includes('image')) {
+    if (!file?.type?.includes('image')) {
       return;
     }
 

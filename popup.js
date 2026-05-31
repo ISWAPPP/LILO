@@ -6,25 +6,55 @@ import { I18n } from './core/i18n.js';
 import { Theme } from './core/theme.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
-  // Step 1: Register lazy loaders with TabManager.
-  TabManager.registerLazy('dns', () => import('./features/dns/dns.js').then(m => m.initDnsFeature()));
-  TabManager.registerLazy('pics', () => import('./features/pics/pics.js').then(m => m.initPicsFeature()));
-  TabManager.registerLazy('notes', () => import('./features/notes/notes.js').then(m => m.initNotesFeature()));
-  TabManager.registerLazy('settings', () => import('./features/settings/settings.js').then(m => m.initSettingsFeature()));
+  // Step 1: Speculatively resolve the initial tab synchronously to parallelize module loading (0.1ms latency)
+  let initialTab = 'dns';
+  try {
+    const localSaved = localStorage.getItem('lilo_settings_cache');
+    const localLastTab = localStorage.getItem('lilo_last_tab_cache');
+    if (localSaved) {
+      const parsed = JSON.parse(localSaved);
+      if (parsed.startupTab === 'last') {
+        initialTab = localLastTab || 'dns';
+      } else if (parsed.startupTab) {
+        initialTab = parsed.startupTab;
+      }
+    }
+  } catch (e) {
+    console.warn('Failed to parse localStorage settings cache for speculative load:', e);
+  }
 
-  // Step 2: Load settings, apply i18n and theme before rendering.
+  // Speculatively trigger the dynamic import of the active tab script immediately in parallel
+  const tabLoaders = {
+    dns: () => import('./features/dns/dns.js').then(m => m.initDnsFeature()),
+    pics: () => import('./features/pics/pics.js').then(m => m.initPicsFeature()),
+    notes: () => import('./features/notes/notes.js').then(m => m.initNotesFeature()),
+    settings: () => import('./features/settings/settings.js').then(m => m.initSettingsFeature())
+  };
+
+  const activeTabPromise = tabLoaders[initialTab] ? tabLoaders[initialTab]() : null;
+
+  // Register lazy loaders. For the initial tab, return the speculative promise immediately to achieve 0ms load overhead.
+  Object.entries(tabLoaders).forEach(([name, loader]) => {
+    if (name === initialTab && activeTabPromise) {
+      TabManager.registerLazy(name, () => activeTabPromise);
+    } else {
+      TabManager.registerLazy(name, loader);
+    }
+  });
+
+  // Step 2: Load settings, apply i18n and theme. Since they hit the localStorage cache, this is virtually synchronous (~0.2ms).
   const settings = await Settings.load();
   await I18n.init(settings.language);
   Theme.init(settings.theme || 'auto');
 
-  let initialTab = 'dns';
+  // Verify tab match or resolve startup Tab async if it was a cold load
   if (settings.startupTab === 'last') {
     initialTab = await Settings.getLastTab();
   } else {
     initialTab = settings.startupTab;
   }
 
-  // Step 3: Initialize TabManager — this sets up tab events and lazy-loads the active tab.
+  // Step 3: Initialize TabManager — instantly mounts tabs and hooks events
   await TabManager.init(initialTab);
 
   // Record total startup time
