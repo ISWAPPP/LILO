@@ -235,6 +235,7 @@ export function initSettingsFeature() {
             Utils.showToast(I18n.t('toast_imported'));
             setTimeout(() => location.reload(), 1000);
           } catch (err) {
+            console.error('Import settings failed:', err);
             Utils.showToast(I18n.t('toast_import_error'));
           }
         };

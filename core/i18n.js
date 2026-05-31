@@ -282,7 +282,7 @@ export const I18n = {
             el.appendChild(icon);
             
             let btnText = this.t(key);
-            if (el.id === 'copySSL' && el.hasAttribute('data-ssl-days')) {
+            if (el.id === 'copy-ssl' && el.hasAttribute('data-ssl-days')) {
               const daysVal = el.getAttribute('data-ssl-days');
               if (daysVal === 'expired') {
                 btnText = this.t('dns_ssl_expired');

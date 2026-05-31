@@ -49,7 +49,7 @@ export const Utils = {
     try {
       await navigator.clipboard.writeText(text);
       return true;
-    } catch {
+    } catch (e) {
       return false;
     }
   },

@@ -386,10 +386,12 @@
     border: 1px solid var(--border-light);
     border-radius: var(--radius-md);
     margin-bottom: 6px;
+
     --note-bg: var(--bg-main);
     --note-text: var(--text-main);
     --note-btn-hover-bg: var(--bg-tertiary);
     --note-btn-hover-color: var(--accent);
+
     background: var(--note-bg);
     transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
     animation: fadeIn 0.2s ease;
@@ -546,10 +548,8 @@
     scroll-behavior: smooth;
     padding: 12px 6px;
     flex: 1;
-    -ms-overflow-style: none;
-    /* IE and Edge */
-    scrollbar-width: none;
-    /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
 }
 
 .theme-palette.zen-scroll-area::-webkit-scrollbar {
@@ -756,16 +756,18 @@
     border-color: var(--success-text) !important;
 }
 
-/* Copy indicator icon toggle styling */
 .dns-record-block .copy-icon {
     display: inline-block !important;
 }
+
 .dns-record-block .check-icon {
     display: none !important;
 }
+
 .dns-record-block.copied .copy-icon {
     display: none !important;
 }
+
 .dns-record-block.copied .check-icon {
     display: inline-block !important;
     color: var(--success-text) !important;

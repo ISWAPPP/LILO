@@ -465,7 +465,7 @@
     --success-bg: rgb(80 250 123 / 15%);
     --success-text: #50fa7b;
     --error-bg: rgb(255 85 85 / 15%);
-    --error-text: #ff5555;
+    --error-text: #f55;
 }
 
 .theme-synthwave {
@@ -475,29 +475,29 @@
     --text-main: #f0f;
     --text-muted: #b300b3;
     --border-light: #3a0066;
-    --border-focus: #ff9900;
-    --accent: #ff9900;
+    --border-focus: #f90;
+    --accent: #f90;
     --accent-hover: #f0f;
     --accent-text: #000;
     --success-bg: rgb(0 255 255 / 15%);
-    --success-text: #00ffff;
+    --success-text: #0ff;
     --error-bg: rgb(255 0 0 / 15%);
-    --error-text: #ff3333;
+    --error-text: #f33;
 }
 
 .theme-cyberpunk {
     --bg-main: #0d0221;
     --bg-sec: #130331;
     --bg-tertiary: #190541;
-    --text-main: #00ffcc;
-    --text-muted: #00ccaa;
+    --text-main: #0fc;
+    --text-muted: #0ca;
     --border-light: #260a5c;
     --border-focus: #f0f;
     --accent: #f0f;
-    --accent-hover: #cc00cc;
+    --accent-hover: #c0c;
     --accent-text: var(--bg-main);
     --success-bg: rgb(0 255 204 / 15%);
-    --success-text: #00ffcc;
+    --success-text: #0fc;
     --error-bg: rgb(255 0 255 / 15%);
     --error-text: #f0f;
 }
@@ -507,11 +507,11 @@
     --bg-sec: #040d12;
     --bg-tertiary: #06141c;
     --text-main: #0ff;
-    --text-muted: #009999;
-    --border-light: #003333;
+    --text-muted: #099;
+    --border-light: #033;
     --border-focus: #0ff;
     --accent: #0ff;
-    --accent-hover: #00cccc;
+    --accent-hover: #0cc;
     --accent-text: #000;
     --success-bg: rgb(0 255 0 / 15%);
     --success-text: #0f0;

@@ -17,8 +17,11 @@
 - **⚡ High Performance & Optimized Architecture**:
   - **Dynamic Lazy Module Loading**: Feature panels (`DNS`, `PICS`, `NOTES`, `Settings`) are dynamically loaded on-demand via ES module `import()`, preventing initial extension launch parser overhead and minimizing start latency.
   - **Non-Blocking Asynchronous Initialization**: Long-running local storage transactions are moved into parallel, non-blocking promise flows. Tabs transition instantly in **<0.1 ms**, and populate dynamically in the background.
-  - **Deferred DOM Bindings**: Document lookups and listener attachments are completely deferred until each tab is activated for the first time, keeping startup lightning-fast (~25ms).
-  - **Flash-Free Startup**: Synchronous theme detection directly in `theme-init.js` prevents layout shifts and white flashes.
+  - **Deferred DOM Bindings**: Document lookups and listener attachments are
+    completely deferred until each tab is activated for the first time,
+    keeping startup lightning-fast (~25ms).
+  - **Flash-Free Startup**: Synchronous theme detection directly in
+    `theme-init.js` prevents layout shifts and white flashes.
 
 ## 🛠 Technologies
 

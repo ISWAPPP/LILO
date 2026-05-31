@@ -55,7 +55,7 @@ export const Settings = {
         cache = saved;
         try {
           localStorage.setItem('lilo_settings_cache', JSON.stringify(saved));
-        } catch {
+        } catch (e) {
           // Ignored
         }
         resolve(mergeSettings(saved));
@@ -73,7 +73,7 @@ export const Settings = {
 
     try {
       localStorage.setItem('lilo_settings_cache', JSON.stringify(cache));
-    } catch {
+    } catch (e) {
       // Ignored
     }
 
@@ -87,7 +87,7 @@ export const Settings = {
     try {
       localStorage.removeItem('lilo_settings_cache');
       localStorage.removeItem('lilo_last_tab_cache');
-    } catch {
+    } catch (e) {
       // Ignored
     }
   },
@@ -104,7 +104,7 @@ export const Settings = {
         });
         return localTab;
       }
-    } catch {
+    } catch (e) {
       // Ignored
     }
 
@@ -113,7 +113,7 @@ export const Settings = {
         const tab = result.lilo_last_tab || 'dns';
         try {
           localStorage.setItem('lilo_last_tab_cache', tab);
-        } catch {
+        } catch (e) {
           // Ignored
         }
         resolve(tab);
@@ -124,7 +124,7 @@ export const Settings = {
   async setLastTab(tab) {
     try {
       localStorage.setItem('lilo_last_tab_cache', tab);
-    } catch {
+    } catch (e) {
       // Ignored
     }
 

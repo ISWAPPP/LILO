@@ -66,7 +66,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   let footerClicks = 0;
 
   const updateDebugMetrics = async () => {
-    if (!debugCard || debugCard.style.display === 'none') return;
+    if (!debugCard || debugCard.style.display === 'none') {
+      return;
+    }
 
     // --- [1] Performance & Latency ---
     // Startup Time
@@ -114,7 +116,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           try {
             const notes = res.lilo_notes ? (typeof res.lilo_notes === 'string' ? JSON.parse(res.lilo_notes) : res.lilo_notes) : [];
             metricNotesCount.textContent = `${notes.length} notes`;
-          } catch {
+          } catch (e) {
             metricNotesCount.textContent = '0 notes';
           }
         }
@@ -122,15 +124,21 @@ document.addEventListener('DOMContentLoaded', async () => {
           try {
             const pics = res.lilo_pics_history ? (typeof res.lilo_pics_history === 'string' ? JSON.parse(res.lilo_pics_history) : res.lilo_pics_history) : [];
             metricPicsCount.textContent = `${pics.length} images`;
-          } catch {
+          } catch (e) {
             metricPicsCount.textContent = '0 images';
           }
         }
       });
     } else {
-      if (metricStorageSize) metricStorageSize.textContent = 'N/A';
-      if (metricNotesCount) metricNotesCount.textContent = 'N/A';
-      if (metricPicsCount) metricPicsCount.textContent = 'N/A';
+      if (metricStorageSize) {
+        metricStorageSize.textContent = 'N/A';
+      }
+      if (metricNotesCount) {
+        metricNotesCount.textContent = 'N/A';
+      }
+      if (metricPicsCount) {
+        metricPicsCount.textContent = 'N/A';
+      }
     }
 
     // --- [3] API Latency Logs ---
@@ -215,11 +223,15 @@ document.addEventListener('DOMContentLoaded', async () => {
       try {
         const notes = res.lilo_notes ? (typeof res.lilo_notes === 'string' ? JSON.parse(res.lilo_notes) : res.lilo_notes) : [];
         notesCount = notes.length;
-      } catch {}
+      } catch (err) {
+        console.warn('Failed to parse notes from storage:', err);
+      }
       try {
         const pics = res.lilo_pics_history ? (typeof res.lilo_pics_history === 'string' ? JSON.parse(res.lilo_pics_history) : res.lilo_pics_history) : [];
         picsCount = pics.length;
-      } catch {}
+      } catch (err) {
+        console.warn('Failed to parse pics from storage:', err);
+      }
     }
 
     const apiLogs = (window.liloApiCallsLog || [])
