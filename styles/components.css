@@ -29,7 +29,7 @@
 
 .tab-link:hover:not(.active) {
     color: var(--text-main);
-    background: rgba(0,0,0,0.05);
+    background: rgb(0 0 0 / 5%);
 }
 
 .tab-link.active {
@@ -55,12 +55,26 @@
     box-sizing: border-box;
 }
 
-.tab-content { display: none; padding-bottom: 12px; }
-.tab-content.active { display: block; animation: fadeIn 0.3s ease; }
+.tab-content {
+    display: none;
+    padding-bottom: 12px;
+}
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(2px); }
-    to { opacity: 1; transform: translateY(0); }
+.tab-content.active {
+    display: block;
+    animation: fade-in 0.3s ease;
+}
+
+@keyframes fade-in {
+    from {
+        opacity: 0;
+        transform: translateY(2px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* ===== TOOLBAR (SSL/DNS/Whois) ===== */
@@ -163,18 +177,30 @@
 }
 
 @keyframes premium-glow {
-    from { box-shadow: 0 0 5px var(--accent-hover); }
-    to { box-shadow: 0 0 15px var(--accent); }
+    from {
+        box-shadow: 0 0 5px var(--accent-hover);
+    }
+
+    to {
+        box-shadow: 0 0 15px var(--accent);
+    }
 }
 
 /* Base Animations */
 .animate-fade-in-up {
-    animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: fade-in-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(8px); }
-    to { opacity: 1; transform: translateY(0); }
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* ===== MESSAGES ===== */
@@ -190,7 +216,6 @@
 /* ===== CUSTOM SELECT ===== */
 select {
     appearance: none;
-    -webkit-appearance: none;
     background-image: url('data:image/svg+xml;utf8,<svg fill="%2364748b" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
     background-repeat: no-repeat;
     background-position: right 10px center;
@@ -199,9 +224,11 @@ select {
     cursor: pointer;
     font-weight: 500;
 }
+
 select:hover {
     border-color: var(--border-focus) !important;
 }
+
 .theme-dark select, .theme-forest select, .theme-sea select, .theme-cyberpunk select, .theme-nord select {
     background-image: url('data:image/svg+xml;utf8,<svg fill="%2394a3b8" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
 }
@@ -229,16 +256,33 @@ select:hover {
     font-size: 13px;
     animation: toast-in 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
 .toast.hiding {
     animation: toast-out 0.3s forwards;
 }
+
 @keyframes toast-in {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
+
 @keyframes toast-out {
-    from { opacity: 1; transform: translateY(0); }
-    to { opacity: 0; transform: translateY(10px); }
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(10px);
+    }
 }
 
 /* ===== SVG ICONS ===== */
@@ -293,7 +337,7 @@ svg.icon-large {
 
 .settings-card:hover {
     border-color: var(--border-focus);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 4px 12px rgb(0 0 0 / 6%);
 }
 
 .settings-card h3 {
@@ -361,9 +405,9 @@ svg.icon-large {
 
 .query-chip input[type="checkbox"]:checked + .query-chip-inner {
     background: var(--accent);
-    color: var(--accent-text, #ffffff);
+    color: var(--accent-text, #fff);
     border-color: var(--accent);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 2px 6px rgb(0 0 0 / 15%);
 }
 
 /* ===== DATA MANAGEMENT GRID ===== */
@@ -402,6 +446,7 @@ svg.icon-large {
     border-color: var(--success-text);
     background: var(--success-bg);
 }
+
 .data-mgmt-btn.export:hover {
     opacity: 0.9;
 }
@@ -420,6 +465,7 @@ svg.icon-large {
     border-color: var(--error-bg);
     background: var(--error-bg);
 }
+
 .data-mgmt-btn.clear:hover {
     opacity: 0.9;
 }

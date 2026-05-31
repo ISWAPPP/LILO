@@ -4,7 +4,7 @@
    DNS FEATURE
    ============================================================ */
 #output {
-    margin-top: 10px;
+    margin-top: 10px !important;
 }
 
 .results-container {
@@ -44,13 +44,12 @@
 
 .result-value {
     flex-grow: 1;
-    font-family: 'SF Mono', 'Menlo', monospace;
+    font-family: 'SF Mono', Menlo, monospace;
     font-size: 0.9em;
     word-break: break-all;
     line-height: 1.5;
     color: var(--text-main);
     user-select: text;
-    -webkit-user-select: text;
 }
 
 .badge-mx {
@@ -111,7 +110,7 @@
 }
 
 .img-success {
-    margin: 0 0 12px 0;
+    margin: 0 0 12px;
     color: var(--success-text);
     font-weight: 600;
 }
@@ -174,7 +173,7 @@
     padding: 0 10px !important;
     background: transparent !important;
     text-align: left !important;
-    font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
+    font-family: 'SF Mono', Menlo, 'Courier New', monospace;
     font-size: 13px !important;
     font-weight: 600 !important;
     color: var(--text-main);
@@ -410,7 +409,7 @@
     flex: 1;
     width: 100%;
     white-space: pre-wrap;
-    word-break: break-word;
+    overflow-wrap: break-word;
     font-size: 13px;
     color: var(--note-text);
     cursor: pointer;
@@ -563,7 +562,7 @@
     border-radius: 50%;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 0 0 2px transparent, 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0 0 2px transparent, 0 2px 4px rgb(0 0 0 / 10%);
     position: relative;
     flex-shrink: 0;
 }
@@ -578,13 +577,13 @@
     height: 8px;
     border-radius: 50%;
     background-color: var(--swatch-accent);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 1px 2px rgb(0 0 0 / 20%);
     transition: transform 0.2s;
 }
 
 .theme-swatch:hover {
     transform: scale(1.15);
-    box-shadow: 0 0 0 2px var(--border-light), 0 4px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 0 0 2px var(--border-light), 0 4px 8px rgb(0 0 0 / 15%);
 }
 
 .theme-swatch.active {
@@ -600,7 +599,7 @@
     padding: 6px;
     margin-bottom: 0;
     box-shadow: var(--card-shadow);
-    animation: fadeInUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: fade-in-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .dns-group-header {
@@ -636,7 +635,6 @@
     cursor: pointer;
     position: relative;
     user-select: text;
-    -webkit-user-select: text;
 }
 
 .dns-record-block:last-child {
@@ -692,7 +690,7 @@
 }
 
 .dns-record-value {
-    font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
+    font-family: 'SF Mono', Menlo, 'Courier New', monospace;
     font-size: 11px;
     line-height: 1.5;
     word-break: break-all;
@@ -714,7 +712,6 @@
     color: var(--text-muted);
     margin-bottom: 0;
     user-select: none;
-    -webkit-user-select: none;
 }
 
 /* Individual value hover and selection styling */
@@ -745,7 +742,7 @@
 }
 
 .dns-single-val {
-    font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
+    font-family: 'SF Mono', Menlo, 'Courier New', monospace;
     font-size: 11px;
     font-weight: 600;
     padding: 1px 4px;
@@ -753,7 +750,6 @@
     cursor: pointer;
     transition: all 0.2s ease;
     user-select: text;
-    -webkit-user-select: text;
 }
 
 .dns-record-block.copied-partially {
@@ -776,8 +772,8 @@
 }
 
 /* Premium styled DNS domain input matching the results domain header, but thinner */
-#domain_input {
-    font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
+#domain-input {
+    font-family: 'SF Mono', Menlo, 'Courier New', monospace;
     font-size: 13px;
     font-weight: 700;
     color: var(--accent);
@@ -789,7 +785,7 @@
     transition: all 0.2s ease !important;
 }
 
-#domain_input:focus {
+#domain-input:focus {
     background: var(--bg-tertiary) !important;
     border-color: var(--border-focus) !important;
 }
@@ -805,9 +801,7 @@
     padding: 0 4px;
 }
 
-#output {
-    margin-top: 10px !important;
-}
+/* Output duplicate handled */
 
 .dns-quick-group {
     display: flex;
@@ -824,7 +818,6 @@
     justify-content: center;
     flex-shrink: 0;
     user-select: none;
-    -webkit-user-select: none;
 }
 
 .dns-chips-list {
@@ -848,7 +841,6 @@
     align-items: center;
     gap: 3px;
     user-select: none;
-    -webkit-user-select: none;
 }
 
 .dns-chip:hover {
@@ -882,28 +874,28 @@
     font-size: 13px;
     line-height: 1.4;
     color: var(--note-text);
-    word-break: break-word;
+    overflow-wrap: break-word;
     text-align: left;
 }
 
 .note-markdown-body pre {
-    background: rgba(0, 0, 0, 0.05);
+    background: rgb(0 0 0 / 5%);
     border: 1px solid var(--border-light);
     border-radius: var(--radius-md);
     padding: 4px 6px;
     margin: 4px 0;
     overflow-x: auto;
-    font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
+    font-family: 'SF Mono', Menlo, 'Courier New', monospace;
     font-size: 11px;
 }
 
 body.theme-dark .note-markdown-body pre,
 [class*="theme-"].theme-dark-style .note-markdown-body pre {
-    background: rgba(255, 255, 255, 0.05);
+    background: rgb(255 255 255 / 5%);
 }
 
 .note-markdown-body code {
-    font-family: 'SF Mono', 'Menlo', 'Courier New', monospace;
+    font-family: 'SF Mono', Menlo, 'Courier New', monospace;
     font-size: 11px;
     padding: 1px 3px;
     border-radius: var(--radius-sm);
@@ -954,7 +946,6 @@ body.theme-dark .note-markdown-body pre,
 
 /* Style for height range slider in edit mode */
 .note-height-slider {
-    -webkit-appearance: none;
     appearance: none;
     width: 90px !important;
     background: var(--border-light);
@@ -977,7 +968,7 @@ body.theme-dark .note-markdown-body pre,
     border-radius: 50%;
     background: var(--accent);
     cursor: pointer;
-    -webkit-appearance: none;
+    appearance: none;
     margin-top: -3px;
     transition: transform 0.1s ease;
 }
