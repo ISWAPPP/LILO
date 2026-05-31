@@ -18,7 +18,7 @@ export function initDnsFeature() {
 
   // --- Asynchronously check SSL certificate validity days ---
   const updateSSLButton = async (domain) => {
-    const sslBtn = document.getElementById('copySSL');
+    const sslBtn = document.getElementById('copy-ssl');
     if (!sslBtn) {
       return;
     }
@@ -224,7 +224,9 @@ export function initDnsFeature() {
             if (differentIps.length > 0) {
               return { ...r, targetIps: differentIps };
             }
-          } catch (e) { }
+          } catch (err) {
+            console.debug('Failed to query target A record:', err);
+          }
         }
         return r;
       }));
@@ -323,7 +325,7 @@ export function initDnsFeature() {
       btn = document.getElementById('btn-dig');
 
       links = {
-        ssl: { a: document.getElementById('linkSSL'), btn: document.getElementById('copySSL') },
+        ssl: { a: document.getElementById('linkSSL'), btn: document.getElementById('copy-ssl') },
         dns: { a: document.getElementById('linkDNS'), btn: document.getElementById('copyDNS') },
         whois: { a: document.getElementById('linkWhois'), btn: document.getElementById('copyWhois') },
       };
@@ -387,9 +389,11 @@ export function initDnsFeature() {
 
         // Clone to manipulate without affecting UI
         const clone = valueEl.cloneNode(true);
-        clone.querySelectorAll('.no-copy').forEach(el => el.remove());
+        clone.querySelectorAll('.no-copy').forEach(el => {
+          el.remove();
+        });
 
-        let textToCopy = clone.innerText.trim();
+        const textToCopy = clone.innerText.trim();
         if (!textToCopy) {
           return;
         }
@@ -422,7 +426,7 @@ export function initDnsFeature() {
           const tabDomain = await Api.getActiveTabDomain();
           if (tabDomain) {
             const cleaned = Utils.cleanDomain(tabDomain);
-            if (cleaned && cleaned.includes('.')) {
+            if (cleaned?.includes('.')) {
               input.value = cleaned;
               checkDNS();
             }

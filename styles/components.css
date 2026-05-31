@@ -143,13 +143,16 @@
 .toolbar-btn-group span { font-size: 14px; }
 
 /* Dynamic SSL status colors based on remaining days */
-#copySSL[data-ssl-status="success"] {
+
+#copy-ssl[data-ssl-status="success"] {
     color: var(--success-text) !important;
 }
-#copySSL[data-ssl-status="warning"] {
+
+#copy-ssl[data-ssl-status="warning"] {
     color: var(--warning-text) !important;
 }
-#copySSL[data-ssl-status="error"] {
+
+#copy-ssl[data-ssl-status="error"] {
     color: var(--error-text) !important;
 }
 
@@ -245,6 +248,7 @@ select:hover {
     gap: 8px;
     pointer-events: none;
 }
+
 .toast {
     background: var(--bg-sec);
     color: var(--text-main);

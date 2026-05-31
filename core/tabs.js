@@ -32,10 +32,15 @@ export const TabManager = {
 
     document.addEventListener('keydown', (e) => {
       if (e.altKey && !e.shiftKey && !e.ctrlKey) {
-        if (e.key === '1') this.switchTo('dns');
-        else if (e.key === '2') this.switchTo('pics');
-        else if (e.key === '3') this.switchTo('notes');
-        else if (e.key === '4') this.switchTo('settings');
+        if (e.key === '1') {
+          this.switchTo('dns');
+        } else if (e.key === '2') {
+          this.switchTo('pics');
+        } else if (e.key === '3') {
+          this.switchTo('notes');
+        } else if (e.key === '4') {
+          this.switchTo('settings');
+        }
       }
     });
 
@@ -51,7 +56,9 @@ export const TabManager = {
   },
 
   async switchTo(name, skipSave = false) {
-    if (name === activeTab) return;
+    if (name === activeTab) {
+      return;
+    }
 
     // Deactivate current
     if (activeTab) {
@@ -60,7 +67,9 @@ export const TabManager = {
 
     // Switch UI
     document.querySelectorAll('.tab-link, .tab-content')
-      .forEach(el => el.classList.remove('active'));
+      .forEach(el => {
+        el.classList.remove('active');
+      });
     
     const newBtn = document.querySelector(`[data-tab="${CSS.escape(name)}"]`);
     newBtn?.classList.add('active');

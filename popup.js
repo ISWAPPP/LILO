@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   const settings = await Settings.load();
   await I18n.init(settings.language);
   Theme.init(settings.theme || 'auto');
+  Theme.applyFont(settings.font || 'system');
 
   // Verify tab match or resolve startup Tab async if it was a cold load
   if (settings.startupTab === 'last') {
@@ -66,7 +67,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   let footerClicks = 0;
 
   const updateDebugMetrics = async () => {
-    if (!debugCard || debugCard.style.display === 'none') return;
+    if (!debugCard || debugCard.style.display === 'none') {
+      return;
+    }
 
     // --- [1] Performance & Latency ---
     // Startup Time
@@ -128,9 +131,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
       });
     } else {
-      if (metricStorageSize) metricStorageSize.textContent = 'N/A';
-      if (metricNotesCount) metricNotesCount.textContent = 'N/A';
-      if (metricPicsCount) metricPicsCount.textContent = 'N/A';
+      if (metricStorageSize) {
+        metricStorageSize.textContent = 'N/A';
+      }
+      if (metricNotesCount) {
+        metricNotesCount.textContent = 'N/A';
+      }
+      if (metricPicsCount) {
+        metricPicsCount.textContent = 'N/A';
+      }
     }
 
     // --- [3] API Latency Logs ---
@@ -215,11 +224,15 @@ document.addEventListener('DOMContentLoaded', async () => {
       try {
         const notes = res.lilo_notes ? (typeof res.lilo_notes === 'string' ? JSON.parse(res.lilo_notes) : res.lilo_notes) : [];
         notesCount = notes.length;
-      } catch {}
+      } catch (err) {
+        console.warn('Failed to parse notes from storage:', err);
+      }
       try {
         const pics = res.lilo_pics_history ? (typeof res.lilo_pics_history === 'string' ? JSON.parse(res.lilo_pics_history) : res.lilo_pics_history) : [];
         picsCount = pics.length;
-      } catch {}
+      } catch (err) {
+        console.warn('Failed to parse pics from storage:', err);
+      }
     }
 
     const apiLogs = (window.liloApiCallsLog || [])

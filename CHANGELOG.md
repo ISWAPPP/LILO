@@ -3,15 +3,48 @@
 ## 0.9.28 — 2026-05-31
 
 ### Added
-- **Ultra-Compact Password Generator UI**: Fully redesigned the password generator inside the NOTES tab to use a dense, unified two-row layout that saves over 40px of vertical popup space.
-  - **Embedded Strength Meter**: Integrated the password strength meter directly as a `3px` absolute-positioned visual progress line along the bottom edge of the input container, eliminating an entire row.
-  - **Premium Toggle Chips**: Replaced standard checkbox controls with a compact row of modern, theme-adaptive interactive pill chips (`24px` height) that match LILO's design token ecosystem.
-  - **Inline Range Slider**: Condensed the length range slider to be extremely thin (`4px` height) and positioned it inline next to the options chips.
-  - **High-Fidelity Success Glow**: Overhauled the clipboard copy indicator to smoothly transition the entire integrated password widget (including inputs, divider lines, and buttons) into a pleasant theme success green.
-- **Ultra-Fast Popup Startup (15x-25x speed boost)**: Engineered a high-speed synchronous caching layer and parallelization pipeline to slash popup startup speed from `264.1 ms` down to `~10-20 ms`.
-  - **Zero-Latency Storage Cache**: Implemented a synchronous caching engine on top of `chrome.storage.local` using `localStorage` to immediately resolve user preferences, theme variables, and startup states in `<0.1 ms`.
-  - **Speculative Parallel Preloading**: Pre-resolved the active tab name synchronously from the cache at the start of `DOMContentLoaded`, immediately triggering its dynamic script import and compilation in parallel with DOM parsing.
-  - **Unified Sync Management**: Connected settings reset, clear, and import routines to automatically synchronize or invalidate both localStorage and chrome.storage.local.
+
+- **Interface Font Customization (9 premium faces)**: Added a font configuration
+  setting in the General Settings card allowing users to select their preferred
+  UI font.
+  - **Dynamic, Non-Flickering Applying**: Handled font initialization inside
+    `theme-init.js` to synchronously load and render the selected font face
+    instantly at bootstrap, eliminating FOUF (flash of unstyled font).
+  - **9 Curated Typography Faces**: Curated a rich selection of premium fonts
+    covering diverse aesthetic directions (Sans-Serif, Serif, Monospace, Playful, Heavy Display, etc.),
+    including Georgia (Elegant Serif), Garamond (Classic Book), Trebuchet MS (Modern Humanist),
+    Consolas (Technical Monospace), Comic Sans MS (Playful/Casual), and Verdana (Wide & Readable).
+  - **Seamless Cascading**: Standardized `font-family: inherit` across notes, inputs, textareas, and buttons.
+
+- **Ultra-Compact Password Generator UI**: Fully redesigned the password
+  generator inside the NOTES tab to use a dense, unified two-row layout
+  that saves over 40px of vertical popup space.
+  - **Embedded Strength Meter**: Integrated the password strength meter
+    directly as a `3px` absolute-positioned visual progress line along
+    the bottom edge of the input container, eliminating an entire row.
+  - **Premium Toggle Chips**: Replaced standard checkbox controls with a
+    compact row of modern, theme-adaptive interactive pill chips
+    (`24px` height) that match LILO's design token ecosystem.
+  - **Inline Range Slider**: Condensed the length range slider to be
+    extremely thin (`4px` height) and positioned it inline next to the
+    options chips.
+  - **High-Fidelity Success Glow**: Overhauled the clipboard copy indicator
+    to smoothly transition the entire integrated password widget (including
+    inputs, divider lines, and buttons) into a pleasant theme success green.
+- **Ultra-Fast Popup Startup (15x-25x speed boost)**: Engineered a
+  high-speed synchronous caching layer and parallelization pipeline to
+  slash popup startup speed from `264.1 ms` down to `~10-20 ms`.
+  - **Zero-Latency Storage Cache**: Implemented a synchronous caching
+    engine on top of `chrome.storage.local` using `localStorage` to
+    immediately resolve user preferences, theme variables, and startup
+    states in `<0.1 ms`.
+  - **Speculative Parallel Preloading**: Pre-resolved the active tab name
+    synchronously from the cache at the start of `DOMContentLoaded`,
+    immediately triggering its dynamic script import and compilation in
+    parallel with DOM parsing.
+  - **Unified Sync Management**: Connected settings reset, clear, and
+    import routines to automatically synchronize or invalidate both
+    localStorage and chrome.storage.local.
 
 ## 0.9.27 — 2026-05-30
 
@@ -335,6 +368,7 @@
 ## 0.3 — 2026-04-30
 
 ### Added
+
 - **Settings Page**: Implemented a full user interface for extension management.
 - **Localization**: Added support for English and Ukrainian (Auto-detect or manual selection).
 - **Tab Memory**: Option to open the extension on the last used tab or select a specific startup tab.
@@ -342,6 +376,7 @@
 - **Secret PICS Mode**: The PICS tab is now hidden by default and activated via the `GETPICS` command in notes.
 
 ### Fixed
+
 - **Cloudflare CORS**: Resolved DNS access issues by updating headers and `manifest.json` permissions.
 - **Accessibility**: Associated `<label>` elements with input fields to resolve console errors and improve UX.
 - **Stability**: Enhanced error handling for network requests.

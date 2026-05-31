@@ -46,7 +46,9 @@ export const PicsRenderer = {
   },
  
   history(items) {
-    if (!items || items.length === 0) return '';
+    if (!items || items.length === 0) {
+      return '';
+    }
     return `
       <div style="display:flex; justify-content:space-between; align-items:center; margin: 15px 0 5px;">
         <h4 style="margin: 0; font-size: 12px; color: var(--text-muted); text-transform: uppercase;" data-i18n="pics_history_title">${I18n.t('pics_history_title')}</h4>

@@ -37,7 +37,7 @@
     <div id="dns-tab" class="tab-content active">
         <div class="toolbar">
             <div class="toolbar-btn-group" id="groupSSL">
-                <button id="copySSL" class="disabled" title="Copy link" data-i18n="dns_ssl"><span><svg
+                <button id="copy-ssl" class="disabled" title="Copy link" data-i18n="dns_ssl"><span><svg
                             class="icon icon-inline" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
@@ -221,6 +221,23 @@
                     <option value="auto" data-i18n="settings_lang_auto">Auto (Browser)</option>
                     <option value="uk" data-i18n="settings_lang_uk">Українська</option>
                     <option value="en" data-i18n="settings_lang_en">English</option>
+                </select>
+            </div>
+
+            <div class="settings-group" style="margin-bottom: 12px;">
+                <label for="setting-font" data-i18n="settings_font"
+                    style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);">Interface Font</label>
+                <select id="setting-font"
+                    style="width: 100%; padding: 8px; border-radius: var(--radius-md); border: 1px solid var(--border-light); background: var(--bg-main); color: var(--text-main);">
+                    <option value="system" data-i18n="settings_font_system">System Default</option>
+                    <option value="georgia" data-i18n="settings_font_georgia">Georgia (Elegant Serif)</option>
+                    <option value="garamond" data-i18n="settings_font_garamond">Garamond (Classic Book Serif)</option>
+                    <option value="trebuchet" data-i18n="settings_font_trebuchet">Trebuchet MS (Modern Humanist)</option>
+                    <option value="consolas" data-i18n="settings_font_consolas">Consolas (Technical Monospace)</option>
+                    <option value="verdana" data-i18n="settings_font_verdana">Verdana (Wide & Readable)</option>
+                    <option value="comic" data-i18n="settings_font_comic">Comic Sans MS (Playful/Casual)</option>
+                    <option value="impact" data-i18n="settings_font_impact">Impact (Heavy Display)</option>
+                    <option value="courier" data-i18n="settings_font_courier">Courier New (Classic Typewriter)</option>
                 </select>
             </div>
 
