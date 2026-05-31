@@ -117,7 +117,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           try {
             const notes = res.lilo_notes ? (typeof res.lilo_notes === 'string' ? JSON.parse(res.lilo_notes) : res.lilo_notes) : [];
             metricNotesCount.textContent = `${notes.length} notes`;
-          } catch (e) {
+          } catch {
             metricNotesCount.textContent = '0 notes';
           }
         }
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', async () => {
           try {
             const pics = res.lilo_pics_history ? (typeof res.lilo_pics_history === 'string' ? JSON.parse(res.lilo_pics_history) : res.lilo_pics_history) : [];
             metricPicsCount.textContent = `${pics.length} images`;
-          } catch (e) {
+          } catch {
             metricPicsCount.textContent = '0 images';
           }
         }

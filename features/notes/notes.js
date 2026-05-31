@@ -62,11 +62,11 @@ function generatePassword() {
   const maxValid = 256 - (256 % charset.length);
   
   let bufferIndex = 0;
-  self.crypto.getRandomValues(array);
+  window.crypto.getRandomValues(array);
 
   while (generatedPass.length < length) {
     if (bufferIndex >= array.length) {
-      self.crypto.getRandomValues(array);
+      window.crypto.getRandomValues(array);
       bufferIndex = 0;
     }
     const val = array[bufferIndex++];
@@ -165,7 +165,7 @@ async function addNote(text) {
     return;
   }
 
-  notes.unshift({ id: self.crypto.randomUUID(), text: trimmed });
+  notes.unshift({ id: window.crypto.randomUUID(), text: trimmed });
   saveNotes();
   renderNotes();
 }

@@ -26,15 +26,15 @@
     --card-shadow: 0 2px 8px rgb(0 0 0 / 4%);
 
     /* Font configurations */
-    --font-system: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    --font-georgia: Georgia, Cambria, "Times New Roman", Times, serif;
-    --font-garamond: Garamond, "EB Garamond", "Hoefler Text", "Baskerville Old Face", "Apple Garamond", Georgia, serif;
-    --font-trebuchet: "Trebuchet MS", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", Tahoma, sans-serif;
-    --font-consolas: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", Monaco, monospace;
+    --font-system: "Inter", system-ui, -apple-system, "BlinkMacSystemFont", "Segoe UI", "Roboto", sans-serif;
+    --font-georgia: "Georgia", "Cambria", "Times New Roman", "Times", serif;
+    --font-garamond: "Garamond", "EB Garamond", "Hoefler Text", "Baskerville Old Face", "Apple Garamond", "Georgia", serif;
+    --font-trebuchet: "Trebuchet MS", "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "Tahoma", sans-serif;
+    --font-consolas: "Consolas", "Andale Mono WT", "Andale Mono", "Lucida Console", "Monaco", monospace;
     --font-comic: "Comic Sans MS", "Comic Sans", "Chalkboard SE", cursive;
-    --font-impact: Impact, "Arial Black", sans-serif;
-    --font-verdana: Verdana, Geneva, sans-serif;
-    --font-courier: "Courier New", Courier, monospace;
+    --font-impact: "Impact", "Arial Black", sans-serif;
+    --font-verdana: "Verdana", "Geneva", sans-serif;
+    --font-courier: "Courier New", "Courier", monospace;
 }
 
 /* Map font-attribute to the dynamic font-family variable */

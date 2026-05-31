@@ -7,7 +7,7 @@ async function fetchWithTimeout(resource, options = {}) {
   window.liloApiCallsCount = (window.liloApiCallsCount || 0) + 1;
   const start = performance.now();
   const { timeout = 8000 } = options;
-  const controller = new self.AbortController();
+  const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeout);
   try {
     const response = await fetch(resource, {
@@ -45,7 +45,7 @@ export const Api = {
       } else if (host === 'ssl-checker.io' || host === 'api.cert.ist') {
         urlLabel = 'SSL Expiry Check';
       }
-    } catch (e) {
+    } catch {
       // Fallback to original label if URL parsing fails (e.g. non-URL logs)
     }
     
@@ -79,7 +79,7 @@ export const Api = {
         return url.hostname;
       }
       return null;
-    } catch (e) { return null; }
+    } catch { return null; }
   },
 
   /** DNS query via the selected provider (Google or Cloudflare). */
