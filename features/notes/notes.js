@@ -156,7 +156,11 @@ async function renderNotes() {
   if (!list) {
     return;
   }
-  list.innerHTML = NotesRenderer.notesList(notes);
+  const settings = await Settings.load();
+  const experimentalActive = settings.experimentalNotes || false;
+  
+  list.classList.toggle('experimental-active', experimentalActive);
+  list.innerHTML = NotesRenderer.notesList(notes, experimentalActive);
 }
 
 async function addNote(title, text) {
@@ -181,7 +185,7 @@ async function deleteNote(id) {
   renderNotes();
 }
 
-async function updateNoteWithTitleAndColor(id, newTitle, newText, color, lines) {
+async function updateNoteWithTitleAndColor(id, newTitle, newText, color, lines, width) {
   if (!newText.trim()) {
     // Empty text = deletion
     notes = notes.filter(n => n.id !== id);
@@ -194,27 +198,66 @@ async function updateNoteWithTitleAndColor(id, newTitle, newText, color, lines) 
       if (lines !== undefined) {
         note.lines = lines;
       }
+      if (width !== undefined) {
+        note.width = width;
+      }
     }
   }
   saveNotes();
   renderNotes();
 }
 
+async function animateReorderAndRender(action) {
+  const items = Array.from(document.querySelectorAll('.note-item'));
+  const firstPositions = items.map(item => {
+    const rect = item.getBoundingClientRect();
+    return { id: item.dataset.id, top: rect.top, left: rect.left };
+  });
+
+  await action();
+
+  requestAnimationFrame(() => {
+    const newItems = Array.from(document.querySelectorAll('.note-item'));
+    newItems.forEach(item => {
+      const first = firstPositions.find(p => p.id === item.dataset.id);
+      if (!first) return;
+      
+      const lastRect = item.getBoundingClientRect();
+      const invertY = first.top - lastRect.top;
+      const invertX = first.left - lastRect.left;
+      
+      if (invertY !== 0 || invertX !== 0) {
+        item.style.transform = `translate(${invertX}px, ${invertY}px)`;
+        item.style.transition = 'none';
+        
+        requestAnimationFrame(() => {
+          item.style.transition = 'transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)';
+          item.style.transform = '';
+        });
+      }
+    });
+  });
+}
+
 async function moveNoteUp(id) {
   const index = notes.findIndex(n => n.id === id);
   if (index > 0) {
-    [notes[index - 1], notes[index]] = [notes[index], notes[index - 1]];
-    saveNotes();
-    renderNotes();
+    await animateReorderAndRender(async () => {
+      [notes[index - 1], notes[index]] = [notes[index], notes[index - 1]];
+      await saveNotes();
+      await renderNotes();
+    });
   }
 }
 
 async function moveNoteDown(id) {
   const index = notes.findIndex(n => n.id === id);
   if (index < notes.length - 1) {
-    [notes[index + 1], notes[index]] = [notes[index], notes[index + 1]];
-    saveNotes();
-    renderNotes();
+    await animateReorderAndRender(async () => {
+      [notes[index + 1], notes[index]] = [notes[index], notes[index + 1]];
+      await saveNotes();
+      await renderNotes();
+    });
   }
 }
 
@@ -237,7 +280,7 @@ async function copyNote(id) {
   }
 }
 
-function startEditing(id) {
+async function startEditing(id) {
   const note = notes.find(n => n.id === id);
   if (!note) {
     return;
@@ -248,7 +291,10 @@ function startEditing(id) {
     return;
   }
 
-  item.outerHTML = NotesRenderer.noteItemEditing(note);
+  const settings = await Settings.load();
+  const experimentalActive = settings.experimentalNotes || false;
+
+  item.outerHTML = NotesRenderer.noteItemEditing(note, experimentalActive);
 
   // Focus on input
   const newItem = document.querySelector(`.note-item[data-id="${id}"]`);
@@ -365,7 +411,8 @@ function setupNoteEvents() {
       const slider = item.querySelector('.note-height-slider');
       const lines = slider ? parseInt(slider.value, 10) : 20;
       const color = item.dataset.selectedColor !== undefined ? item.dataset.selectedColor : (notes.find(n => n.id === id)?.color || '');
-      updateNoteWithTitleAndColor(id, titleInput?.value || '', input?.value || '', color, lines);
+      const width = item.dataset.selectedWidth !== undefined ? parseInt(item.dataset.selectedWidth, 10) : (notes.find(n => n.id === id)?.width || 100);
+      updateNoteWithTitleAndColor(id, titleInput?.value || '', input?.value || '', color, lines, width);
       return;
     }
 
@@ -406,8 +453,149 @@ function setupNoteEvents() {
       const slider = item?.querySelector('.note-height-slider');
       const lines = slider ? parseInt(slider.value, 10) : 20;
       const color = item?.dataset.selectedColor !== undefined ? item.dataset.selectedColor : (notes.find(n => n.id === id)?.color || '');
-      updateNoteWithTitleAndColor(id, titleInput?.value || '', input?.value || '', color, lines);
+      const width = item?.dataset.selectedWidth !== undefined ? parseInt(item.dataset.selectedWidth, 10) : (notes.find(n => n.id === id)?.width || 100);
+      updateNoteWithTitleAndColor(id, titleInput?.value || '', input?.value || '', color, lines, width);
     }
+  });
+
+  // ==================== DRAG & DROP REORDERING ====================
+  list.addEventListener('dragstart', (e) => {
+    const item = e.target.closest('.note-item');
+    if (!item || item.classList.contains('editing')) return;
+    
+    // Check if dragging starts inside note header or body, not buttons
+    if (e.target.closest('.note-actions') || e.target.closest('button')) {
+      e.preventDefault();
+      return;
+    }
+    
+    e.dataTransfer.effectAllowed = 'move';
+    item.classList.add('dragging');
+    e.dataTransfer.setData('text/plain', item.dataset.id);
+  });
+
+  list.addEventListener('dragend', (e) => {
+    const item = e.target.closest('.note-item');
+    if (item) {
+      item.classList.remove('dragging');
+    }
+    document.querySelectorAll('.note-item').forEach(el => el.classList.remove('drag-over'));
+  });
+
+  list.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    const draggingItem = list.querySelector('.dragging');
+    if (!draggingItem) return;
+    
+    const items = Array.from(list.querySelectorAll('.note-item:not(.dragging)'));
+    if (items.length === 0) return;
+    
+    let closestItem = null;
+    let closestDistance = Infinity;
+    let isAfter = false;
+    
+    items.forEach(item => {
+      if (item.classList.contains('editing')) return;
+      
+      const rect = item.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const distance = Math.hypot(e.clientX - centerX, e.clientY - centerY);
+      
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestItem = item;
+        
+        const dx = e.clientX - centerX;
+        const dy = e.clientY - centerY;
+        
+        if (item.classList.contains('full-width')) {
+          isAfter = dy > 0;
+        } else {
+          if (Math.abs(dy) > 25) {
+            isAfter = dy > 0;
+          } else {
+            isAfter = dx > 0;
+          }
+        }
+      }
+    });
+    
+    if (closestItem) {
+      list.insertBefore(draggingItem, isAfter ? closestItem.nextSibling : closestItem);
+    }
+  });
+
+  list.addEventListener('drop', async (e) => {
+    e.preventDefault();
+    const draggedId = e.dataTransfer.getData('text/plain');
+    if (!draggedId) return;
+    
+    // Get new DOM order of IDs
+    const newOrderIds = Array.from(list.querySelectorAll('.note-item')).map(el => el.dataset.id);
+    
+    // Sort our notes array in-memory to match DOM order
+    const reorderedNotes = [];
+    newOrderIds.forEach(id => {
+      const note = notes.find(n => n.id === id);
+      if (note) {
+        reorderedNotes.push(note);
+      }
+    });
+    
+    await animateReorderAndRender(async () => {
+      notes = reorderedNotes;
+      await saveNotes();
+      await renderNotes();
+    });
+  });
+
+  // ==================== MOUSE RESIZING ====================
+  list.addEventListener('mousedown', (e) => {
+    const handle = e.target.closest('.note-resize-handle');
+    if (!handle) return;
+    
+    e.preventDefault();
+    const item = handle.closest('.note-item.editing');
+    if (!item) return;
+    
+    const startX = e.clientX;
+    const startWidth = item.offsetWidth;
+    const containerWidth = list.offsetWidth || 380;
+    
+    const onMouseMove = (moveEvent) => {
+      const deltaX = moveEvent.clientX - startX;
+      let newWidth = startWidth + deltaX;
+      
+      if (newWidth < 120) newWidth = 120;
+      if (newWidth > containerWidth) newWidth = containerWidth;
+      
+      const widthPercent = Math.round((newWidth / containerWidth) * 100);
+      const isFull = widthPercent >= 75;
+      const snapWidth = isFull ? 100 : 48;
+      
+      if (isFull) {
+        item.classList.remove('mini-sticker');
+        item.classList.add('full-width');
+        item.style.setProperty('--note-width', '100%');
+        item.style.setProperty('flex', '0 0 100%');
+      } else {
+        item.classList.remove('full-width');
+        item.classList.add('mini-sticker');
+        item.style.setProperty('--note-width', 'calc(48% - 4px)');
+        item.style.setProperty('flex', '0 0 calc(48% - 4px)');
+      }
+      
+      item.dataset.selectedWidth = snapWidth;
+    };
+    
+    const onMouseUp = () => {
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+    
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
   });
 }
 

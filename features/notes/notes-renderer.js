@@ -71,25 +71,51 @@ export const NotesRenderer = {
   },
 
   /** Single note item (normal state). */
-  noteItem(note) {
+  noteItem(note, experimentalActive = false) {
     const rendered = this.parseMarkdown(note.text);
-    const inlineStyle = note.color 
+    const isMini = experimentalActive && note.width && note.width < 100;
+    const noteClass = isMini ? 'note-item mini-sticker' : 'note-item full-width';
+    const inlineStyle = (note.color 
       ? `background-color: ${note.color}; --note-bg: ${note.color}; --note-text: #1a1a1a; --note-btn-hover-bg: rgba(0, 0, 0, 0.08); --note-border: rgba(0, 0, 0, 0.09);` 
-      : '';
+      : '') + (experimentalActive && note.width ? ` --note-width: calc(${note.width}% - 4px); flex: 0 0 calc(${note.width}% - 4px); max-width: 100%;` : '');
     const lines = note.lines !== undefined ? note.lines : 20;
     const escapedTitle = note.title ? Utils.escapeHTML(note.title) : '';
+    const draggableAttr = experimentalActive ? 'draggable="true"' : '';
+
+    let bodyStyle = `max-height: calc(${lines} * 1.5em); overflow-y: auto;`;
+    let headerStyle = '';
+
+    if (lines === 1) {
+      if (escapedTitle) {
+        bodyStyle = 'display: none;';
+        headerStyle = 'margin-bottom: 0 !important; padding-bottom: 0 !important; border-bottom: none !important;';
+      } else {
+        bodyStyle = 'max-height: 1.5em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; border-top: none;';
+        headerStyle = 'margin-bottom: 0 !important; padding-bottom: 0 !important; border-bottom: none !important;';
+      }
+    } else {
+      if (!escapedTitle) {
+        headerStyle = 'margin-bottom: 0 !important; padding-bottom: 0 !important; border-bottom: none !important;';
+      }
+    }
+
+    const moveButtons = experimentalActive
+      ? ''
+      : `
+        <button class="note-move-up-btn" title="${I18n.t('notes_move_up')}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+        </button>
+        <button class="note-move-down-btn" title="${I18n.t('notes_move_down')}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </button>
+      `;
 
     return `
-      <div class="note-item" data-id="${note.id}" style="${inlineStyle}">
-        <div class="note-header">
+      <div class="${noteClass}" data-id="${note.id}" style="${inlineStyle}" ${draggableAttr}>
+        <div class="note-header" style="${headerStyle}">
           <div class="note-title">${escapedTitle}</div>
           <div class="note-actions">
-            <button class="note-move-up-btn" title="${I18n.t('notes_move_up')}">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
-            </button>
-            <button class="note-move-down-btn" title="${I18n.t('notes_move_down')}">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            </button>
+            ${moveButtons}
             <button class="note-edit-btn" title="${I18n.t('notes_title_edit')}">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
             </button>
@@ -98,12 +124,12 @@ export const NotesRenderer = {
             </button>
           </div>
         </div>
-        <div class="note-markdown-body note-text" style="max-height: calc(${lines} * 1.5em); overflow-y: auto;" title="${I18n.t('passgen_tooltip')}">${rendered}</div>
+        <div class="note-markdown-body note-text" style="${bodyStyle}" title="${I18n.t('passgen_tooltip')}">${rendered}</div>
       </div>`;
   },
  
   /** Single note item (editing mode). */
-  noteItemEditing(note) {
+  noteItemEditing(note, experimentalActive = false) {
     const escaped = Utils.escapeHTML(note.text);
     const escapedTitle = note.title ? Utils.escapeHTML(note.title) : '';
     const colors = ['#fef3c7', '#ffedd5', '#ffe4e6', '#fce7f3', '#f3e8ff', '#dbeafe', '#e0f7fa', '#ccfbf1', '#dcfce7', ''];
@@ -111,14 +137,23 @@ export const NotesRenderer = {
       `<div class="color-swatch" data-color="${c}" style="background:${c || 'var(--bg-main)'};" title="${c ? c : 'Default'}"></div>`
     ).join('');
     
-    const inlineStyle = note.color 
+    const isMini = experimentalActive && note.width && note.width < 100;
+    const noteClass = isMini ? 'note-item editing mini-sticker' : 'note-item editing full-width';
+    const inlineStyle = (note.color 
       ? `background-color: ${note.color}; --note-bg: ${note.color}; --note-text: #1a1a1a; --note-btn-hover-bg: rgba(0, 0, 0, 0.08); --note-border: rgba(0, 0, 0, 0.09);` 
-      : '';
+      : '') + (experimentalActive && note.width ? ` --note-width: calc(${note.width}% - 4px); flex: 0 0 calc(${note.width}% - 4px); max-width: 100%;` : '');
     
     const lines = note.lines !== undefined ? note.lines : 20;
+    const noteWidthVal = note.width !== undefined ? note.width : 100;
+
+    let resizeHandle = '';
+    if (experimentalActive) {
+      resizeHandle = `<div class="note-resize-handle" title="Drag to resize note width"></div>`;
+    }
 
     return `
-      <div class="note-item editing" data-id="${note.id}" style="${inlineStyle}">
+      <div class="${noteClass}" data-id="${note.id}" style="${inlineStyle}" data-selected-width="${noteWidthVal}">
+        ${resizeHandle}
         <div class="note-header">
           <input type="text" class="note-edit-title-input" placeholder="${I18n.t('notes_title_placeholder')}" value="${escapedTitle}" autocomplete="off">
           <div class="note-edit-actions">
@@ -138,7 +173,7 @@ export const NotesRenderer = {
             </div>
             <div class="note-lines-control">
               <span class="note-lines-label">${I18n.t('notes_max_lines')}: <strong class="range-val">${lines}</strong></span>
-              <input type="range" class="note-height-slider" min="2" max="20" value="${lines}">
+              <input type="range" class="note-height-slider" min="1" max="20" value="${lines}">
             </div>
           </div>
         </div>
@@ -146,7 +181,7 @@ export const NotesRenderer = {
   },
  
   /** Full list of notes. */
-  notesList(notes) {
+  notesList(notes, experimentalActive = false) {
     if (!notes || notes.length === 0) {
       return `
         <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 40px 0; color: var(--text-muted); opacity: 0.7;">
@@ -155,7 +190,7 @@ export const NotesRenderer = {
         </div>
       `;
     }
-    return notes.map(n => this.noteItem(n)).join('');
+    return notes.map(n => this.noteItem(n, experimentalActive)).join('');
   },
  
   /** Copy notification. */

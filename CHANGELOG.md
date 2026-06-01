@@ -1,5 +1,22 @@
 # Changelog — LILO Tools
 
+## 1.1.0 — 2026-06-02
+
+### Added
+
+- **Multi-Column Masonry Board**: Integrated a native CSS Columns layout (`column-count: 2`) for experimental notes. Mini stickers pack vertically and stack tightly inside columns directly under tall note cards, completely eliminating empty white space gaps.
+- **Premium 2D Closest-Element Drag-and-Drop**: Engineered an advanced 2D coordinate-based reordering algorithm using `Math.hypot()`. Dragging any sticker into empty column gaps or side-by-side locations now instantly snaps and reorders them perfectly with bouncy spring transitions.
+- **Interactive Corner Resizing (Snap Widths)**: Implemented seamless note card resizing by dragging the bottom-right corner. Cards snap instantly between standard column sticker size (48% width) and full-width layout (100% width) in real-time.
+- **Header-Only Display Mode (1 line)**: Added support for compressing notes down to a height of 1. When set to 1, if a note has a title, the text body is completely hidden to act as a sleek horizontal widget.
+- **Dynamic Untitled Clamp Fallback**: If a note has no title and its height is set to 1, instead of rendering an empty card, it displays exactly the first line of the note's body text (clamped using `-webkit-line-clamp: 1`).
+
+### Improved
+
+- **Clean Edit Interface**: Completely removed the redundant "Type" select dropdown and width percentage text from the edit card screen.
+- **Robust Wrapping Edit Controls**: Restructured the note edit view in CSS with robust flex-wrap and max-width boundaries. Swatches and action buttons wrap beautifully and remain fully visible and clickable even inside narrow columns.
+- **Decluttered Stickers Header**: Automatically hide the vertical `Move Up` and `Move Down` order arrows when experimental stickers mode is enabled.
+- **Interactive Cursor Reset**: Prevented drag cursor bleed by mapping strict cursor overrides across elements (typing `text` cursor on inputs, `pointer` on active buttons, swatches, and the click-to-copy body, and `grab` strictly on draggable card regions).
+
 ## 1.0.1 — 2026-06-02
 
 ### Added

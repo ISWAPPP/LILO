@@ -431,6 +431,93 @@
     border: 1px dashed var(--border-light);
 }
 
+/* Drag & Drop Reordering Visuals */
+.note-item.dragging {
+    opacity: 0.45;
+    border: 2px dashed var(--accent);
+    transform: scale(0.98);
+    box-shadow: var(--shadow-md);
+}
+
+.note-item[draggable="true"] {
+    cursor: grab;
+}
+
+.note-item[draggable="true"]:active {
+    cursor: grabbing;
+}
+
+/* Reset cursors inside draggable elements to keep interaction logic clean */
+.note-item[draggable="true"] button,
+.note-item[draggable="true"] .note-actions,
+.note-item[draggable="true"] .note-resize-handle {
+    cursor: pointer;
+}
+
+.note-item[draggable="true"] .note-text {
+    cursor: pointer;
+}
+
+.note-item[draggable="true"] input,
+.note-item[draggable="true"] textarea {
+    cursor: text;
+}
+
+/* Experimental multi-column (masonry-like) layout for notes */
+#notes-list.experimental-active {
+    display: block !important;
+    column-count: 2;
+    column-gap: 8px;
+}
+
+#notes-list.experimental-active .note-item {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 8px;
+    box-sizing: border-box;
+    break-inside: avoid;
+    vertical-align: top;
+}
+
+#notes-list.experimental-active .note-item.full-width {
+    column-span: all;
+    display: block;
+    width: 100%;
+}
+
+/* Resize handle highlight */
+.note-resize-handle {
+    position: absolute;
+    bottom: 3px;
+    right: 3px;
+    width: 12px;
+    height: 12px;
+    cursor: nwse-resize;
+    z-index: 10;
+    border-right: 3px solid var(--accent);
+    border-bottom: 3px solid var(--accent);
+    border-bottom-right-radius: 2px;
+    opacity: 0.7;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.note-resize-handle::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 4px;
+    height: 4px;
+    border-right: 2px solid var(--accent);
+    border-bottom: 2px solid var(--accent);
+    opacity: 0.5;
+}
+
+.note-resize-handle:hover {
+    opacity: 1;
+    transform: scale(1.2);
+}
+
 .note-item {
     display: flex;
     flex-direction: column;
@@ -556,10 +643,22 @@
     border: 1px solid var(--error-text) !important;
 }
 
-/* Editing mode */
+/* Editing mode wrapping & responsiveness */
 .note-item.editing {
     border-color: var(--accent);
     padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.note-item.editing .note-header {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 2px;
+    width: 100%;
 }
 
 .note-item.editing input.note-edit-title-input {
@@ -574,16 +673,21 @@
     color: var(--note-text);
     font-family: inherit;
     flex: 1;
-    margin: 0 8px 0 0 !important;
+    min-width: 100px;
+    margin: 0 !important;
     height: 28px !important;
+}
+
+.note-edit-actions {
     display: flex;
+    gap: 4px;
     align-items: center;
 }
 
 .note-item.editing textarea.note-edit-input {
     flex: 1;
     width: 100%;
-    padding: 0 !important;
+    padding: 2px 0 !important;
     border: none !important;
     border-radius: 0 !important;
     background: transparent !important;
@@ -595,28 +699,28 @@
     overflow: hidden;
     font-family: inherit;
     color: var(--note-text);
-    margin: 0 !important;
+    margin: 4px 0 !important;
     height: auto;
-}
-
-.note-item.editing textarea.note-edit-input:focus {
-    outline: none !important;
-    background: transparent !important;
 }
 
 .note-edit-controls {
     display: flex;
+    flex-flow: row wrap;
     justify-content: space-between;
     align-items: center;
-    gap: 8px;
-    margin-top: 2px;
+    gap: 8px 12px;
+    margin-top: 4px;
+    padding-top: 6px;
+    border-top: 1px dashed var(--note-border, var(--border-light));
+    width: 100%;
 }
 
 .note-color-picker {
     display: flex;
-    gap: 6px;
     flex-wrap: wrap;
+    gap: 4px;
     align-items: center;
+    max-width: 120px;
 }
 
 .note-color-picker .color-swatch {
@@ -636,8 +740,9 @@
 .note-lines-control {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
     flex: 1;
+    min-width: 90px;
     justify-content: flex-end;
 }
 

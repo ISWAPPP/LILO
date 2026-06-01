@@ -26,6 +26,7 @@ export function initSettingsFeature() {
       const grainContrastSlider = document.getElementById('setting-grain-contrast');
       const grainContrastVal = document.getElementById('setting-grain-contrast-val');
       const grainContrastContainer = document.getElementById('grain-contrast-container');
+      const experimentalNotesCheckbox = document.getElementById('setting-experimental-notes');
 
       const dq = settings.dnsQueries || { a: true, aaaa: false, mx: true, txt: false, spf: false, dkim: false, dmarc: false, ns: true };
       const qA = document.getElementById('setting-query-a');
@@ -127,6 +128,9 @@ export function initSettingsFeature() {
         grainContrastContainer.style.opacity = (settings.grainEnabled || false) ? '1' : '0.5';
         grainContrastContainer.style.pointerEvents = (settings.grainEnabled || false) ? 'auto' : 'none';
       }
+      if (experimentalNotesCheckbox) {
+        experimentalNotesCheckbox.checked = settings.experimentalNotes || false;
+      }
  
       const handleSave = async (updatedSettings = {}) => {
         const current = await Settings.load();
@@ -143,6 +147,7 @@ export function initSettingsFeature() {
           grainEnabled: grainEnabledCheckbox ? grainEnabledCheckbox.checked : false,
           grainOpacity: grainOpacitySlider ? parseFloat(grainOpacitySlider.value) : 0.05,
           grainContrast: grainContrastSlider ? parseInt(grainContrastSlider.value, 10) : 100,
+          experimentalNotes: experimentalNotesCheckbox ? experimentalNotesCheckbox.checked : false,
           dnsQueries: {
             a: qA?.checked,
             aaaa: qAAAA?.checked,
@@ -249,6 +254,7 @@ export function initSettingsFeature() {
         }
       });
       grainContrastSlider?.addEventListener('change', () => handleSave());
+      experimentalNotesCheckbox?.addEventListener('change', () => handleSave());
  
       // Data Management
       const btnExport = document.getElementById('btn-export-data');
