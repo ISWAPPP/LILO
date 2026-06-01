@@ -161,6 +161,13 @@ async function renderNotes() {
   
   list.classList.toggle('experimental-active', experimentalActive);
   list.innerHTML = NotesRenderer.notesList(notes, experimentalActive);
+
+  // Calibrate and apply bottom indicators dynamically on mount
+  setTimeout(() => {
+    list.querySelectorAll('.note-item').forEach(item => {
+      updateScrollIndicators(item);
+    });
+  }, 100);
 }
 
 async function addNote(title, text) {
@@ -309,8 +316,11 @@ async function startEditing(id) {
   if (input) {
     input.focus();
     input.selectionStart = input.value.length;
-    input.style.height = 'auto';
-    input.style.height = `${input.scrollHeight}px`;
+    setTimeout(() => {
+      input.style.height = 'auto';
+      input.style.height = `${input.scrollHeight + 2}px`;
+      updateScrollIndicators(newItem);
+    }, 50);
   }
 }
 
@@ -321,12 +331,23 @@ function resetDeleteConfirmations() {
   });
 }
 
-// Global click listener to reset delete confirmations
-document.addEventListener('click', (e) => {
-  if (!e.target.closest('.note-delete-btn')) {
-    resetDeleteConfirmations();
+// Premium scroll indicator update routine
+function updateScrollIndicators(item) {
+  if (!item) return;
+  const textEl = item.querySelector('.note-text');
+  const textareaEl = item.querySelector('.note-edit-input');
+  const scrollEl = textEl || textareaEl;
+  if (!scrollEl) return;
+  
+  const hasOverflow = scrollEl.scrollHeight > scrollEl.clientHeight;
+  const isAtBottom = scrollEl.scrollTop + scrollEl.clientHeight >= scrollEl.scrollHeight - 6; // 6px padding tolerance
+  
+  if (hasOverflow && !isAtBottom) {
+    item.classList.add('has-more-content');
+  } else {
+    item.classList.remove('has-more-content');
   }
-});
+}
 
 // ==================== EVENT DELEGATION ====================
 
@@ -335,6 +356,24 @@ function setupNoteEvents() {
   if (!list) {
     return;
   }
+
+  // Global click listener to reset delete confirmations
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.note-delete-btn')) {
+      resetDeleteConfirmations();
+    }
+  });
+
+  // Scroll capture listener to update bottom highlights in real-time
+  list.addEventListener('scroll', (e) => {
+    const scrollEl = e.target;
+    if (scrollEl.classList.contains('note-text') || scrollEl.classList.contains('note-edit-input')) {
+      const item = scrollEl.closest('.note-item');
+      if (item) {
+        updateScrollIndicators(item);
+      }
+    }
+  }, true);
 
   list.addEventListener('click', (e) => {
     const item = e.target.closest('.note-item');
@@ -348,6 +387,13 @@ function setupNoteEvents() {
     if (e.target.closest('.note-edit-btn')) {
       resetDeleteConfirmations();
       startEditing(id);
+      return;
+    }
+
+    // Copy button
+    if (e.target.closest('.note-copy-btn')) {
+      e.stopPropagation();
+      copyNote(id);
       return;
     }
 
@@ -427,6 +473,11 @@ function setupNoteEvents() {
     if (e.target.classList.contains('note-edit-input')) {
       e.target.style.height = 'auto';
       e.target.style.height = `${e.target.scrollHeight + 2}px`;
+      
+      const item = e.target.closest('.note-item');
+      if (item) {
+        updateScrollIndicators(item);
+      }
     }
     if (e.target.classList.contains('note-height-slider')) {
       const item = e.target.closest('.note-item');
@@ -471,6 +522,7 @@ function setupNoteEvents() {
     
     e.dataTransfer.effectAllowed = 'move';
     item.classList.add('dragging');
+    document.body.classList.add('dragging-active');
     e.dataTransfer.setData('text/plain', item.dataset.id);
   });
 
@@ -479,6 +531,7 @@ function setupNoteEvents() {
     if (item) {
       item.classList.remove('dragging');
     }
+    document.body.classList.remove('dragging-active');
     document.querySelectorAll('.note-item').forEach(el => el.classList.remove('drag-over'));
   });
 

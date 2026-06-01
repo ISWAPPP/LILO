@@ -580,6 +580,41 @@
     align-items: center;
 }
 
+/* Spacing optimization for untitled cards: collapse header row and overlay buttons */
+.note-item.no-title .note-header {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    left: 8px;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.note-item.no-title .note-actions {
+    pointer-events: auto;
+    margin-left: auto;
+}
+
+.note-item.no-title .note-title {
+    display: none;
+}
+
+/* Ensure text content starts immediately at the top of the card */
+.note-item.no-title .note-text {
+    padding-top: 2px;
+}
+
+#notes-list.experimental-active .note-item.no-title .note-text {
+    padding-right: 96px; /* Space for copy, edit, delete */
+}
+
+#notes-list:not(.experimental-active) .note-item.no-title .note-text {
+    padding-right: 156px; /* Space for move arrows + copy, edit, delete */
+}
+
 .note-text {
     flex: 1;
     width: 100%;
@@ -605,6 +640,7 @@
 
 .note-move-up-btn,
 .note-move-down-btn,
+.note-copy-btn,
 .note-edit-btn,
 .note-delete-btn {
     width: 28px;
@@ -624,6 +660,7 @@
 
 .note-move-up-btn:hover,
 .note-move-down-btn:hover,
+.note-copy-btn:hover,
 .note-edit-btn:hover {
     color: var(--note-btn-hover-color);
     background: var(--note-btn-hover-bg);
@@ -687,20 +724,110 @@
 .note-item.editing textarea.note-edit-input {
     flex: 1;
     width: 100%;
-    padding: 2px 0 !important;
-    border: none !important;
-    border-radius: 0 !important;
-    background: transparent !important;
     outline: none !important;
     box-shadow: none !important;
     font-size: 13px;
     line-height: 1.4;
     resize: none;
-    overflow: hidden;
+    overflow-y: auto;
     font-family: inherit;
     color: var(--note-text);
-    margin: 4px 0 !important;
+    margin: 6px 0 !important;
     height: auto;
+    padding: 6px 8px !important;
+    border: 1px solid var(--note-border, var(--border-light)) !important;
+    border-radius: var(--radius-md) !important;
+    background: rgba(0, 0, 0, 0.03) !important;
+    box-sizing: border-box;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+/* Custom premium scrollbar for note editing textareas */
+.note-item.editing textarea.note-edit-input::-webkit-scrollbar {
+    width: 4px;
+}
+.note-item.editing textarea.note-edit-input::-webkit-scrollbar-track {
+    background: transparent;
+}
+.note-item.editing textarea.note-edit-input::-webkit-scrollbar-thumb {
+    background: var(--note-border, rgba(0, 0, 0, 0.12));
+    border-radius: var(--radius-sm);
+}
+.note-item.editing textarea.note-edit-input::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+}
+
+.note-item.editing textarea.note-edit-input:focus {
+    border-color: var(--accent) !important;
+    background: rgba(0, 0, 0, 0.05) !important;
+}
+
+/* In dark theme, if no custom color is set, use a light transparent overlay */
+[data-theme="dark"] .note-item.editing:not([style*="background-color"]) textarea.note-edit-input,
+.theme-dark .note-item.editing:not([style*="background-color"]) textarea.note-edit-input {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-color: var(--border-light) !important;
+}
+
+[data-theme="dark"] .note-item.editing:not([style*="background-color"]) textarea.note-edit-input:focus,
+.theme-dark .note-item.editing:not([style*="background-color"]) textarea.note-edit-input:focus {
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Premium dynamic bottom fading indicator and visual hints */
+.note-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 28px;
+    background: linear-gradient(to top, var(--note-bg, var(--bg-main)) 10%, rgba(255, 255, 255, 0) 100%);
+    pointer-events: none;
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: 5;
+}
+
+/* In dark theme default notes, blend the gradient beautifully */
+[data-theme="dark"] .note-item:not([style*="background-color"])::after,
+.theme-dark .note-item:not([style*="background-color"])::after {
+    background: linear-gradient(to top, var(--bg-main) 10%, rgba(0, 0, 0, 0) 100%) !important;
+}
+
+.note-item.has-more-content::after {
+    opacity: 0.95;
+}
+
+/* Small elegant indicators dots */
+.note-item.has-more-content::before {
+    content: '•••';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 8px;
+    letter-spacing: 2px;
+    color: var(--note-text);
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 6;
+    transition: opacity 0.2s ease;
+}
+
+.note-item.editing.has-more-content::before {
+    bottom: 42px; /* Position it cleanly above the edit panel controls */
+}
+.note-item.editing.has-more-content::after {
+    bottom: 40px; /* Position it cleanly above the edit panel controls */
+    border-radius: 0;
+}
+
+/* Prevent cursor flickering during drag mutations */
+body.dragging-active,
+body.dragging-active * {
+    cursor: grabbing !important;
 }
 
 .note-edit-controls {

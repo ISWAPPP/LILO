@@ -73,13 +73,16 @@ export const NotesRenderer = {
   /** Single note item (normal state). */
   noteItem(note, experimentalActive = false) {
     const rendered = this.parseMarkdown(note.text);
+    const escapedTitle = note.title ? Utils.escapeHTML(note.title) : '';
+    
     const isMini = experimentalActive && note.width && note.width < 100;
-    const noteClass = isMini ? 'note-item mini-sticker' : 'note-item full-width';
+    const baseClass = isMini ? 'note-item mini-sticker' : 'note-item full-width';
+    const noteClass = escapedTitle ? baseClass : `${baseClass} no-title`;
+    
     const inlineStyle = (note.color 
       ? `background-color: ${note.color}; --note-bg: ${note.color}; --note-text: #1a1a1a; --note-btn-hover-bg: rgba(0, 0, 0, 0.08); --note-border: rgba(0, 0, 0, 0.09);` 
       : '') + (experimentalActive && note.width ? ` --note-width: calc(${note.width}% - 4px); flex: 0 0 calc(${note.width}% - 4px); max-width: 100%;` : '');
     const lines = note.lines !== undefined ? note.lines : 20;
-    const escapedTitle = note.title ? Utils.escapeHTML(note.title) : '';
     const draggableAttr = experimentalActive ? 'draggable="true"' : '';
 
     let bodyStyle = `max-height: calc(${lines} * 1.5em); overflow-y: auto;`;
@@ -116,6 +119,9 @@ export const NotesRenderer = {
           <div class="note-title">${escapedTitle}</div>
           <div class="note-actions">
             ${moveButtons}
+            <button class="note-copy-btn" title="${I18n.t('notes_copy_tooltip')}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
             <button class="note-edit-btn" title="${I18n.t('notes_title_edit')}">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
             </button>
@@ -151,10 +157,13 @@ export const NotesRenderer = {
       resizeHandle = `<div class="note-resize-handle" title="Drag to resize note width"></div>`;
     }
 
+    const textLines = note.text ? note.text.split('\n').length : 1;
+    const rowsCount = Math.min(textLines, 10);
+
     return `
       <div class="${noteClass}" data-id="${note.id}" style="${inlineStyle}" data-selected-width="${noteWidthVal}">
         ${resizeHandle}
-        <div class="note-header">
+        <div class="note-header" style="margin-bottom: 4px !important; padding-bottom: 0 !important; border-bottom: none !important;">
           <input type="text" class="note-edit-title-input" placeholder="${I18n.t('notes_title_placeholder')}" value="${escapedTitle}" autocomplete="off">
           <div class="note-edit-actions">
             <button class="note-cancel-btn" title="Cancel">
@@ -166,7 +175,7 @@ export const NotesRenderer = {
           </div>
         </div>
         <div style="display:flex; flex-direction:column; flex:1; gap:8px;">
-          <textarea class="note-edit-input" placeholder="${I18n.t('notes_edit_placeholder')}" rows="1">${escaped}</textarea>
+          <textarea class="note-edit-input" placeholder="${I18n.t('notes_edit_placeholder')}" rows="${rowsCount}">${escaped}</textarea>
           <div class="note-edit-controls">
             <div class="note-color-picker">
               ${palette}

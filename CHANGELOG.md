@@ -1,5 +1,20 @@
 # Changelog — LILO Tools
 
+## 1.1.1 — 2026-06-02
+
+### Added
+
+- **Dedicated Header Copy Button**: Integrated a gorgeous Copy button (`note-copy-btn`) directly inside note card headers, complete with standard SVG paper icon, localized tooltips ("Copy"/"Копіювати"), and flash feedback. This allows users to easily copy note content even in ultra-compact 1-line Header-only view modes.
+- **Scrollable Editing Textareas**: Unlocked standard mouse wheel scrolling inside the note edit textarea by transitioning styles to `overflow-y: auto`.
+- **Premium Thin Scrollbars**: Created customized, theme-matching thin webkit scrollbars (`4px` width) for edit textareas, blending beautifully under both light and dark note styles.
+
+### Improved
+
+- **Untitled Note Layout Optimization**: Extremely reduced visual gaps for cards without titles by absolutely positioning header control buttons in the top-right corner. The card's vertical height collapses to exactly 0px, allowing note text to start beautifully and instantly at the very top of the card.
+- **Dynamic HTML Rows Rendering**: Replaced static textarea height logic with dynamic initial rows rendering (`rows="${rowsCount}"` based on note newline counts), ensuring that multiline note edit fields are painted at their perfect natural sizes from the very first frame.
+- **Stabilized Grabbing Cursors**: Locked global document cursor styles to `grabbing` during active note drag events (`body.dragging-active`), completely eliminating any cursor flickering during DOM insertions.
+- **Symmetrical Action Button Alignment**: Styled the new header Copy button to precisely match LILO's design specifications—matching `28x28px` sizing, circular hover feedback overlays, and seamless inline alignment.
+
 ## 1.1.0 — 2026-06-02
 
 ### Added
