@@ -159,13 +159,18 @@ async function renderNotes() {
   list.innerHTML = NotesRenderer.notesList(notes);
 }
 
-async function addNote(text) {
+async function addNote(title, text) {
   const trimmed = text.trim();
+  const trimmedTitle = title.trim();
   if (!trimmed) {
     return;
   }
 
-  notes.unshift({ id: window.crypto.randomUUID(), text: trimmed });
+  notes.unshift({ 
+    id: window.crypto.randomUUID(), 
+    title: trimmedTitle, 
+    text: trimmed 
+  });
   saveNotes();
   renderNotes();
 }
@@ -176,13 +181,14 @@ async function deleteNote(id) {
   renderNotes();
 }
 
-async function updateNoteWithColor(id, newText, color, lines) {
+async function updateNoteWithTitleAndColor(id, newTitle, newText, color, lines) {
   if (!newText.trim()) {
     // Empty text = deletion
     notes = notes.filter(n => n.id !== id);
   } else {
     const note = notes.find(n => n.id === id);
     if (note) {
+      note.title = newTitle.trim();
       note.text = newText.trim();
       note.color = color;
       if (lines !== undefined) {
@@ -251,15 +257,30 @@ function startEditing(id) {
     newItem.style.setProperty('--note-bg', note.color);
     newItem.style.setProperty('--note-text', '#1a1a1a');
     newItem.style.setProperty('--note-btn-hover-bg', 'rgba(0, 0, 0, 0.08)');
+    newItem.style.setProperty('--note-border', 'rgba(0, 0, 0, 0.09)');
   }
   const input = newItem ? newItem.querySelector('.note-edit-input') : null;
   if (input) {
     input.focus();
     input.selectionStart = input.value.length;
     input.style.height = 'auto';
-    input.style.height = `${input.scrollHeight + 2}px`;
+    input.style.height = `${input.scrollHeight}px`;
   }
 }
+
+function resetDeleteConfirmations() {
+  document.querySelectorAll('.note-delete-btn.confirm-delete').forEach(btn => {
+    btn.classList.remove('confirm-delete');
+    btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>`;
+  });
+}
+
+// Global click listener to reset delete confirmations
+document.addEventListener('click', (e) => {
+  if (!e.target.closest('.note-delete-btn')) {
+    resetDeleteConfirmations();
+  }
+});
 
 // ==================== EVENT DELEGATION ====================
 
@@ -272,18 +293,28 @@ function setupNoteEvents() {
   list.addEventListener('click', (e) => {
     const item = e.target.closest('.note-item');
     if (!item) {
+      resetDeleteConfirmations();
       return;
     }
     const id = item.dataset.id;
 
     // Edit button
     if (e.target.closest('.note-edit-btn')) {
+      resetDeleteConfirmations();
       startEditing(id);
       return;
     }
 
     // Delete button
     if (e.target.closest('.note-delete-btn')) {
+      const btn = e.target.closest('.note-delete-btn');
+      if (!btn.classList.contains('confirm-delete')) {
+        e.stopPropagation();
+        resetDeleteConfirmations();
+        btn.classList.add('confirm-delete');
+        btn.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>`;
+        return;
+      }
       deleteNote(id);
       return;
     }
@@ -297,11 +328,13 @@ function setupNoteEvents() {
         item.style.setProperty('--note-bg', color);
         item.style.setProperty('--note-text', '#1a1a1a');
         item.style.setProperty('--note-btn-hover-bg', 'rgba(0, 0, 0, 0.08)');
+        item.style.setProperty('--note-border', 'rgba(0, 0, 0, 0.09)');
       } else {
         item.style.backgroundColor = '';
         item.style.removeProperty('--note-bg');
         item.style.removeProperty('--note-text');
         item.style.removeProperty('--note-btn-hover-bg');
+        item.style.removeProperty('--note-border');
       }
       item.dataset.selectedColor = color;
       return;
@@ -328,10 +361,11 @@ function setupNoteEvents() {
     // Save button
     if (e.target.closest('.note-save-btn')) {
       const input = item.querySelector('.note-edit-input');
+      const titleInput = item.querySelector('.note-edit-title-input');
       const slider = item.querySelector('.note-height-slider');
       const lines = slider ? parseInt(slider.value, 10) : 20;
       const color = item.dataset.selectedColor !== undefined ? item.dataset.selectedColor : (notes.find(n => n.id === id)?.color || '');
-      updateNoteWithColor(id, input?.value || '', color, lines);
+      updateNoteWithTitleAndColor(id, titleInput?.value || '', input?.value || '', color, lines);
       return;
     }
 
@@ -357,18 +391,22 @@ function setupNoteEvents() {
   });
 
   list.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && e.target.classList.contains('note-edit-input')) {
+    if (e.key === 'Escape' && (e.target.classList.contains('note-edit-input') || e.target.classList.contains('note-edit-title-input'))) {
       renderNotes();
       return;
     }
-    if (e.key === 'Enter' && !e.shiftKey && e.target.classList.contains('note-edit-input')) {
-      e.preventDefault(); // Prevent adding new line
+    const isEditInput = e.target.classList.contains('note-edit-input');
+    const isTitleInput = e.target.classList.contains('note-edit-title-input');
+    if (e.key === 'Enter' && ((isEditInput && !e.shiftKey) || isTitleInput)) {
+      e.preventDefault();
       const item = e.target.closest('.note-item');
       const id = item?.dataset.id;
+      const input = item?.querySelector('.note-edit-input');
+      const titleInput = item?.querySelector('.note-edit-title-input');
       const slider = item?.querySelector('.note-height-slider');
       const lines = slider ? parseInt(slider.value, 10) : 20;
       const color = item?.dataset.selectedColor !== undefined ? item.dataset.selectedColor : (notes.find(n => n.id === id)?.color || '');
-      updateNoteWithColor(id, e.target.value || '', color, lines);
+      updateNoteWithTitleAndColor(id, titleInput?.value || '', input?.value || '', color, lines);
     }
   });
 }
@@ -439,12 +477,16 @@ export function initNotesFeature() {
       // Notes add
       const addBtn = document.getElementById('note-add-btn');
       const addInput = document.getElementById('note-input');
+      const titleInput = document.getElementById('note-title-input');
 
       addBtn?.addEventListener('click', () => {
-        addNote(addInput?.value || '');
+        addNote(titleInput?.value || '', addInput?.value || '');
         if (addInput) {
           addInput.value = '';
           addInput.style.height = ''; // reset to default
+        }
+        if (titleInput) {
+          titleInput.value = '';
         }
       });
 
@@ -459,9 +501,26 @@ export function initNotesFeature() {
       addInput?.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
           e.preventDefault();
-          addNote(addInput.value);
+          addNote(titleInput?.value || '', addInput.value);
           addInput.value = '';
           addInput.style.height = ''; // reset to default
+          if (titleInput) {
+            titleInput.value = '';
+          }
+        }
+      });
+
+      titleInput?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          addInput?.focus();
+        }
+      });
+
+      const addCard = document.querySelector('.notes-add-card');
+      addCard?.addEventListener('click', (e) => {
+        if (e.target === addCard || e.target.classList.contains('notes-add')) {
+          addInput?.focus();
         }
       });
 

@@ -74,64 +74,73 @@ export const NotesRenderer = {
   noteItem(note) {
     const rendered = this.parseMarkdown(note.text);
     const inlineStyle = note.color 
-      ? `background-color: ${note.color}; --note-bg: ${note.color}; --note-text: #1a1a1a; --note-btn-hover-bg: rgba(0, 0, 0, 0.08);` 
+      ? `background-color: ${note.color}; --note-bg: ${note.color}; --note-text: #1a1a1a; --note-btn-hover-bg: rgba(0, 0, 0, 0.08); --note-border: rgba(0, 0, 0, 0.09);` 
       : '';
     const lines = note.lines !== undefined ? note.lines : 20;
+    const escapedTitle = note.title ? Utils.escapeHTML(note.title) : '';
+
     return `
       <div class="note-item" data-id="${note.id}" style="${inlineStyle}">
-        <div class="note-markdown-body note-text" style="max-height: calc(${lines} * 1.5em); overflow-y: auto;" title="${I18n.t('passgen_tooltip')}">${rendered}</div>
-        <div class="note-actions">
-          <button class="note-move-up-btn" title="${I18n.t('notes_move_up')}">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
-          </button>
-          <button class="note-move-down-btn" title="${I18n.t('notes_move_down')}">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-          </button>
-          <button class="note-edit-btn" title="${I18n.t('notes_title_edit')}">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-          </button>
-          <button class="note-delete-btn" title="${I18n.t('notes_title_delete')}">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
-          </button>
+        <div class="note-header">
+          <div class="note-title">${escapedTitle}</div>
+          <div class="note-actions">
+            <button class="note-move-up-btn" title="${I18n.t('notes_move_up')}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
+            </button>
+            <button class="note-move-down-btn" title="${I18n.t('notes_move_down')}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            <button class="note-edit-btn" title="${I18n.t('notes_title_edit')}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+            </button>
+            <button class="note-delete-btn" title="${I18n.t('notes_title_delete')}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+            </button>
+          </div>
         </div>
+        <div class="note-markdown-body note-text" style="max-height: calc(${lines} * 1.5em); overflow-y: auto;" title="${I18n.t('passgen_tooltip')}">${rendered}</div>
       </div>`;
   },
  
   /** Single note item (editing mode). */
   noteItemEditing(note) {
     const escaped = Utils.escapeHTML(note.text);
-    const colors = ['#fef3c7', '#dcfce7', '#dbeafe', '#fce7f3', '#f3f4f6', ''];
+    const escapedTitle = note.title ? Utils.escapeHTML(note.title) : '';
+    const colors = ['#fef3c7', '#ffedd5', '#ffe4e6', '#fce7f3', '#f3e8ff', '#dbeafe', '#e0f7fa', '#ccfbf1', '#dcfce7', ''];
     const palette = colors.map(c => 
-      `<div class="color-swatch" data-color="${c}" style="width:14px; height:14px; border-radius:50%; background:${c || 'var(--bg-main)'}; border:1px solid var(--border-light); cursor:pointer;"></div>`
+      `<div class="color-swatch" data-color="${c}" style="background:${c || 'var(--bg-main)'};" title="${c ? c : 'Default'}"></div>`
     ).join('');
     
     const inlineStyle = note.color 
-      ? `background-color: ${note.color}; --note-bg: ${note.color}; --note-text: #1a1a1a; --note-btn-hover-bg: rgba(0, 0, 0, 0.08);` 
+      ? `background-color: ${note.color}; --note-bg: ${note.color}; --note-text: #1a1a1a; --note-btn-hover-bg: rgba(0, 0, 0, 0.08); --note-border: rgba(0, 0, 0, 0.09);` 
       : '';
     
     const lines = note.lines !== undefined ? note.lines : 20;
 
     return `
       <div class="note-item editing" data-id="${note.id}" style="${inlineStyle}">
-        <div style="display:flex; flex-direction:column; flex:1; gap:6px;">
-          <textarea class="note-edit-input" placeholder="${I18n.t('notes_edit_placeholder')}" rows="1">${escaped}</textarea>
-          <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;" class="note-edit-controls">
-            <div style="display:flex; gap:6px;" class="note-color-picker">
-              ${palette}
-            </div>
-            <div style="display:flex; align-items:center; gap:4px; flex:1; justify-content:flex-end;">
-              <span style="font-size:9px; color:var(--text-muted); opacity:0.85; white-space:nowrap;">${I18n.t('notes_max_lines')}: <strong class="range-val">${lines}</strong></span>
-              <input type="range" class="note-height-slider" min="2" max="20" value="${lines}" style="width:90px; height:4px; accent-color:var(--accent); cursor:pointer;">
-            </div>
+        <div class="note-header">
+          <input type="text" class="note-edit-title-input" placeholder="${I18n.t('notes_title_placeholder')}" value="${escapedTitle}" autocomplete="off">
+          <div class="note-edit-actions">
+            <button class="note-cancel-btn" title="Cancel">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+            </button>
+            <button class="note-save-btn" title="${I18n.t('notes_title_save')}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </button>
           </div>
         </div>
-        <div style="display:flex; flex-direction:column; gap:4px;">
-          <button class="note-save-btn" title="${I18n.t('notes_title_save')}">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          </button>
-          <button class="note-cancel-btn" title="Cancel">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-          </button>
+        <div style="display:flex; flex-direction:column; flex:1; gap:8px;">
+          <textarea class="note-edit-input" placeholder="${I18n.t('notes_edit_placeholder')}" rows="1">${escaped}</textarea>
+          <div class="note-edit-controls">
+            <div class="note-color-picker">
+              ${palette}
+            </div>
+            <div class="note-lines-control">
+              <span class="note-lines-label">${I18n.t('notes_max_lines')}: <strong class="range-val">${lines}</strong></span>
+              <input type="range" class="note-height-slider" min="2" max="20" value="${lines}">
+            </div>
+          </div>
         </div>
       </div>`;
   },

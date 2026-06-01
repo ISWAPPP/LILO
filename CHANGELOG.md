@@ -1,5 +1,46 @@
 # Changelog — LILO Tools
 
+## 1.0.1 — 2026-06-02
+
+### Added
+
+- **Configurable Soft Grain Contrast**: Added a contrast slider to the Soft Grain overlay settings card, enabling users to adjust contrast from 50% to 300% to customize noise texture visibility.
+
+### Improved
+
+- **Refined Branding**: Removed all references to third-party browsers to establish a clean, neutral "Soft Grain" style identifier.
+- **Dynamic Controls Syncing**: Integrated full synchronization and cache invalidation for both the intensity (opacity) and contrast sliders, which automatically dim and disable when grain is turned off.
+
+## 1.0.0 — 2026-06-02
+
+### Added
+
+- **Dynamic Notes Optional Titles**: Added optional titles for notes. Users can now
+  give a title to notes when creating or editing them. Titles are styled in bold
+  above the note body, and they are fully protected against clipboard copy operations
+  to ensure clean text-scraping for developers.
+- **Two-Step Secure Deletion**: Introduced an interactive two-step verification workflow
+  for note deletion. Clicking the trash bin transforms the icon into a circular SVG
+  question mark (`?`) highlighted in active error red; a second click executes the deletion.
+  Any click outside the button safely resets it back to the default trash bin icon.
+- **Click-to-Focus Card Wrapper**: Transformed the entire notes creation card background into
+  an active click-focus target. Clicking on any blank space or card margin instantly focuses
+  the `#note-input` textarea, making it exceptionally easy to access.
+- **Expanded Custom Backgrounds**: Added new vibrant, beautiful background highlight colors in
+  the note editor mode for enhanced card personalization.
+
+### Improved
+
+- **Premium Non-Shifting Editor**: Overhauled the note editing layout. Shifted the action
+  buttons (Save/Cancel) from the bottom row to the top-right corner, aligning them symmetrically
+  with the title input.
+- **CSS Specificity and Layout Alignment**: Synchronized the title, textareas, and buttons to
+  utilize matching heights (`28px`), zeroed out padding, and removed layout borders. This completely
+  neutralizes high-specificity global CSS leaks from `styles/base.css`, achieving a pixel-perfect,
+  non-shifting transition between normal and editing modes.
+- **Generous Inputs Spacing**: Expanded `#note-input` and `#note-title-input` paddings to `8px 10px`
+  and set their minimum heights to `40px` for a much larger, more premium, and highly responsive click area.
+
 ## 0.9.28 — 2026-05-31
 
 ### Added

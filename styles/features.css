@@ -345,23 +345,76 @@
 /* ============================================================
    NOTES FEATURE — NOTES LIST
    ============================================================ */
-.notes-add {
+.notes-add-card {
     display: flex;
+    flex-direction: column;
     margin-bottom: 8px;
     box-shadow: var(--shadow-sm);
     border-radius: var(--radius-md);
+    border: 1px solid var(--border-light);
+    background: var(--bg-sec);
+    padding: 6px 8px;
+    gap: 4px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.notes-add-card:focus-within {
+    border-color: var(--accent);
+    box-shadow: var(--shadow-md);
+}
+
+#note-title-input {
+    border: none !important;
+    background: transparent !important;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 8px 10px;
+    outline: none !important;
+    box-shadow: none !important;
+    color: var(--text-main);
+    font-family: inherit;
+}
+
+.notes-add {
+    display: flex;
+    border-top: 1px dashed var(--border-light);
+    padding-top: 4px;
+    margin-top: 2px;
 }
 
 .notes-add button {
     background: var(--accent);
     color: white;
-    border-color: var(--accent);
-    height: auto;
+    border: none !important;
+    border-radius: var(--radius-md);
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    flex-shrink: 0;
+    margin-left: 6px;
+    align-self: flex-end;
+    transition: background 0.2s;
 }
 
 #note-input {
+    flex: 1;
+    border: none !important;
+    background: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+    font-size: 13px;
+    color: var(--text-main);
+    resize: none;
+    padding: 8px 10px !important;
     overflow: hidden;
-    min-height: 44px;
+    min-height: 40px;
+    height: 40px;
+    font-family: inherit;
 }
 
 .notes-add button:hover {
@@ -380,17 +433,19 @@
 
 .note-item {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: stretch;
     position: relative;
-    padding: 8px 12px;
+    padding: 10px 12px;
     border: 1px solid var(--border-light);
     border-radius: var(--radius-md);
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 
     --note-bg: var(--bg-main);
     --note-text: var(--text-main);
     --note-btn-hover-bg: var(--bg-tertiary);
     --note-btn-hover-color: var(--accent);
+    --note-border: var(--border-light);
 
     background: var(--note-bg);
     transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
@@ -407,6 +462,37 @@
     border-color: var(--success-text);
 }
 
+.note-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+}
+
+/* Visually separate the title in notes from the main body text */
+.note-header:has(.note-title:not(:empty)),
+.note-header:has(.note-edit-title-input) {
+    border-bottom: 1px solid var(--note-border, var(--border-light));
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+}
+
+.note-title {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--note-text);
+    opacity: 0.95;
+    user-select: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-right: 8px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+}
+
 .note-text {
     flex: 1;
     width: 100%;
@@ -420,17 +506,10 @@
 
 /* Actions */
 .note-actions {
-    position: absolute;
-    right: 4px;
-    top: 4px;
     display: flex;
     gap: 4px;
-    opacity: 0;
-    transition: opacity 0.2s;
-    background: var(--note-bg);
-    padding: 4px;
-    border-radius: var(--radius-lg);
-    box-shadow: -5px 0 10px 5px var(--note-bg);
+    opacity: 0.45;
+    transition: opacity 0.2s ease;
 }
 
 .note-item:hover .note-actions {
@@ -440,9 +519,7 @@
 .note-move-up-btn,
 .note-move-down-btn,
 .note-edit-btn,
-.note-delete-btn,
-.note-save-btn,
-.note-cancel-btn {
+.note-delete-btn {
     width: 28px;
     height: 28px;
     padding: 0;
@@ -466,46 +543,153 @@
     opacity: 1;
 }
 
-.note-delete-btn:hover,
-.note-cancel-btn:hover {
+.note-delete-btn:hover {
     color: var(--error-text);
     background: var(--error-bg);
     opacity: 1;
 }
 
-.note-save-btn {
-    color: var(--success-text);
-}
-
-.note-save-btn:hover {
-    background: var(--success-bg);
-    opacity: 1;
+.note-delete-btn.confirm-delete {
+    color: var(--error-text) !important;
+    background: var(--error-bg) !important;
+    opacity: 1 !important;
+    border: 1px solid var(--error-text) !important;
 }
 
 /* Editing mode */
 .note-item.editing {
     border-color: var(--accent);
+    padding: 10px 12px;
 }
 
-.note-edit-input {
-    flex: none;
+.note-item.editing input.note-edit-title-input {
+    border: none !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 0 !important;
+    outline: none !important;
+    box-shadow: none !important;
+    color: var(--note-text);
+    font-family: inherit;
+    flex: 1;
+    margin: 0 8px 0 0 !important;
+    height: 28px !important;
+    display: flex;
+    align-items: center;
+}
+
+.note-item.editing textarea.note-edit-input {
+    flex: 1;
     width: 100%;
-    padding: 6px 10px;
-    min-height: 32px;
-    border: 1px solid var(--border-light);
-    border-radius: var(--radius-md);
+    padding: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
     font-size: 13px;
+    line-height: 1.4;
     resize: none;
     overflow: hidden;
     font-family: inherit;
     color: var(--note-text);
-    background: var(--note-bg);
+    margin: 0 !important;
+    height: auto;
 }
 
-.note-edit-input:focus {
-    background: var(--note-bg);
-    outline: none;
+.note-item.editing textarea.note-edit-input:focus {
+    outline: none !important;
+    background: transparent !important;
+}
+
+.note-edit-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    margin-top: 2px;
+}
+
+.note-color-picker {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.note-color-picker .color-swatch {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 1px solid var(--border-light);
+    cursor: pointer;
+    transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.note-color-picker .color-swatch:hover {
+    transform: scale(1.25);
     border-color: var(--accent);
+}
+
+.note-lines-control {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+    justify-content: flex-end;
+}
+
+.note-lines-label {
+    font-size: 9px;
+    color: var(--text-muted);
+    opacity: 0.85;
+    white-space: nowrap;
+}
+
+.note-item.editing .note-height-slider {
+    width: 75px;
+    height: 4px;
+    accent-color: var(--accent);
+    cursor: pointer;
+}
+
+.note-edit-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.note-edit-actions button {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--note-text);
+    opacity: 0.75;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.note-edit-actions .note-cancel-btn:hover {
+    color: var(--error-text) !important;
+    background: var(--error-bg) !important;
+    opacity: 1;
+}
+
+.note-edit-actions .note-save-btn {
+    color: var(--success-text);
+}
+
+.note-edit-actions .note-save-btn:hover {
+    color: var(--success-text) !important;
+    background: var(--success-bg) !important;
+    opacity: 1;
 }
 
 /* Zen Browser Style Theme Palette */
