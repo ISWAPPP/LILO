@@ -1,5 +1,12 @@
 # Changelog — LILO Tools
 
+## 1.1.6 — 2026-06-02
+
+### Improved
+
+- **Collapsible Note Creator**: Redesigned the note creation card to be highly compact and clean when inactive. The Title input, separator line, and Add button now smoothly collapse and fade out when the card is not focused and contains no text, expanding dynamically with premium CSS transitions only upon user click (focus).
+- **Removed Auto-Focus on Notes Tab Switch**: Fixed a navigation issue where switching to the NOTES tab immediately focused the note text area, forcing the note creator card to expand automatically. The input field now remains unfocused and collapsed until explicitly clicked.
+
 ## 1.1.5 — 2026-06-02
 
 ### Added

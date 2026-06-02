@@ -799,7 +799,6 @@ export function initNotesFeature() {
     },
 
     onActivate() {
-      document.getElementById('note-input')?.focus();
       if (!passwordInitialized) {
         refreshPassword();
         passwordInitialized = true;

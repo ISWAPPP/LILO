@@ -355,7 +355,7 @@
     background: var(--bg-sec);
     padding: 6px 8px;
     gap: 4px;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, padding 0.2s ease, gap 0.2s ease;
 }
 
 .notes-add-card:focus-within {
@@ -373,6 +373,9 @@
     box-shadow: none !important;
     color: var(--text-main);
     font-family: inherit;
+    transition: max-height 0.2s ease, opacity 0.2s ease, padding 0.2s ease, margin 0.2s ease;
+    max-height: 40px;
+    opacity: 1;
 }
 
 .notes-add {
@@ -380,6 +383,7 @@
     border-top: 1px dashed var(--border-light);
     padding-top: 4px;
     margin-top: 2px;
+    transition: border-color 0.2s ease, padding 0.2s ease, margin 0.2s ease;
 }
 
 .notes-add button {
@@ -398,7 +402,9 @@
     flex-shrink: 0;
     margin-left: 6px;
     align-self: flex-end;
-    transition: background 0.2s;
+    transition: background 0.2s, transform 0.2s ease, opacity 0.2s ease, width 0.2s ease, margin-left 0.2s ease, padding 0.2s ease;
+    transform: scale(1);
+    opacity: 1;
 }
 
 #note-input {
@@ -415,10 +421,50 @@
     min-height: 40px;
     height: 40px;
     font-family: inherit;
+    transition: min-height 0.2s ease, height 0.2s ease, padding 0.2s ease;
 }
 
 .notes-add button:hover {
     background: var(--accent-hover);
+}
+
+/* Collapsed state when not focused, and inputs are empty */
+.notes-add-card:not(:focus-within):not(:has(#note-title-input:not(:placeholder-shown))):not(:has(#note-input:not(:placeholder-shown))) {
+    padding: 4px 8px;
+    gap: 0;
+}
+
+.notes-add-card:not(:focus-within):not(:has(#note-title-input:not(:placeholder-shown))):not(:has(#note-input:not(:placeholder-shown))) #note-title-input {
+    max-height: 0;
+    opacity: 0;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    margin: 0 !important;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.notes-add-card:not(:focus-within):not(:has(#note-title-input:not(:placeholder-shown))):not(:has(#note-input:not(:placeholder-shown))) .notes-add {
+    border-top-color: transparent;
+    padding-top: 0;
+    margin-top: 0;
+}
+
+.notes-add-card:not(:focus-within):not(:has(#note-title-input:not(:placeholder-shown))):not(:has(#note-input:not(:placeholder-shown))) #note-input {
+    min-height: 32px;
+    height: 32px;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+}
+
+.notes-add-card:not(:focus-within):not(:has(#note-title-input:not(:placeholder-shown))):not(:has(#note-input:not(:placeholder-shown))) #note-add-btn {
+    transform: scale(0);
+    opacity: 0;
+    width: 0;
+    margin-left: 0;
+    padding: 0 !important;
+    pointer-events: none;
+    overflow: hidden;
 }
 
 .notes-empty {
