@@ -156,6 +156,20 @@
     color: var(--error-text) !important;
 }
 
+/* Dynamic Whois status colors based on remaining days */
+
+#copyWhois[data-whois-status="success"] {
+    color: var(--success-text) !important;
+}
+
+#copyWhois[data-whois-status="warning"] {
+    color: var(--warning-text) !important;
+}
+
+#copyWhois[data-whois-status="error"] {
+    color: var(--error-text) !important;
+}
+
 /* ===== LOADER ===== */
 .loader-container {
     display: flex;

@@ -1,5 +1,13 @@
 # Changelog — LILO Tools
 
+## 1.1.5 — 2026-06-02
+
+### Added
+
+- **Dynamic WHOIS Expiration Indicators**: Upgraded the WHOIS toolbar button to display the expiration date of the queried domain directly on the button face (e.g. "14.09.2028"). Removed prefix labels like "till"/"до" to ensure text stays compact and fits cleanly on a single line. Powered by the fast, keyless, and CORS-compliant `who-dat` RDAP API.
+- **Theme-Adaptive WHOIS Expiration Styling**: Added dynamic status colors for the WHOIS button. If the domain is expired, it turns error red; if expiring in under 30 days, it turns warning amber/yellow; otherwise, it displays in success green.
+- **Repository Optimization**: Added a standard `.gitignore` file to ignore environment-specific and temporary build files.
+
 ## 1.1.4 — 2026-06-02
 
 ### Added

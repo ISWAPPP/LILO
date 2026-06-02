@@ -12,6 +12,8 @@ export const I18n = {
       'dns_ssl_expired': 'Закінчився',
       'dns_dns': 'DNS',
       'dns_whois': 'Whois',
+      'dns_whois_date': '{date}',
+      'dns_whois_expired': 'Закінчився',
       'dns_placeholder': 'example.com',
       'dns_btn_go': 'GO',
       'dns_output_wait': 'Очікування...',
@@ -165,6 +167,8 @@ export const I18n = {
       'dns_ssl_expired': 'Expired',
       'dns_dns': 'DNS',
       'dns_whois': 'Whois',
+      'dns_whois_date': '{date}',
+      'dns_whois_expired': 'Expired',
       'dns_placeholder': 'example.com',
       'dns_btn_go': 'GO',
       'dns_output_wait': 'Waiting...',
@@ -348,6 +352,16 @@ export const I18n = {
                 btnText = 'SSL...';
               } else if (daysVal !== '') {
                 btnText = this.t('dns_ssl_days').replace('{days}', daysVal);
+              }
+            }
+            if (el.id === 'copyWhois' && el.hasAttribute('data-whois-expiry')) {
+              const expiryVal = el.getAttribute('data-whois-expiry');
+              if (expiryVal === 'expired') {
+                btnText = this.t('dns_whois_expired');
+              } else if (expiryVal === 'loading') {
+                btnText = 'Whois...';
+              } else if (expiryVal !== '') {
+                btnText = this.t('dns_whois_date').replace('{date}', expiryVal);
               }
             }
             
