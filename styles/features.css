@@ -827,10 +827,9 @@ body.dragging-active * {
 
 .note-edit-controls {
     display: flex;
-    flex-flow: row wrap;
-    justify-content: space-between;
-    align-items: center;
-    gap: 8px 12px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
     margin-top: 4px;
     padding-top: 6px;
     border-top: 1px dashed var(--note-border, var(--border-light));
@@ -840,32 +839,55 @@ body.dragging-active * {
 .note-color-picker {
     display: flex;
     flex-wrap: wrap;
-    gap: 4px;
+    gap: 6px;
     align-items: center;
-    max-width: 120px;
+    width: 100%;
 }
 
 .note-color-picker .color-swatch {
-    width: 16px;
-    height: 16px;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
     border: 1px solid var(--border-light);
     cursor: pointer;
-    transition: transform 0.15s ease, border-color 0.15s ease;
+    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .note-color-picker .color-swatch:hover {
-    transform: scale(1.25);
+    transform: scale(1.2);
     border-color: var(--accent);
+}
+
+.note-color-picker .color-swatch.active {
+    transform: scale(1.15);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1.5px var(--note-bg, var(--bg-main)), 0 0 0 3px var(--accent);
+}
+
+.note-color-picker .color-swatch[data-color=""] {
+    border-style: dashed;
+    border-width: 1.5px;
+    position: relative;
+}
+
+.note-color-picker .color-swatch[data-color=""]::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    width: 70%;
+    height: 1.5px;
+    background-color: var(--text-muted);
+    opacity: 0.5;
 }
 
 .note-lines-control {
     display: flex;
     align-items: center;
-    gap: 6px;
-    flex: 1;
-    min-width: 90px;
-    justify-content: flex-end;
+    gap: 8px;
+    width: 100%;
+    justify-content: space-between;
 }
 
 .note-lines-label {
@@ -876,7 +898,8 @@ body.dragging-active * {
 }
 
 .note-item.editing .note-height-slider {
-    width: 75px;
+    flex: 1;
+    max-width: 100px;
     height: 4px;
     accent-color: var(--accent);
     cursor: pointer;

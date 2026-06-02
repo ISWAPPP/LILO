@@ -1,5 +1,17 @@
 # Changelog — LILO Tools
 
+## 1.1.4 — 2026-06-02
+
+### Added
+
+- **Expanded Notes Color Palette**: Added premium pastel backgrounds (soft red, soft rose, soft purple, soft indigo, soft blue, soft cyan, soft teal, soft green, soft lime, soft yellow, soft amber, soft orange, soft slate/gray) to the selection palette, bringing the total choice to 14 modes (13 colors + Default) to fit exactly into 2 horizontal rows on narrow mini sticker notes.
+- **Default Color Graphic Style**: Designed a beautiful custom graphic indicator for the Default option—rendering a dashed circular border with a diagonal slash inside representing "no color".
+- **Color Swatch Selected Active Rings**: Added a premium selection outline ring (using box-shadow offsets) around the currently active color swatch to give immediate visual feedback.
+
+### Improved
+
+- **Stretched Color Palette Layout**: Removed width restrictions on `.note-color-picker` and laid out edit controls vertically. Swatches are now 18px and stretch horizontally across the full available width of the note editor, stacking and wrapping cleanly into exactly two rows.
+
 ## 1.1.3 — 2026-06-02
 
 ### Fixed

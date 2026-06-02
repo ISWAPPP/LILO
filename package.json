@@ -1,6 +1,6 @@
 {
   "name": "lilo-extension",
-  "version": "0.9.28",
+  "version": "1.1.4",
   "private": true,
   "description": "LILO Browser Extension",
   "scripts": {

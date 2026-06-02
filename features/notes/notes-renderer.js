@@ -138,10 +138,27 @@ export const NotesRenderer = {
   noteItemEditing(note, experimentalActive = false) {
     const escaped = Utils.escapeHTML(note.text);
     const escapedTitle = note.title ? Utils.escapeHTML(note.title) : '';
-    const colors = ['#fef3c7', '#ffedd5', '#ffe4e6', '#fce7f3', '#f3e8ff', '#dbeafe', '#e0f7fa', '#ccfbf1', '#dcfce7', ''];
-    const palette = colors.map(c => 
-      `<div class="color-swatch" data-color="${c}" style="background:${c || 'var(--bg-main)'};" title="${c ? c : 'Default'}"></div>`
-    ).join('');
+    const colors = [
+      '#fee2e2', // soft red
+      '#ffe4e6', // soft rose
+      '#f3e8ff', // soft purple
+      '#e0e7ff', // soft indigo
+      '#dbeafe', // soft blue
+      '#e0f7fa', // soft cyan
+      '#ccfbf1', // soft teal
+      '#dcfce7', // soft green
+      '#ecfccb', // soft lime
+      '#fef9c3', // soft yellow
+      '#fef3c7', // soft amber
+      '#ffedd5', // soft orange
+      '#f1f5f9', // soft slate/gray
+      ''         // default
+    ];
+    const noteColor = note.color || '';
+    const palette = colors.map(c => {
+      const isActive = c === noteColor;
+      return `<div class="color-swatch${isActive ? ' active' : ''}" data-color="${c}" style="background:${c || 'var(--bg-main)'};" title="${c ? c : 'Default'}"></div>`;
+    }).join('');
     
     const isMini = experimentalActive && note.width && note.width < 100;
     const noteClass = isMini ? 'note-item editing mini-sticker' : 'note-item editing full-width';

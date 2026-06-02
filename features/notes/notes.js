@@ -415,6 +415,13 @@ function setupNoteEvents() {
     if (e.target.closest('.color-swatch')) {
       const swatch = e.target.closest('.color-swatch');
       const color = swatch.dataset.color;
+      
+      const picker = swatch.closest('.note-color-picker');
+      if (picker) {
+        picker.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+        swatch.classList.add('active');
+      }
+
       if (color) {
         item.style.backgroundColor = color;
         item.style.setProperty('--note-bg', color);
