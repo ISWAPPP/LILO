@@ -1,5 +1,14 @@
 # Changelog — LILO Tools
 
+## 1.1.7 — 2026-06-02
+
+### Added
+
+- **Privacy Policy**: Added a link to the Privacy Policy (`PRIVACY.md`) in the settings footer next to Feedback and Changelog.
+- **Created PRIVACY.md**: Added a flexible, structured Privacy Policy page stating that LILO Tools collects no personal data or private information.
+- **Localized Footer Links**: Migrated all settings tab footer links to the internationalization engine, ensuring they adapt perfectly to English and Ukrainian locales.
+- **Correct Theme Color Variable**: Replaced `--accent-main` in the footer with `--accent` to correctly apply the theme's accent color on links.
+
 ## 1.1.6 — 2026-06-02
 
 ### Improved
