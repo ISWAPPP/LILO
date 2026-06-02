@@ -1,5 +1,29 @@
 # Changelog — LILO Tools
 
+## 1.1.3 — 2026-06-02
+
+### Fixed
+
+- **DNS Multi-Line Copy**: Fixed clipboard copying from DNS result cards with multiple values (A records, NS records, AAAA records). Previously, clicking the card header to "copy all" collapsed every value into a single line. Values are now correctly joined with line breaks (`\n`) so each record appears on its own line when pasted.
+- **DNS Toolbar Links Not Updating on Custom Domain Input**: Fixed a bug where the SSL, DNS, and Whois toolbar button links only updated after pressing GO or Enter. Added a real-time `input` event listener on the domain field so toolbar links are updated immediately as the user types a valid domain.
+
+## 1.1.2 — 2026-06-02
+
+### Added
+
+- **Password Generator Visibility Toggle**: Introduced a new toggle switch in the Theme & Appearance settings card under the "Interface Elements" section, allowing users to completely show or hide the password generator widget on the Notes tab. The setting is persisted across sessions and applied instantly without requiring a reload.
+
+### Improved
+
+- **Renamed Toolbar Buttons Label**: Renamed the "DNS Toolbar Buttons" settings label to simply "Toolbar Buttons" for cleaner, more concise wording (the section already lives inside the DNS Configuration card).
+- **Hover-Only Note Action Buttons**: Copy, Edit, and Delete buttons on note cards are now fully invisible (`visibility: hidden`) until the cursor hovers over the card. Previously they were partially visible at 45% opacity, which cluttered the interface and clipped long note titles.
+- **Note Title No Longer Clipped**: Fixed a layout issue where the note title was being squeezed/truncated by the hidden action buttons even when they weren't visible. The title now uses `flex: 1; min-width: 0` to fill all available header space and truncate gracefully with an ellipsis.
+- **Experimental Feature Description Alignment**: Changed the experimental features description text alignment from left-aligned to justified (`text-align: justify`) for a cleaner, more polished appearance that fills the full width of the container.
+
+### Fixed
+
+- **Edit Mode Overflow Gradient**: Resolved a visual bug where the "more content" fade gradient and dot indicators (used when note text overflows) would bleed outside the note card boundaries during editing. These pseudo-elements are now fully suppressed in edit mode since the auto-growing textarea handles its own scrolling.
+
 ## 1.1.1 — 2026-06-02
 
 ### Added

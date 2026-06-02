@@ -27,6 +27,7 @@ export function initSettingsFeature() {
       const grainContrastVal = document.getElementById('setting-grain-contrast-val');
       const grainContrastContainer = document.getElementById('grain-contrast-container');
       const experimentalNotesCheckbox = document.getElementById('setting-experimental-notes');
+      const passgenEnabledCheckbox = document.getElementById('setting-btn-passgen');
 
       const dq = settings.dnsQueries || { a: true, aaaa: false, mx: true, txt: false, spf: false, dkim: false, dmarc: false, ns: true };
       const qA = document.getElementById('setting-query-a');
@@ -55,6 +56,7 @@ export function initSettingsFeature() {
       if (tbSsl) { tbSsl.checked = tb.ssl; }
       if (tbDns) { tbDns.checked = tb.dns; }
       if (tbWhois) { tbWhois.checked = tb.whois; }
+      if (passgenEnabledCheckbox) { passgenEnabledCheckbox.checked = settings.passgenEnabled !== false; }
       
       // Theme Palette logic
       const themeSwatches = document.querySelectorAll('.theme-swatch');
@@ -148,6 +150,7 @@ export function initSettingsFeature() {
           grainOpacity: grainOpacitySlider ? parseFloat(grainOpacitySlider.value) : 0.05,
           grainContrast: grainContrastSlider ? parseInt(grainContrastSlider.value, 10) : 100,
           experimentalNotes: experimentalNotesCheckbox ? experimentalNotesCheckbox.checked : false,
+          passgenEnabled: passgenEnabledCheckbox ? passgenEnabledCheckbox.checked : true,
           dnsQueries: {
             a: qA?.checked,
             aaaa: qAAAA?.checked,
@@ -184,6 +187,10 @@ export function initSettingsFeature() {
         if (groupDNS) { groupDNS.style.display = activeTb.dns ? '' : 'none'; }
         if (groupWhois) { groupWhois.style.display = activeTb.whois ? '' : 'none'; }
         
+        // Update password generator visibility
+        const passgenSection = document.querySelector('.passgen-section');
+        if (passgenSection) { passgenSection.style.display = newSettings.passgenEnabled !== false ? '' : 'none'; }
+        
         Utils.showToast(I18n.t('toast_saved'));
       };
  
@@ -198,7 +205,7 @@ export function initSettingsFeature() {
         cb?.addEventListener('change', () => handleSave());
       });
 
-      const tbCheckboxes = [tbSsl, tbDns, tbWhois];
+      const tbCheckboxes = [tbSsl, tbDns, tbWhois, passgenEnabledCheckbox];
       tbCheckboxes.forEach(cb => {
         cb?.addEventListener('change', () => handleSave());
       });

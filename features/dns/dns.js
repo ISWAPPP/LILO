@@ -337,6 +337,22 @@ export function initDnsFeature() {
         }
       });
 
+      // Update toolbar links as user types a domain
+      input.addEventListener('input', () => {
+        const raw = input.value.trim();
+        if (!raw) {
+          return;
+        }
+        let domainPart = raw;
+        if (raw.includes(':') && !raw.startsWith('http')) {
+          domainPart = raw.split(':')[0];
+        }
+        const domain = Utils.cleanDomain(domainPart);
+        if (Utils.isValidDomain(domain) || Utils.isValidIP(domain)) {
+          updateLinks(domain);
+        }
+      });
+
       // Click on output elements (copy)
       output.addEventListener('click', async (e) => {
         const row = e.target.closest('.result-row');
@@ -382,6 +398,21 @@ export function initDnsFeature() {
         }
 
         // Else, clicked on the general card area outside specific rows (when multiple values exist) -> copy all!
+        const allSingleVals = row.querySelectorAll('.dns-single-val');
+        if (allSingleVals.length > 0) {
+          const lines = Array.from(allSingleVals).map(el => el.innerText.trim()).filter(Boolean);
+          const textToCopy = lines.join('\n');
+          if (textToCopy) {
+            const ok = await Utils.copyToClipboard(textToCopy);
+            if (ok) {
+              row.classList.add('copied');
+              setTimeout(() => row.classList.remove('copied'), 800);
+            }
+          }
+          return;
+        }
+
+        // Fallback: copy the result-value text directly
         const valueEl = row.querySelector('.result-value');
         if (!valueEl) {
           return;

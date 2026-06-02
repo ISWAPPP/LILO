@@ -770,6 +770,10 @@ export function initNotesFeature() {
 
       // Load settings and notes asynchronously to make tab open speed near-instant (0.1ms)
       Promise.all([Settings.load(), loadNotes()]).then(([settings, loadedNotes]) => {
+        // Show/hide password generator based on setting
+        const passgenSection = document.querySelector('.passgen-section');
+        if (passgenSection) { passgenSection.style.display = settings.passgenEnabled !== false ? '' : 'none'; }
+
         const pg = settings.passgen;
         if (elLower) { elLower.checked = pg.lower; }
         if (elUpper) { elUpper.checked = pg.upper; }

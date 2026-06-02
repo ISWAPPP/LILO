@@ -13,6 +13,7 @@ const defaultSettings = {
   grainOpacity: 0.05,
   grainContrast: 100,
   experimentalNotes: false,
+  passgenEnabled: true,
   passgen: { lower: true, upper: true, numbers: true, symbols: false, excludeSimilar: false, length: 16 },
   dnsQueries: { a: true, aaaa: false, mx: true, txt: false, spf: false, dkim: false, dmarc: false, ns: true },
   dnsToolbarButtons: { ssl: true, dns: true, whois: false }

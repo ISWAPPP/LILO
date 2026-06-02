@@ -574,7 +574,8 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin-right: 8px;
+    flex: 1;
+    min-width: 0;
     height: 28px;
     display: flex;
     align-items: center;
@@ -607,13 +608,6 @@
     padding-top: 2px;
 }
 
-#notes-list.experimental-active .note-item.no-title .note-text {
-    padding-right: 96px; /* Space for copy, edit, delete */
-}
-
-#notes-list:not(.experimental-active) .note-item.no-title .note-text {
-    padding-right: 156px; /* Space for move arrows + copy, edit, delete */
-}
 
 .note-text {
     flex: 1;
@@ -626,15 +620,18 @@
     line-height: 1.4;
 }
 
-/* Actions */
+/* Actions — hidden by default, overlay on hover so they don't squeeze the title */
 .note-actions {
     display: flex;
     gap: 4px;
-    opacity: 0.45;
-    transition: opacity 0.2s ease;
+    flex-shrink: 0;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.15s ease, visibility 0.15s ease;
 }
 
 .note-item:hover .note-actions {
+    visibility: visible;
     opacity: 1;
 }
 
@@ -816,12 +813,10 @@
     transition: opacity 0.2s ease;
 }
 
-.note-item.editing.has-more-content::before {
-    bottom: 42px; /* Position it cleanly above the edit panel controls */
-}
-.note-item.editing.has-more-content::after {
-    bottom: 40px; /* Position it cleanly above the edit panel controls */
-    border-radius: 0;
+/* Suppress overflow indicators in edit mode — textarea grows auto-height so they don't apply */
+.note-item.editing::before,
+.note-item.editing::after {
+    display: none !important;
 }
 
 /* Prevent cursor flickering during drag mutations */
