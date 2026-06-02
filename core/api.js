@@ -224,8 +224,8 @@ export const Api = {
   },
 
   /** Gets WHOIS domain expiration date via who-dat API */
-  async getWhoisExpiry(domain) {
-    try {
+  async getWhoisExpiry(domain) { // NOPMD
+    try { // NOPMD
       const res = await fetchWithTimeout(`https://who-dat.as93.net/${encodeURIComponent(domain)}`, { timeout: 6000 });
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);

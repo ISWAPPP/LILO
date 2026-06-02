@@ -227,7 +227,7 @@ async function animateReorderAndRender(action) {
     const newItems = Array.from(document.querySelectorAll('.note-item'));
     newItems.forEach(item => {
       const first = firstPositions.find(p => p.id === item.dataset.id);
-      if (!first) return;
+      if (!first) { return; }
       
       const lastRect = item.getBoundingClientRect();
       const invertY = first.top - lastRect.top;
@@ -333,11 +333,11 @@ function resetDeleteConfirmations() {
 
 // Premium scroll indicator update routine
 function updateScrollIndicators(item) {
-  if (!item) return;
+  if (!item) { return; }
   const textEl = item.querySelector('.note-text');
   const textareaEl = item.querySelector('.note-edit-input');
   const scrollEl = textEl || textareaEl;
-  if (!scrollEl) return;
+  if (!scrollEl) { return; }
   
   const hasOverflow = scrollEl.scrollHeight > scrollEl.clientHeight;
   const isAtBottom = scrollEl.scrollTop + scrollEl.clientHeight >= scrollEl.scrollHeight - 6; // 6px padding tolerance
@@ -418,7 +418,7 @@ function setupNoteEvents() {
       
       const picker = swatch.closest('.note-color-picker');
       if (picker) {
-        picker.querySelectorAll('.color-swatch').forEach(s => s.classList.remove('active'));
+        picker.querySelectorAll('.color-swatch').forEach(s => { s.classList.remove('active'); });
         swatch.classList.add('active');
       }
 
@@ -519,7 +519,7 @@ function setupNoteEvents() {
   // ==================== DRAG & DROP REORDERING ====================
   list.addEventListener('dragstart', (e) => {
     const item = e.target.closest('.note-item');
-    if (!item || item.classList.contains('editing')) return;
+    if (!item || item.classList.contains('editing')) { return; }
     
     // Check if dragging starts inside note header or body, not buttons
     if (e.target.closest('.note-actions') || e.target.closest('button')) {
@@ -539,23 +539,23 @@ function setupNoteEvents() {
       item.classList.remove('dragging');
     }
     document.body.classList.remove('dragging-active');
-    document.querySelectorAll('.note-item').forEach(el => el.classList.remove('drag-over'));
+    document.querySelectorAll('.note-item').forEach(el => { el.classList.remove('drag-over'); });
   });
 
   list.addEventListener('dragover', (e) => {
     e.preventDefault();
     const draggingItem = list.querySelector('.dragging');
-    if (!draggingItem) return;
+    if (!draggingItem) { return; }
     
     const items = Array.from(list.querySelectorAll('.note-item:not(.dragging)'));
-    if (items.length === 0) return;
+    if (items.length === 0) { return; }
     
     let closestItem = null;
     let closestDistance = Infinity;
     let isAfter = false;
     
     items.forEach(item => {
-      if (item.classList.contains('editing')) return;
+      if (item.classList.contains('editing')) { return; }
       
       const rect = item.getBoundingClientRect();
       const centerX = rect.left + rect.width / 2;
@@ -589,7 +589,7 @@ function setupNoteEvents() {
   list.addEventListener('drop', async (e) => {
     e.preventDefault();
     const draggedId = e.dataTransfer.getData('text/plain');
-    if (!draggedId) return;
+    if (!draggedId) { return; }
     
     // Get new DOM order of IDs
     const newOrderIds = Array.from(list.querySelectorAll('.note-item')).map(el => el.dataset.id);
@@ -613,11 +613,11 @@ function setupNoteEvents() {
   // ==================== MOUSE RESIZING ====================
   list.addEventListener('mousedown', (e) => {
     const handle = e.target.closest('.note-resize-handle');
-    if (!handle) return;
+    if (!handle) { return; }
     
     e.preventDefault();
     const item = handle.closest('.note-item.editing');
-    if (!item) return;
+    if (!item) { return; }
     
     const startX = e.clientX;
     const startWidth = item.offsetWidth;
@@ -627,8 +627,8 @@ function setupNoteEvents() {
       const deltaX = moveEvent.clientX - startX;
       let newWidth = startWidth + deltaX;
       
-      if (newWidth < 120) newWidth = 120;
-      if (newWidth > containerWidth) newWidth = containerWidth;
+      if (newWidth < 120) { newWidth = 120; }
+      if (newWidth > containerWidth) { newWidth = containerWidth; }
       
       const widthPercent = Math.round((newWidth / containerWidth) * 100);
       const isFull = widthPercent >= 75;

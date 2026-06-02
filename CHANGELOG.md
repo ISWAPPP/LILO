@@ -8,6 +8,13 @@
 - **Created PRIVACY.md**: Added a flexible, structured Privacy Policy page stating that LILO Tools collects no personal data or private information.
 - **Localized Footer Links**: Migrated all settings tab footer links to the internationalization engine, ensuring they adapt perfectly to English and Ukrainian locales.
 - **Correct Theme Color Variable**: Replaced `--accent-main` in the footer with `--accent` to correctly apply the theme's accent color on links.
+- **CI Trigger Rules**: Configured `paths-ignore` for `CHANGELOG.md` and `PRIVACY.md` in GitHub Actions workflows (`codacy.yml` and `security.yml`) to prevent unnecessary CI runs when modifying documentation.
+
+### Fixed
+
+- **Static Analysis Warnings**: Resolved Biome (Codacy) warnings regarding implicit returns in `forEach` callback arrow functions in `features/notes/notes.js`, and suppressed a PMD parser false positive ("Unnecessary block") on the new WHOIS lookup function in `core/api.js`.
+- **Jshint Compliance**: Added curly braces around single-line conditionals and loops in `features/notes/notes.js` to adhere to strict Jshint rules and resolve Codacy static analysis flags.
+- **Markdownlint Formatting**: Formatted `PRIVACY.md` to include proper spacing and empty lines around headers and list items, resolving MD022 lint warnings.
 
 ## 1.1.6 — 2026-06-02
 
