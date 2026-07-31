@@ -19,6 +19,15 @@ export function initSettingsFeature() {
       const historyLimitVal = document.getElementById('setting-history-limit-val');
       const picsHistoryLimitSlider = document.getElementById('setting-pics-history-limit');
       const picsHistoryLimitVal = document.getElementById('setting-pics-history-limit-val');
+      const grainEnabledCheckbox = document.getElementById('setting-grain-enabled');
+      const grainOpacitySlider = document.getElementById('setting-grain-opacity');
+      const grainOpacityVal = document.getElementById('setting-grain-opacity-val');
+      const grainOpacityContainer = document.getElementById('grain-opacity-container');
+      const grainContrastSlider = document.getElementById('setting-grain-contrast');
+      const grainContrastVal = document.getElementById('setting-grain-contrast-val');
+      const grainContrastContainer = document.getElementById('grain-contrast-container');
+      const experimentalNotesCheckbox = document.getElementById('setting-experimental-notes');
+      const passgenEnabledCheckbox = document.getElementById('setting-btn-passgen');
 
       const dq = settings.dnsQueries || { a: true, aaaa: false, mx: true, txt: false, spf: false, dkim: false, dmarc: false, ns: true };
       const qA = document.getElementById('setting-query-a');
@@ -47,6 +56,7 @@ export function initSettingsFeature() {
       if (tbSsl) { tbSsl.checked = tb.ssl; }
       if (tbDns) { tbDns.checked = tb.dns; }
       if (tbWhois) { tbWhois.checked = tb.whois; }
+      if (passgenEnabledCheckbox) { passgenEnabledCheckbox.checked = settings.passgenEnabled !== false; }
       
       // Theme Palette logic
       const themeSwatches = document.querySelectorAll('.theme-swatch');
@@ -96,6 +106,33 @@ export function initSettingsFeature() {
           picsHistoryLimitVal.textContent = settings.picsHistoryLimit || 5;
         }
       }
+
+      if (grainEnabledCheckbox) {
+        grainEnabledCheckbox.checked = settings.grainEnabled || false;
+      }
+      if (grainOpacitySlider) {
+        grainOpacitySlider.value = settings.grainOpacity !== undefined ? settings.grainOpacity : 0.05;
+        if (grainOpacityVal) {
+          grainOpacityVal.textContent = `${Math.round((settings.grainOpacity !== undefined ? settings.grainOpacity : 0.05) * 100)}%`;
+        }
+      }
+      if (grainOpacityContainer) {
+        grainOpacityContainer.style.opacity = (settings.grainEnabled || false) ? '1' : '0.5';
+        grainOpacityContainer.style.pointerEvents = (settings.grainEnabled || false) ? 'auto' : 'none';
+      }
+      if (grainContrastSlider) {
+        grainContrastSlider.value = settings.grainContrast !== undefined ? settings.grainContrast : 100;
+        if (grainContrastVal) {
+          grainContrastVal.textContent = `${settings.grainContrast !== undefined ? settings.grainContrast : 100}%`;
+        }
+      }
+      if (grainContrastContainer) {
+        grainContrastContainer.style.opacity = (settings.grainEnabled || false) ? '1' : '0.5';
+        grainContrastContainer.style.pointerEvents = (settings.grainEnabled || false) ? 'auto' : 'none';
+      }
+      if (experimentalNotesCheckbox) {
+        experimentalNotesCheckbox.checked = settings.experimentalNotes || false;
+      }
  
       const handleSave = async (updatedSettings = {}) => {
         const current = await Settings.load();
@@ -109,6 +146,11 @@ export function initSettingsFeature() {
           sslProvider: sslSelect?.value || 'certist',
           dnsHistoryLimit: parseInt(historyLimitSlider?.value || '4', 10),
           picsHistoryLimit: parseInt(picsHistoryLimitSlider?.value || '5', 10),
+          grainEnabled: grainEnabledCheckbox ? grainEnabledCheckbox.checked : false,
+          grainOpacity: grainOpacitySlider ? parseFloat(grainOpacitySlider.value) : 0.05,
+          grainContrast: grainContrastSlider ? parseInt(grainContrastSlider.value, 10) : 100,
+          experimentalNotes: experimentalNotesCheckbox ? experimentalNotesCheckbox.checked : false,
+          passgenEnabled: passgenEnabledCheckbox ? passgenEnabledCheckbox.checked : true,
           dnsQueries: {
             a: qA?.checked,
             aaaa: qAAAA?.checked,
@@ -134,6 +176,7 @@ export function initSettingsFeature() {
         // Update theme
         Theme.apply(newSettings.theme);
         Theme.applyFont(newSettings.font);
+        Theme.applyGrain(newSettings.grainEnabled, newSettings.grainOpacity, newSettings.grainContrast);
         
         // Update toolbar buttons visibility immediately
         const activeTb = newSettings.dnsToolbarButtons || { ssl: true, dns: true, whois: false };
@@ -143,6 +186,10 @@ export function initSettingsFeature() {
         if (groupSSL) { groupSSL.style.display = activeTb.ssl ? '' : 'none'; }
         if (groupDNS) { groupDNS.style.display = activeTb.dns ? '' : 'none'; }
         if (groupWhois) { groupWhois.style.display = activeTb.whois ? '' : 'none'; }
+        
+        // Update password generator visibility
+        const passgenSection = document.querySelector('.passgen-section');
+        if (passgenSection) { passgenSection.style.display = newSettings.passgenEnabled !== false ? '' : 'none'; }
         
         Utils.showToast(I18n.t('toast_saved'));
       };
@@ -158,7 +205,7 @@ export function initSettingsFeature() {
         cb?.addEventListener('change', () => handleSave());
       });
 
-      const tbCheckboxes = [tbSsl, tbDns, tbWhois];
+      const tbCheckboxes = [tbSsl, tbDns, tbWhois, passgenEnabledCheckbox];
       tbCheckboxes.forEach(cb => {
         cb?.addEventListener('change', () => handleSave());
       });
@@ -187,6 +234,34 @@ export function initSettingsFeature() {
         }
       });
       picsHistoryLimitSlider?.addEventListener('change', () => handleSave());
+
+      grainEnabledCheckbox?.addEventListener('change', () => {
+        const isEnabled = grainEnabledCheckbox.checked;
+        if (grainOpacityContainer) {
+          grainOpacityContainer.style.opacity = isEnabled ? '1' : '0.5';
+          grainOpacityContainer.style.pointerEvents = isEnabled ? 'auto' : 'none';
+        }
+        if (grainContrastContainer) {
+          grainContrastContainer.style.opacity = isEnabled ? '1' : '0.5';
+          grainContrastContainer.style.pointerEvents = isEnabled ? 'auto' : 'none';
+        }
+        handleSave();
+      });
+
+      grainOpacitySlider?.addEventListener('input', () => {
+        if (grainOpacityVal) {
+          grainOpacityVal.textContent = `${Math.round(parseFloat(grainOpacitySlider.value) * 100)}%`;
+        }
+      });
+      grainOpacitySlider?.addEventListener('change', () => handleSave());
+
+      grainContrastSlider?.addEventListener('input', () => {
+        if (grainContrastVal) {
+          grainContrastVal.textContent = `${grainContrastSlider.value}%`;
+        }
+      });
+      grainContrastSlider?.addEventListener('change', () => handleSave());
+      experimentalNotesCheckbox?.addEventListener('change', () => handleSave());
  
       // Data Management
       const btnExport = document.getElementById('btn-export-data');

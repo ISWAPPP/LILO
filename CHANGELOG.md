@@ -1,5 +1,145 @@
 # Changelog — LILO Tools
 
+## 1.1.7 — 2026-06-02
+
+### Added
+
+- **Privacy Policy**: Added a link to the Privacy Policy (`PRIVACY.md`) in the settings footer next to Feedback and Changelog.
+- **Created PRIVACY.md**: Added a flexible, structured Privacy Policy page stating that LILO Tools collects no personal data or private information.
+- **Localized Footer Links**: Migrated all settings tab footer links to the internationalization engine, ensuring they adapt perfectly to English and Ukrainian locales.
+- **Correct Theme Color Variable**: Replaced `--accent-main` in the footer with `--accent` to correctly apply the theme's accent color on links.
+- **CI Trigger Rules**: Configured `paths-ignore` for `CHANGELOG.md` and `PRIVACY.md` in GitHub Actions workflows (`codacy.yml` and `security.yml`) to prevent unnecessary CI runs when modifying documentation.
+
+### Fixed
+
+- **Static Analysis Warnings**: Resolved Biome (Codacy) warnings regarding implicit returns in `forEach` callback arrow functions in `features/notes/notes.js`, and suppressed a PMD parser false positive ("Unnecessary block") on the new WHOIS lookup function in `core/api.js`.
+- **Jshint Compliance**: Added curly braces around single-line conditionals and loops in `features/notes/notes.js` to adhere to strict Jshint rules and resolve Codacy static analysis flags.
+- **Markdownlint Formatting**: Formatted `PRIVACY.md` to include proper spacing and empty lines around headers and list items, resolving MD022 lint warnings.
+
+## 1.1.6 — 2026-06-02
+
+### Improved
+
+- **Collapsible Note Creator**: Redesigned the note creation card to be highly compact and clean when inactive. The Title input, separator line, and Add button now smoothly collapse and fade out when the card is not focused and contains no text, expanding dynamically with premium CSS transitions only upon user click (focus).
+- **Removed Auto-Focus on Notes Tab Switch**: Fixed a navigation issue where switching to the NOTES tab immediately focused the note text area, forcing the note creator card to expand automatically. The input field now remains unfocused and collapsed until explicitly clicked.
+
+## 1.1.5 — 2026-06-02
+
+### Added
+
+- **Dynamic WHOIS Expiration Indicators**: Upgraded the WHOIS toolbar button to display the expiration date of the queried domain directly on the button face (e.g. "14.09.2028"). Removed prefix labels like "till"/"до" to ensure text stays compact and fits cleanly on a single line. Powered by the fast, keyless, and CORS-compliant `who-dat` RDAP API.
+- **Theme-Adaptive WHOIS Expiration Styling**: Added dynamic status colors for the WHOIS button. If the domain is expired, it turns error red; if expiring in under 30 days, it turns warning amber/yellow; otherwise, it displays in success green.
+- **Repository Optimization**: Added a standard `.gitignore` file to ignore environment-specific and temporary build files.
+
+## 1.1.4 — 2026-06-02
+
+### Added
+
+- **Expanded Notes Color Palette**: Added premium pastel backgrounds (soft red, soft rose, soft purple, soft indigo, soft blue, soft cyan, soft teal, soft green, soft lime, soft yellow, soft amber, soft orange, soft slate/gray) to the selection palette, bringing the total choice to 14 modes (13 colors + Default) to fit exactly into 2 horizontal rows on narrow mini sticker notes.
+- **Default Color Graphic Style**: Designed a beautiful custom graphic indicator for the Default option—rendering a dashed circular border with a diagonal slash inside representing "no color".
+- **Color Swatch Selected Active Rings**: Added a premium selection outline ring (using box-shadow offsets) around the currently active color swatch to give immediate visual feedback.
+
+### Improved
+
+- **Stretched Color Palette Layout**: Removed width restrictions on `.note-color-picker` and laid out edit controls vertically. Swatches are now 18px and stretch horizontally across the full available width of the note editor, stacking and wrapping cleanly into exactly two rows.
+
+## 1.1.3 — 2026-06-02
+
+### Fixed
+
+- **DNS Multi-Line Copy**: Fixed clipboard copying from DNS result cards with multiple values (A records, NS records, AAAA records). Previously, clicking the card header to "copy all" collapsed every value into a single line. Values are now correctly joined with line breaks (`\n`) so each record appears on its own line when pasted.
+- **DNS Toolbar Links Not Updating on Custom Domain Input**: Fixed a bug where the SSL, DNS, and Whois toolbar button links only updated after pressing GO or Enter. Added a real-time `input` event listener on the domain field so toolbar links are updated immediately as the user types a valid domain.
+
+## 1.1.2 — 2026-06-02
+
+### Added
+
+- **Password Generator Visibility Toggle**: Introduced a new toggle switch in the Theme & Appearance settings card under the "Interface Elements" section, allowing users to completely show or hide the password generator widget on the Notes tab. The setting is persisted across sessions and applied instantly without requiring a reload.
+
+### Improved
+
+- **Renamed Toolbar Buttons Label**: Renamed the "DNS Toolbar Buttons" settings label to simply "Toolbar Buttons" for cleaner, more concise wording (the section already lives inside the DNS Configuration card).
+- **Hover-Only Note Action Buttons**: Copy, Edit, and Delete buttons on note cards are now fully invisible (`visibility: hidden`) until the cursor hovers over the card. Previously they were partially visible at 45% opacity, which cluttered the interface and clipped long note titles.
+- **Note Title No Longer Clipped**: Fixed a layout issue where the note title was being squeezed/truncated by the hidden action buttons even when they weren't visible. The title now uses `flex: 1; min-width: 0` to fill all available header space and truncate gracefully with an ellipsis.
+- **Experimental Feature Description Alignment**: Changed the experimental features description text alignment from left-aligned to justified (`text-align: justify`) for a cleaner, more polished appearance that fills the full width of the container.
+
+### Fixed
+
+- **Edit Mode Overflow Gradient**: Resolved a visual bug where the "more content" fade gradient and dot indicators (used when note text overflows) would bleed outside the note card boundaries during editing. These pseudo-elements are now fully suppressed in edit mode since the auto-growing textarea handles its own scrolling.
+
+## 1.1.1 — 2026-06-02
+
+### Added
+
+- **Dedicated Header Copy Button**: Integrated a gorgeous Copy button (`note-copy-btn`) directly inside note card headers, complete with standard SVG paper icon, localized tooltips ("Copy"/"Копіювати"), and flash feedback. This allows users to easily copy note content even in ultra-compact 1-line Header-only view modes.
+- **Scrollable Editing Textareas**: Unlocked standard mouse wheel scrolling inside the note edit textarea by transitioning styles to `overflow-y: auto`.
+- **Premium Thin Scrollbars**: Created customized, theme-matching thin webkit scrollbars (`4px` width) for edit textareas, blending beautifully under both light and dark note styles.
+
+### Improved
+
+- **Untitled Note Layout Optimization**: Extremely reduced visual gaps for cards without titles by absolutely positioning header control buttons in the top-right corner. The card's vertical height collapses to exactly 0px, allowing note text to start beautifully and instantly at the very top of the card.
+- **Dynamic HTML Rows Rendering**: Replaced static textarea height logic with dynamic initial rows rendering (`rows="${rowsCount}"` based on note newline counts), ensuring that multiline note edit fields are painted at their perfect natural sizes from the very first frame.
+- **Stabilized Grabbing Cursors**: Locked global document cursor styles to `grabbing` during active note drag events (`body.dragging-active`), completely eliminating any cursor flickering during DOM insertions.
+- **Symmetrical Action Button Alignment**: Styled the new header Copy button to precisely match LILO's design specifications—matching `28x28px` sizing, circular hover feedback overlays, and seamless inline alignment.
+
+## 1.1.0 — 2026-06-02
+
+### Added
+
+- **Multi-Column Masonry Board**: Integrated a native CSS Columns layout (`column-count: 2`) for experimental notes. Mini stickers pack vertically and stack tightly inside columns directly under tall note cards, completely eliminating empty white space gaps.
+- **Premium 2D Closest-Element Drag-and-Drop**: Engineered an advanced 2D coordinate-based reordering algorithm using `Math.hypot()`. Dragging any sticker into empty column gaps or side-by-side locations now instantly snaps and reorders them perfectly with bouncy spring transitions.
+- **Interactive Corner Resizing (Snap Widths)**: Implemented seamless note card resizing by dragging the bottom-right corner. Cards snap instantly between standard column sticker size (48% width) and full-width layout (100% width) in real-time.
+- **Header-Only Display Mode (1 line)**: Added support for compressing notes down to a height of 1. When set to 1, if a note has a title, the text body is completely hidden to act as a sleek horizontal widget.
+- **Dynamic Untitled Clamp Fallback**: If a note has no title and its height is set to 1, instead of rendering an empty card, it displays exactly the first line of the note's body text (clamped using `-webkit-line-clamp: 1`).
+
+### Improved
+
+- **Clean Edit Interface**: Completely removed the redundant "Type" select dropdown and width percentage text from the edit card screen.
+- **Robust Wrapping Edit Controls**: Restructured the note edit view in CSS with robust flex-wrap and max-width boundaries. Swatches and action buttons wrap beautifully and remain fully visible and clickable even inside narrow columns.
+- **Decluttered Stickers Header**: Automatically hide the vertical `Move Up` and `Move Down` order arrows when experimental stickers mode is enabled.
+- **Interactive Cursor Reset**: Prevented drag cursor bleed by mapping strict cursor overrides across elements (typing `text` cursor on inputs, `pointer` on active buttons, swatches, and the click-to-copy body, and `grab` strictly on draggable card regions).
+
+## 1.0.1 — 2026-06-02
+
+### Added
+
+- **Configurable Soft Grain Contrast**: Added a contrast slider to the Soft Grain overlay settings card, enabling users to adjust contrast from 50% to 300% to customize noise texture visibility.
+
+### Improved
+
+- **Refined Branding**: Removed all references to third-party browsers to establish a clean, neutral "Soft Grain" style identifier.
+- **Dynamic Controls Syncing**: Integrated full synchronization and cache invalidation for both the intensity (opacity) and contrast sliders, which automatically dim and disable when grain is turned off.
+
+## 1.0.0 — 2026-06-02
+
+### Added
+
+- **Dynamic Notes Optional Titles**: Added optional titles for notes. Users can now
+  give a title to notes when creating or editing them. Titles are styled in bold
+  above the note body, and they are fully protected against clipboard copy operations
+  to ensure clean text-scraping for developers.
+- **Two-Step Secure Deletion**: Introduced an interactive two-step verification workflow
+  for note deletion. Clicking the trash bin transforms the icon into a circular SVG
+  question mark (`?`) highlighted in active error red; a second click executes the deletion.
+  Any click outside the button safely resets it back to the default trash bin icon.
+- **Click-to-Focus Card Wrapper**: Transformed the entire notes creation card background into
+  an active click-focus target. Clicking on any blank space or card margin instantly focuses
+  the `#note-input` textarea, making it exceptionally easy to access.
+- **Expanded Custom Backgrounds**: Added new vibrant, beautiful background highlight colors in
+  the note editor mode for enhanced card personalization.
+
+### Improved
+
+- **Premium Non-Shifting Editor**: Overhauled the note editing layout. Shifted the action
+  buttons (Save/Cancel) from the bottom row to the top-right corner, aligning them symmetrically
+  with the title input.
+- **CSS Specificity and Layout Alignment**: Synchronized the title, textareas, and buttons to
+  utilize matching heights (`28px`), zeroed out padding, and removed layout borders. This completely
+  neutralizes high-specificity global CSS leaks from `styles/base.css`, achieving a pixel-perfect,
+  non-shifting transition between normal and editing modes.
+- **Generous Inputs Spacing**: Expanded `#note-input` and `#note-title-input` paddings to `8px 10px`
+  and set their minimum heights to `40px` for a much larger, more premium, and highly responsive click area.
+
 ## 0.9.28 — 2026-05-31
 
 ### Added

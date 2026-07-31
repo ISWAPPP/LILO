@@ -345,27 +345,126 @@
 /* ============================================================
    NOTES FEATURE — NOTES LIST
    ============================================================ */
-.notes-add {
+.notes-add-card {
     display: flex;
+    flex-direction: column;
     margin-bottom: 8px;
     box-shadow: var(--shadow-sm);
     border-radius: var(--radius-md);
+    border: 1px solid var(--border-light);
+    background: var(--bg-sec);
+    padding: 6px 8px;
+    gap: 4px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, padding 0.2s ease, gap 0.2s ease;
+}
+
+.notes-add-card:focus-within {
+    border-color: var(--accent);
+    box-shadow: var(--shadow-md);
+}
+
+#note-title-input {
+    border: none !important;
+    background: transparent !important;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 8px 10px;
+    outline: none !important;
+    box-shadow: none !important;
+    color: var(--text-main);
+    font-family: inherit;
+    transition: max-height 0.2s ease, opacity 0.2s ease, padding 0.2s ease, margin 0.2s ease;
+    max-height: 40px;
+    opacity: 1;
+}
+
+.notes-add {
+    display: flex;
+    border-top: 1px dashed var(--border-light);
+    padding-top: 4px;
+    margin-top: 2px;
+    transition: border-color 0.2s ease, padding 0.2s ease, margin 0.2s ease;
 }
 
 .notes-add button {
     background: var(--accent);
     color: white;
-    border-color: var(--accent);
-    height: auto;
+    border: none !important;
+    border-radius: var(--radius-md);
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    flex-shrink: 0;
+    margin-left: 6px;
+    align-self: flex-end;
+    transition: background 0.2s, transform 0.2s ease, opacity 0.2s ease, width 0.2s ease, margin-left 0.2s ease, padding 0.2s ease;
+    transform: scale(1);
+    opacity: 1;
 }
 
 #note-input {
+    flex: 1;
+    border: none !important;
+    background: transparent !important;
+    outline: none !important;
+    box-shadow: none !important;
+    font-size: 13px;
+    color: var(--text-main);
+    resize: none;
+    padding: 8px 10px !important;
     overflow: hidden;
-    min-height: 44px;
+    min-height: 40px;
+    height: 40px;
+    font-family: inherit;
+    transition: min-height 0.2s ease, height 0.2s ease, padding 0.2s ease;
 }
 
 .notes-add button:hover {
     background: var(--accent-hover);
+}
+
+/* Collapsed state when not focused, and inputs are empty */
+.notes-add-card:not(:focus-within):not(:has(#note-title-input:not(:placeholder-shown))):not(:has(#note-input:not(:placeholder-shown))) {
+    padding: 4px 8px;
+    gap: 0;
+}
+
+.notes-add-card:not(:focus-within):not(:has(#note-title-input:not(:placeholder-shown))):not(:has(#note-input:not(:placeholder-shown))) #note-title-input {
+    max-height: 0;
+    opacity: 0;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    margin: 0 !important;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.notes-add-card:not(:focus-within):not(:has(#note-title-input:not(:placeholder-shown))):not(:has(#note-input:not(:placeholder-shown))) .notes-add {
+    border-top-color: transparent;
+    padding-top: 0;
+    margin-top: 0;
+}
+
+.notes-add-card:not(:focus-within):not(:has(#note-title-input:not(:placeholder-shown))):not(:has(#note-input:not(:placeholder-shown))) #note-input {
+    min-height: 32px;
+    height: 32px;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+}
+
+.notes-add-card:not(:focus-within):not(:has(#note-title-input:not(:placeholder-shown))):not(:has(#note-input:not(:placeholder-shown))) #note-add-btn {
+    transform: scale(0);
+    opacity: 0;
+    width: 0;
+    margin-left: 0;
+    padding: 0 !important;
+    pointer-events: none;
+    overflow: hidden;
 }
 
 .notes-empty {
@@ -378,19 +477,108 @@
     border: 1px dashed var(--border-light);
 }
 
+/* Drag & Drop Reordering Visuals */
+.note-item.dragging {
+    opacity: 0.45;
+    border: 2px dashed var(--accent);
+    transform: scale(0.98);
+    box-shadow: var(--shadow-md);
+}
+
+.note-item[draggable="true"] {
+    cursor: grab;
+}
+
+.note-item[draggable="true"]:active {
+    cursor: grabbing;
+}
+
+/* Reset cursors inside draggable elements to keep interaction logic clean */
+.note-item[draggable="true"] button,
+.note-item[draggable="true"] .note-actions,
+.note-item[draggable="true"] .note-resize-handle {
+    cursor: pointer;
+}
+
+.note-item[draggable="true"] .note-text {
+    cursor: pointer;
+}
+
+.note-item[draggable="true"] input,
+.note-item[draggable="true"] textarea {
+    cursor: text;
+}
+
+/* Experimental multi-column (masonry-like) layout for notes */
+#notes-list.experimental-active {
+    display: block !important;
+    column-count: 2;
+    column-gap: 8px;
+}
+
+#notes-list.experimental-active .note-item {
+    display: inline-block;
+    width: 100%;
+    margin-bottom: 8px;
+    box-sizing: border-box;
+    break-inside: avoid;
+    vertical-align: top;
+}
+
+#notes-list.experimental-active .note-item.full-width {
+    column-span: all;
+    display: block;
+    width: 100%;
+}
+
+/* Resize handle highlight */
+.note-resize-handle {
+    position: absolute;
+    bottom: 3px;
+    right: 3px;
+    width: 12px;
+    height: 12px;
+    cursor: nwse-resize;
+    z-index: 10;
+    border-right: 3px solid var(--accent);
+    border-bottom: 3px solid var(--accent);
+    border-bottom-right-radius: 2px;
+    opacity: 0.7;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.note-resize-handle::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    width: 4px;
+    height: 4px;
+    border-right: 2px solid var(--accent);
+    border-bottom: 2px solid var(--accent);
+    opacity: 0.5;
+}
+
+.note-resize-handle:hover {
+    opacity: 1;
+    transform: scale(1.2);
+}
+
 .note-item {
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: stretch;
     position: relative;
-    padding: 8px 12px;
+    padding: 10px 12px;
     border: 1px solid var(--border-light);
     border-radius: var(--radius-md);
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 
     --note-bg: var(--bg-main);
     --note-text: var(--text-main);
     --note-btn-hover-bg: var(--bg-tertiary);
     --note-btn-hover-color: var(--accent);
+    --note-border: var(--border-light);
 
     background: var(--note-bg);
     transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
@@ -407,6 +595,66 @@
     border-color: var(--success-text);
 }
 
+.note-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+    padding-bottom: 4px;
+}
+
+/* Visually separate the title in notes from the main body text */
+.note-header:has(.note-title:not(:empty)),
+.note-header:has(.note-edit-title-input) {
+    border-bottom: 1px solid var(--note-border, var(--border-light));
+    margin-bottom: 10px;
+    padding-bottom: 6px;
+}
+
+.note-title {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--note-text);
+    opacity: 0.95;
+    user-select: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex: 1;
+    min-width: 0;
+    height: 28px;
+    display: flex;
+    align-items: center;
+}
+
+/* Spacing optimization for untitled cards: collapse header row and overlay buttons */
+.note-item.no-title .note-header {
+    position: absolute;
+    top: 6px;
+    right: 8px;
+    left: 8px;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.note-item.no-title .note-actions {
+    pointer-events: auto;
+    margin-left: auto;
+}
+
+.note-item.no-title .note-title {
+    display: none;
+}
+
+/* Ensure text content starts immediately at the top of the card */
+.note-item.no-title .note-text {
+    padding-top: 2px;
+}
+
+
 .note-text {
     flex: 1;
     width: 100%;
@@ -418,31 +666,26 @@
     line-height: 1.4;
 }
 
-/* Actions */
+/* Actions — hidden by default, overlay on hover so they don't squeeze the title */
 .note-actions {
-    position: absolute;
-    right: 4px;
-    top: 4px;
     display: flex;
     gap: 4px;
+    flex-shrink: 0;
+    visibility: hidden;
     opacity: 0;
-    transition: opacity 0.2s;
-    background: var(--note-bg);
-    padding: 4px;
-    border-radius: var(--radius-lg);
-    box-shadow: -5px 0 10px 5px var(--note-bg);
+    transition: opacity 0.15s ease, visibility 0.15s ease;
 }
 
 .note-item:hover .note-actions {
+    visibility: visible;
     opacity: 1;
 }
 
 .note-move-up-btn,
 .note-move-down-btn,
+.note-copy-btn,
 .note-edit-btn,
-.note-delete-btn,
-.note-save-btn,
-.note-cancel-btn {
+.note-delete-btn {
     width: 28px;
     height: 28px;
     padding: 0;
@@ -460,52 +703,289 @@
 
 .note-move-up-btn:hover,
 .note-move-down-btn:hover,
+.note-copy-btn:hover,
 .note-edit-btn:hover {
     color: var(--note-btn-hover-color);
     background: var(--note-btn-hover-bg);
     opacity: 1;
 }
 
-.note-delete-btn:hover,
-.note-cancel-btn:hover {
+.note-delete-btn:hover {
     color: var(--error-text);
     background: var(--error-bg);
     opacity: 1;
 }
 
-.note-save-btn {
-    color: var(--success-text);
+.note-delete-btn.confirm-delete {
+    color: var(--error-text) !important;
+    background: var(--error-bg) !important;
+    opacity: 1 !important;
+    border: 1px solid var(--error-text) !important;
 }
 
-.note-save-btn:hover {
-    background: var(--success-bg);
+/* Editing mode wrapping & responsiveness */
+.note-item.editing {
+    border-color: var(--accent);
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.note-item.editing .note-header {
+    display: flex;
+    flex-flow: row wrap;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 2px;
+    width: 100%;
+}
+
+.note-item.editing input.note-edit-title-input {
+    border: none !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    font-weight: 700;
+    font-size: 14px;
+    padding: 0 !important;
+    outline: none !important;
+    box-shadow: none !important;
+    color: var(--note-text);
+    font-family: inherit;
+    flex: 1;
+    min-width: 100px;
+    margin: 0 !important;
+    height: 28px !important;
+}
+
+.note-edit-actions {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
+
+.note-item.editing textarea.note-edit-input {
+    flex: 1;
+    width: 100%;
+    outline: none !important;
+    box-shadow: none !important;
+    font-size: 13px;
+    line-height: 1.4;
+    resize: none;
+    overflow-y: auto;
+    font-family: inherit;
+    color: var(--note-text);
+    margin: 6px 0 !important;
+    height: auto;
+    padding: 6px 8px !important;
+    border: 1px solid var(--note-border, var(--border-light)) !important;
+    border-radius: var(--radius-md) !important;
+    background: rgba(0, 0, 0, 0.03) !important;
+    box-sizing: border-box;
+    transition: border-color 0.2s, background-color 0.2s;
+}
+
+/* Custom premium scrollbar for note editing textareas */
+.note-item.editing textarea.note-edit-input::-webkit-scrollbar {
+    width: 4px;
+}
+.note-item.editing textarea.note-edit-input::-webkit-scrollbar-track {
+    background: transparent;
+}
+.note-item.editing textarea.note-edit-input::-webkit-scrollbar-thumb {
+    background: var(--note-border, rgba(0, 0, 0, 0.12));
+    border-radius: var(--radius-sm);
+}
+.note-item.editing textarea.note-edit-input::-webkit-scrollbar-thumb:hover {
+    background: var(--accent);
+}
+
+.note-item.editing textarea.note-edit-input:focus {
+    border-color: var(--accent) !important;
+    background: rgba(0, 0, 0, 0.05) !important;
+}
+
+/* In dark theme, if no custom color is set, use a light transparent overlay */
+[data-theme="dark"] .note-item.editing:not([style*="background-color"]) textarea.note-edit-input,
+.theme-dark .note-item.editing:not([style*="background-color"]) textarea.note-edit-input {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-color: var(--border-light) !important;
+}
+
+[data-theme="dark"] .note-item.editing:not([style*="background-color"]) textarea.note-edit-input:focus,
+.theme-dark .note-item.editing:not([style*="background-color"]) textarea.note-edit-input:focus {
+    background: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Premium dynamic bottom fading indicator and visual hints */
+.note-item::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 28px;
+    background: linear-gradient(to top, var(--note-bg, var(--bg-main)) 10%, rgba(255, 255, 255, 0) 100%);
+    pointer-events: none;
+    border-radius: 0 0 var(--radius-md) var(--radius-md);
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: 5;
+}
+
+/* In dark theme default notes, blend the gradient beautifully */
+[data-theme="dark"] .note-item:not([style*="background-color"])::after,
+.theme-dark .note-item:not([style*="background-color"])::after {
+    background: linear-gradient(to top, var(--bg-main) 10%, rgba(0, 0, 0, 0) 100%) !important;
+}
+
+.note-item.has-more-content::after {
+    opacity: 0.95;
+}
+
+/* Small elegant indicators dots */
+.note-item.has-more-content::before {
+    content: '•••';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 8px;
+    letter-spacing: 2px;
+    color: var(--note-text);
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 6;
+    transition: opacity 0.2s ease;
+}
+
+/* Suppress overflow indicators in edit mode — textarea grows auto-height so they don't apply */
+.note-item.editing::before,
+.note-item.editing::after {
+    display: none !important;
+}
+
+/* Prevent cursor flickering during drag mutations */
+body.dragging-active,
+body.dragging-active * {
+    cursor: grabbing !important;
+}
+
+.note-edit-controls {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    margin-top: 4px;
+    padding-top: 6px;
+    border-top: 1px dashed var(--note-border, var(--border-light));
+    width: 100%;
+}
+
+.note-color-picker {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+    width: 100%;
+}
+
+.note-color-picker .color-swatch {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1px solid var(--border-light);
+    cursor: pointer;
+    transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.note-color-picker .color-swatch:hover {
+    transform: scale(1.2);
+    border-color: var(--accent);
+}
+
+.note-color-picker .color-swatch.active {
+    transform: scale(1.15);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1.5px var(--note-bg, var(--bg-main)), 0 0 0 3px var(--accent);
+}
+
+.note-color-picker .color-swatch[data-color=""] {
+    border-style: dashed;
+    border-width: 1.5px;
+    position: relative;
+}
+
+.note-color-picker .color-swatch[data-color=""]::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    width: 70%;
+    height: 1.5px;
+    background-color: var(--text-muted);
+    opacity: 0.5;
+}
+
+.note-lines-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.note-lines-label {
+    font-size: 9px;
+    color: var(--text-muted);
+    opacity: 0.85;
+    white-space: nowrap;
+}
+
+.note-item.editing .note-height-slider {
+    flex: 1;
+    max-width: 100px;
+    height: 4px;
+    accent-color: var(--accent);
+    cursor: pointer;
+}
+
+.note-edit-actions {
+    display: flex;
+    gap: 4px;
+}
+
+.note-edit-actions button {
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: none;
+    border-radius: var(--radius-md);
+    background: transparent;
+    color: var(--note-text);
+    opacity: 0.75;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.note-edit-actions .note-cancel-btn:hover {
+    color: var(--error-text) !important;
+    background: var(--error-bg) !important;
     opacity: 1;
 }
 
-/* Editing mode */
-.note-item.editing {
-    border-color: var(--accent);
+.note-edit-actions .note-save-btn {
+    color: var(--success-text);
 }
 
-.note-edit-input {
-    flex: none;
-    width: 100%;
-    padding: 6px 10px;
-    min-height: 32px;
-    border: 1px solid var(--border-light);
-    border-radius: var(--radius-md);
-    font-size: 13px;
-    resize: none;
-    overflow: hidden;
-    font-family: inherit;
-    color: var(--note-text);
-    background: var(--note-bg);
-}
-
-.note-edit-input:focus {
-    background: var(--note-bg);
-    outline: none;
-    border-color: var(--accent);
+.note-edit-actions .note-save-btn:hover {
+    color: var(--success-text) !important;
+    background: var(--success-bg) !important;
+    opacity: 1;
 }
 
 /* Zen Browser Style Theme Palette */

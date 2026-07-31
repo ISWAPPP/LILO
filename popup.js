@@ -47,6 +47,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   await I18n.init(settings.language);
   Theme.init(settings.theme || 'auto');
   Theme.applyFont(settings.font || 'system');
+  Theme.applyGrain(settings.grainEnabled || false, settings.grainOpacity !== undefined ? settings.grainOpacity : 0.05, settings.grainContrast !== undefined ? settings.grainContrast : 100);
 
   // Verify tab match or resolve startup Tab async if it was a cold load
   if (settings.startupTab === 'last') {

@@ -71,6 +71,72 @@ export function initDnsFeature() {
     }
   };
 
+  // --- Asynchronously check WHOIS domain expiration ---
+  const updateWhoisButton = async (domain) => {
+    const whoisBtn = document.getElementById('copyWhois');
+    if (!whoisBtn) {
+      return;
+    }
+
+    const isIp = Utils.isValidIP(domain);
+    if (isIp) {
+      whoisBtn.removeAttribute('data-whois-expiry');
+      whoisBtn.removeAttribute('data-whois-status');
+      const span = whoisBtn.querySelector('span');
+      whoisBtn.innerHTML = `${span ? span.outerHTML : ''} Whois`;
+      return;
+    }
+
+    whoisBtn.setAttribute('data-whois-expiry', 'loading');
+    whoisBtn.removeAttribute('data-whois-status');
+    const span = whoisBtn.querySelector('span');
+    const iconHTML = span ? span.outerHTML : '';
+    whoisBtn.innerHTML = `${iconHTML} Whois...`;
+
+    const expiryDateStr = await Api.getWhoisExpiry(domain);
+
+    // Verify domain hasn't changed in input since the request was initiated
+    const currentDomain = Utils.cleanDomain(input.value.split(':')[0]);
+    if (currentDomain !== domain) {
+      return;
+    }
+
+    if (expiryDateStr) {
+      const expiryDate = new Date(expiryDateStr);
+      const diffTime = expiryDate.getTime() - Date.now();
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+      let status = 'success';
+      if (diffDays < 0) {
+        status = 'error';
+      } else if (diffDays <= 30) {
+        status = 'warning';
+      }
+
+      whoisBtn.setAttribute('data-whois-status', status);
+
+      let text = '';
+      if (diffDays < 0) {
+        whoisBtn.setAttribute('data-whois-expiry', 'expired');
+        text = I18n.t('dns_whois_expired');
+      } else {
+        // Format the date as DD.MM.YYYY
+        const day = String(expiryDate.getDate()).padStart(2, '0');
+        const month = String(expiryDate.getMonth() + 1).padStart(2, '0');
+        const year = expiryDate.getFullYear();
+        const formattedDate = `${day}.${month}.${year}`;
+
+        whoisBtn.setAttribute('data-whois-expiry', formattedDate);
+        text = I18n.t('dns_whois_date').replace('{date}', formattedDate);
+      }
+      whoisBtn.innerHTML = `${iconHTML} ${text}`;
+    } else {
+      whoisBtn.removeAttribute('data-whois-expiry');
+      whoisBtn.removeAttribute('data-whois-status');
+      whoisBtn.innerHTML = `${iconHTML} Whois`;
+    }
+  };
+
   // --- External links and copy handlers update ---
   // This function activates toolbar buttons and assigns target URLs.
   // It also sets up handlers for copying these URLs to clipboard.
@@ -107,6 +173,8 @@ export function initDnsFeature() {
 
     // Start fetching SSL certificate days
     updateSSLButton(domain);
+    // Start fetching WHOIS domain expiration
+    updateWhoisButton(domain);
   };
 
   // --- Main DNS check ---
@@ -162,6 +230,12 @@ export function initDnsFeature() {
             links[key].btn.removeAttribute('data-ssl-status');
             const span = links[key].btn.querySelector('span');
             links[key].btn.innerHTML = `${span ? span.outerHTML : ''} SSL`;
+          }
+          if (key === 'whois') {
+            links[key].btn.removeAttribute('data-whois-expiry');
+            links[key].btn.removeAttribute('data-whois-status');
+            const span = links[key].btn.querySelector('span');
+            links[key].btn.innerHTML = `${span ? span.outerHTML : ''} Whois`;
           }
         }
       });
@@ -337,6 +411,22 @@ export function initDnsFeature() {
         }
       });
 
+      // Update toolbar links as user types a domain
+      input.addEventListener('input', () => {
+        const raw = input.value.trim();
+        if (!raw) {
+          return;
+        }
+        let domainPart = raw;
+        if (raw.includes(':') && !raw.startsWith('http')) {
+          domainPart = raw.split(':')[0];
+        }
+        const domain = Utils.cleanDomain(domainPart);
+        if (Utils.isValidDomain(domain) || Utils.isValidIP(domain)) {
+          updateLinks(domain);
+        }
+      });
+
       // Click on output elements (copy)
       output.addEventListener('click', async (e) => {
         const row = e.target.closest('.result-row');
@@ -382,6 +472,21 @@ export function initDnsFeature() {
         }
 
         // Else, clicked on the general card area outside specific rows (when multiple values exist) -> copy all!
+        const allSingleVals = row.querySelectorAll('.dns-single-val');
+        if (allSingleVals.length > 0) {
+          const lines = Array.from(allSingleVals).map(el => el.innerText.trim()).filter(Boolean);
+          const textToCopy = lines.join('\n');
+          if (textToCopy) {
+            const ok = await Utils.copyToClipboard(textToCopy);
+            if (ok) {
+              row.classList.add('copied');
+              setTimeout(() => row.classList.remove('copied'), 800);
+            }
+          }
+          return;
+        }
+
+        // Fallback: copy the result-value text directly
         const valueEl = row.querySelector('.result-value');
         if (!valueEl) {
           return;

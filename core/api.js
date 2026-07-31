@@ -44,6 +44,8 @@ export const Api = {
         urlLabel = 'IP Geo Check';
       } else if (host === 'ssl-checker.io' || host === 'api.cert.ist') {
         urlLabel = 'SSL Expiry Check';
+      } else if (host === 'who-dat.as93.net') {
+        urlLabel = 'WHOIS Expiry Check';
       }
     } catch {
       // Fallback to original label if URL parsing fails (e.g. non-URL logs)
@@ -217,6 +219,24 @@ export const Api = {
       return null;
     } catch (err) {
       console.error('SSL check failed:', err);
+      return null;
+    }
+  },
+
+  /** Gets WHOIS domain expiration date via who-dat API */
+  async getWhoisExpiry(domain) { // NOPMD
+    try { // NOPMD
+      const res = await fetchWithTimeout(`https://who-dat.as93.net/${encodeURIComponent(domain)}`, { timeout: 6000 });
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      const data = await res.json();
+      if (data?.dates?.expires) {
+        return data.dates.expires;
+      }
+      return null;
+    } catch (err) {
+      console.error('WHOIS lookup failed:', err);
       return null;
     }
   },

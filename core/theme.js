@@ -44,5 +44,20 @@ export const Theme = {
     const root = document.documentElement;
     root.setAttribute('data-font', fontName);
     localStorage.setItem('lilo_font_cache', fontName);
+  },
+
+  applyGrain(enabled, opacity, contrast) {
+    const root = document.documentElement;
+    if (enabled) {
+      root.setAttribute('data-grain', 'true');
+      root.style.setProperty('--grain-opacity', opacity);
+      root.style.setProperty('--grain-contrast', `${contrast}%`);
+      localStorage.setItem('lilo_grain_enabled_cache', 'true');
+    } else {
+      root.removeAttribute('data-grain');
+      localStorage.setItem('lilo_grain_enabled_cache', 'false');
+    }
+    localStorage.setItem('lilo_grain_opacity_cache', opacity);
+    localStorage.setItem('lilo_grain_contrast_cache', contrast);
   }
 };
