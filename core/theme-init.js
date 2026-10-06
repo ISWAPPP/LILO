@@ -15,5 +15,7 @@
     const font = localStorage.getItem('lilo_font_cache') || 'system';
     document.documentElement.setAttribute('data-font', font);
     // One-time cleanup of the removed grain feature's cache keys.
-    ['enabled', 'opacity', 'contrast'].forEach(k => localStorage.removeItem(`lilo_grain_${k}_cache`));
+    for (const k of ['enabled', 'opacity', 'contrast']) {
+        localStorage.removeItem(`lilo_grain_${k}_cache`);
+    }
 })();

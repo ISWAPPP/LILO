@@ -1457,6 +1457,7 @@ body.theme-dark .note-markdown-body pre,
 .note-height-slider::-webkit-slider-thumb:hover {
     transform: scale(1.2);
 }
+
 /* DNS output: skeleton → results swap must not slide (translateY) — fade only, so the layout stays put. */
 #output .results-container,
 #output .dns-group-card {
