@@ -11,6 +11,12 @@ import { DnsRenderer } from './dns-renderer.js';
 import { I18n } from '../../core/i18n.js';
 import { Settings } from '../../core/settings.js';
 
+// Replaces the button text while keeping its leading icon <span>.
+function setBtnLabel(btn, label) {
+  const span = btn.querySelector('span');
+  btn.innerHTML = `${span ? span.outerHTML : ''} ${label}`;
+}
+
 export function initDnsFeature() {
   let input, output, btn;
   let links = {};
@@ -27,16 +33,13 @@ export function initDnsFeature() {
     if (isIp) {
       sslBtn.removeAttribute('data-ssl-days');
       sslBtn.removeAttribute('data-ssl-status');
-      const span = sslBtn.querySelector('span');
-      sslBtn.innerHTML = `${span ? span.outerHTML : ''} SSL`;
+      setBtnLabel(sslBtn, 'SSL');
       return;
     }
 
     sslBtn.setAttribute('data-ssl-days', 'loading');
     sslBtn.removeAttribute('data-ssl-status');
-    const span = sslBtn.querySelector('span');
-    const iconHTML = span ? span.outerHTML : '';
-    sslBtn.innerHTML = `${iconHTML} SSL...`;
+    setBtnLabel(sslBtn, 'SSL...');
 
     const days = await Api.getSslDays(domain);
 
@@ -63,11 +66,11 @@ export function initDnsFeature() {
         }
         text = I18n.t('dns_ssl_days').replace('{days}', days);
       }
-      sslBtn.innerHTML = `${iconHTML} ${text}`;
+      setBtnLabel(sslBtn, text);
     } else {
       sslBtn.removeAttribute('data-ssl-days');
       sslBtn.removeAttribute('data-ssl-status');
-      sslBtn.innerHTML = `${iconHTML} SSL`;
+      setBtnLabel(sslBtn, 'SSL');
     }
   };
 
@@ -82,16 +85,13 @@ export function initDnsFeature() {
     if (isIp) {
       whoisBtn.removeAttribute('data-whois-expiry');
       whoisBtn.removeAttribute('data-whois-status');
-      const span = whoisBtn.querySelector('span');
-      whoisBtn.innerHTML = `${span ? span.outerHTML : ''} Whois`;
+      setBtnLabel(whoisBtn, 'Whois');
       return;
     }
 
     whoisBtn.setAttribute('data-whois-expiry', 'loading');
     whoisBtn.removeAttribute('data-whois-status');
-    const span = whoisBtn.querySelector('span');
-    const iconHTML = span ? span.outerHTML : '';
-    whoisBtn.innerHTML = `${iconHTML} Whois...`;
+    setBtnLabel(whoisBtn, 'Whois...');
 
     const expiryDateStr = await Api.getWhoisExpiry(domain);
 
@@ -129,11 +129,11 @@ export function initDnsFeature() {
         whoisBtn.setAttribute('data-whois-expiry', formattedDate);
         text = I18n.t('dns_whois_date').replace('{date}', formattedDate);
       }
-      whoisBtn.innerHTML = `${iconHTML} ${text}`;
+      setBtnLabel(whoisBtn, text);
     } else {
       whoisBtn.removeAttribute('data-whois-expiry');
       whoisBtn.removeAttribute('data-whois-status');
-      whoisBtn.innerHTML = `${iconHTML} Whois`;
+      setBtnLabel(whoisBtn, 'Whois');
     }
   };
 
@@ -228,14 +228,12 @@ export function initDnsFeature() {
           if (key === 'ssl') {
             links[key].btn.removeAttribute('data-ssl-days');
             links[key].btn.removeAttribute('data-ssl-status');
-            const span = links[key].btn.querySelector('span');
-            links[key].btn.innerHTML = `${span ? span.outerHTML : ''} SSL`;
+            setBtnLabel(links[key].btn, 'SSL');
           }
           if (key === 'whois') {
             links[key].btn.removeAttribute('data-whois-expiry');
             links[key].btn.removeAttribute('data-whois-status');
-            const span = links[key].btn.querySelector('span');
-            links[key].btn.innerHTML = `${span ? span.outerHTML : ''} Whois`;
+            setBtnLabel(links[key].btn, 'Whois');
           }
         }
       });
@@ -246,7 +244,9 @@ export function initDnsFeature() {
     updateLinks(domain);
 
     btn.disabled = true;
-    output.innerHTML = DnsRenderer.loader();
+    const settings = await Settings.load();
+    const dq = settings.dnsQueries || { a: true, aaaa: false, mx: true, txt: false, spf: false, dkim: false, dmarc: false, ns: true, caa: false, soa: false };
+    output.innerHTML = DnsRenderer.loader(isIp ? null : dq);
 
     if (typeof navigator !== 'undefined' && !navigator.onLine) {
       output.innerHTML = DnsRenderer.error(I18n.t('dns_error_no_internet'));
@@ -261,9 +261,7 @@ export function initDnsFeature() {
         return;
       }
 
-      const settings = await Settings.load();
       const provider = settings.dnsProvider || 'google';
-      const dq = settings.dnsQueries || { a: true, aaaa: false, mx: true, txt: false, spf: false, dkim: false, dmarc: false, ns: true };
       const needsTxt = dq.txt || dq.spf;
       
       const dkimQueryStr = isDirectDkimFormat ? directDkimQuery : `${dkimSelector}._domainkey.${domain}`;
@@ -275,9 +273,11 @@ export function initDnsFeature() {
         needsTxt ? Api.dnsQuery(domain, 'TXT', provider) : Promise.resolve({ Answer: null }),
         dq.ns ? Api.dnsQuery(domain, 'NS', provider) : Promise.resolve({ Answer: null }),
         dq.dmarc ? Api.dnsQuery(`_dmarc.${domain}`, 'TXT', provider) : Promise.resolve({ Answer: null }),
-        dq.dkim ? Api.dnsQuery(dkimQueryStr, 'TXT', provider) : Promise.resolve({ Answer: null })
+        dq.dkim ? Api.dnsQuery(dkimQueryStr, 'TXT', provider) : Promise.resolve({ Answer: null }),
+        dq.caa ? Api.dnsQuery(domain, 'CAA', provider) : Promise.resolve({ Answer: null }),
+        dq.soa ? Api.dnsQuery(domain, 'SOA', provider) : Promise.resolve({ Answer: null })
       ]);
-      const [A, AAAA, MX, TXT, NS, DMARC, DKIM] = rawResults.map(r => r.status === 'fulfilled' ? r.value : { Answer: null });
+      const [A, AAAA, MX, TXT, NS, DMARC, DKIM, CAA, SOA] = rawResults.map(r => r.status === 'fulfilled' ? r.value : { Answer: null });
 
       const ips = A.Answer === null ? null : (A.Answer || []).map(r => r.data);
       const ipv6 = AAAA.Answer === null ? null : (AAAA.Answer || []).map(r => r.data);
@@ -285,16 +285,13 @@ export function initDnsFeature() {
       const mxRecords = MX.Answer || [];
       const mxResolved = await Promise.all(mxRecords.map(async r => {
         const parts = r.data.split(' ');
-        let target = parts[parts.length - 1]; // last part is the domain
+        const target = parts[parts.length - 1]; // last part is the domain
         if (target) {
-          if (target.endsWith('.')) {
-            target = target.slice(0, -1);
-          }
           try {
             const targetA = await Api.dnsQuery(target, 'A', provider);
             const targetIps = (targetA.Answer || []).map(a => a.data);
             // Keep only IPs that differ from the main domain
-            const differentIps = targetIps.filter(ip => !ips.includes(ip));
+            const differentIps = targetIps.filter(ip => !(ips || []).includes(ip));
             if (differentIps.length > 0) {
               return { ...r, targetIps: differentIps };
             }
@@ -322,6 +319,8 @@ export function initDnsFeature() {
         dmarc: DMARC.Answer === null ? null : (DMARC.Answer || []),
         dkim: DKIM.Answer === null ? null : (DKIM.Answer || []),
         ns: NS.Answer === null ? null : (NS.Answer || []),
+        caa: CAA.Answer === null ? null : (CAA.Answer || []),
+        soa: SOA.Answer === null ? null : (SOA.Answer || []),
         ipGeos,
         dq
       });
@@ -361,9 +360,9 @@ export function initDnsFeature() {
     container.style.display = 'flex';
 
     histList.innerHTML = history.map(dom => `
-      <span class="dns-chip hist-chip" data-domain="${Utils.escapeHTML(dom)}">
+      <span class="dns-chip hist-chip" role="button" tabindex="0" data-domain="${Utils.escapeHTML(dom)}">
         ${Utils.escapeHTML(dom)}
-        <span class="remove-chip" data-domain="${Utils.escapeHTML(dom)}">✕</span>
+        <span class="remove-chip" role="button" tabindex="0" aria-label="Remove ${Utils.escapeHTML(dom)} from history" data-domain="${Utils.escapeHTML(dom)}">✕</span>
       </span>
     `).join('');
 

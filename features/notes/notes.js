@@ -5,6 +5,7 @@ import { Utils } from '../../core/utils.js';
 import { TabManager } from '../../core/tabs.js';
 import { NotesRenderer } from './notes-renderer.js';
 import { Settings } from '../../core/settings.js';
+import { initPassgen } from '../passgen/passgen.js';
 
 // ==================== STORAGE ====================
 
@@ -16,140 +17,11 @@ async function loadNotes() {
   });
 }
 
-const _saveNotes = async () => {
-  return new Promise(resolve => {
-    chrome.storage.local.set({ [Config.storage.notesKey]: notes }, resolve);
-  });
-};
-const saveNotes = Utils.debounce(_saveNotes, 500);
-
-// ==================== PASSWORD GENERATOR ====================
-
-function generatePassword() {
-  const cfg = Config.passgen;
-  let charset = '';
-
-  if (document.getElementById('opt-lower')?.checked) {
-    charset += cfg.charsets.lower;
-  }
-  if (document.getElementById('opt-upper')?.checked) {
-    charset += cfg.charsets.upper;
-  }
-  if (document.getElementById('opt-numbers')?.checked) {
-    charset += cfg.charsets.numbers;
-  }
-  if (document.getElementById('opt-symbols')?.checked) {
-    charset += cfg.charsets.symbols;
-  }
-
-  if (!charset) {
-    charset = cfg.charsets.lower; // Fallback
-  }
-
-  if (document.getElementById('opt-no-similar')?.checked) {
-    const similar = new Set(cfg.similarChars.split(''));
-    charset = [...charset].filter(ch => !similar.has(ch)).join('');
-    if (!charset) {
-      charset = cfg.charsets.lower;
-    }
-  }
-
-  const length = parseInt(document.getElementById('passgen-length')?.value, 10) || cfg.defaultLength;
-  
-  let generatedPass = '';
-  const bufferSize = Math.max(length * 2, 64);
-  const array = new Uint8Array(bufferSize);
-  const maxValid = 256 - (256 % charset.length);
-  
-  let bufferIndex = 0;
-  window.crypto.getRandomValues(array);
-
-  while (generatedPass.length < length) {
-    if (bufferIndex >= array.length) {
-      window.crypto.getRandomValues(array);
-      bufferIndex = 0;
-    }
-    const val = array[bufferIndex++];
-    if (val < maxValid) {
-      generatedPass += charset[val % charset.length];
-    }
-  }
-
-  return generatedPass;
-}
-
-function calculateStrength(password, opts) {
-  let score = 0;
-  if (password.length >= 6) {
-    score += 1;
-  }
-  if (password.length >= 10) {
-    score += 1;
-  }
-  if (password.length >= 14) {
-    score += 1;
-  }
-  
-  let variety = 0;
-  if (opts.lower) {
-    variety++;
-  }
-  if (opts.upper) {
-    variety++;
-  }
-  if (opts.numbers) {
-    variety++;
-  }
-  if (opts.symbols) {
-    variety++;
-  }
-  
-  if (variety >= 3) {
-    score += 1;
-  }
-  if (variety === 4) {
-    score += 1;
-  }
-
-  const meter = document.getElementById('passgen-strength-meter');
-  if (!meter) {
-    return;
-  }
-
-  meter.className = 'passgen-strength-meter'; // reset
-  if (password.length === 0) {
-    // do nothing
-  } else if (score <= 2) {
-    meter.classList.add('weak');
-  } else if (score <= 3) {
-    meter.classList.add('medium');
-  } else if (score <= 4) {
-    meter.classList.add('strong');
-  } else {
-    meter.classList.add('very-strong');
-  }
-}
-
-function refreshPassword() {
-  const output = document.getElementById('passgen-result');
-  if (output) {
-    const pass = generatePassword();
-    output.value = pass;
-    
-    const opts = {
-      lower: document.getElementById('opt-lower')?.checked,
-      upper: document.getElementById('opt-upper')?.checked,
-      numbers: document.getElementById('opt-numbers')?.checked,
-      symbols: document.getElementById('opt-symbols')?.checked,
-    };
-    calculateStrength(pass, opts);
-  }
-}
+const saveNotes = () => chrome.storage.local.set({ [Config.storage.notesKey]: notes });
 
 // ==================== NOTES LOGIC ====================
 
 let notes = [];
-let passwordInitialized = false;
 
 async function renderNotes() {
   const list = document.getElementById('notes-list');
@@ -664,63 +536,7 @@ function setupNoteEvents() {
 export function initNotesFeature() {
   TabManager.register('notes', {
     init() {
-      const elLower = document.getElementById('opt-lower');
-      const elUpper = document.getElementById('opt-upper');
-      const elNum = document.getElementById('opt-numbers');
-      const elSym = document.getElementById('opt-symbols');
-      const elNoSimilar = document.getElementById('opt-no-similar');
-      const lengthSlider = document.getElementById('passgen-length');
-      const lengthVal = document.getElementById('passgen-length-val');
-
-      const savePassgenSettings = async () => {
-        const current = await Settings.load();
-        await Settings.save({
-          ...current,
-          passgen: {
-            lower: elLower?.checked,
-            upper: elUpper?.checked,
-            numbers: elNum?.checked,
-            symbols: elSym?.checked,
-            excludeSimilar: elNoSimilar?.checked,
-            length: parseInt(lengthSlider?.value, 10) || 16
-          }
-        });
-      };
-
-      // Password generator events
-      const passgenOptions = ['opt-lower', 'opt-upper', 'opt-numbers', 'opt-symbols', 'opt-no-similar'];
-      passgenOptions.forEach(optId => {
-        document.getElementById(optId)?.addEventListener('change', () => {
-          savePassgenSettings();
-          refreshPassword();
-        });
-      });
-
-      if (lengthSlider) {
-        lengthSlider.addEventListener('input', () => {
-          if (lengthVal) {
-            lengthVal.textContent = lengthSlider.value;
-          }
-          savePassgenSettings();
-          refreshPassword();
-        });
-      }
-
-      // Click on password = copy (like notes)
-      const passgenResult = document.getElementById('passgen-result');
-      passgenResult?.addEventListener('click', async () => {
-        if (!passgenResult.value) {
-          return;
-        }
-        const ok = await Utils.copyToClipboard(passgenResult.value);
-        if (ok) {
-          const section = passgenResult.closest('.passgen-section');
-          section?.classList.add('copied');
-          setTimeout(() => section?.classList.remove('copied'), 800);
-        }
-      });
-
-      document.getElementById('passgen-refresh')?.addEventListener('click', refreshPassword);
+      initPassgen();
 
       // Notes add
       const addBtn = document.getElementById('note-add-btn');
@@ -776,33 +592,10 @@ export function initNotesFeature() {
       setupNoteEvents();
 
       // Load settings and notes asynchronously to make tab open speed near-instant (0.1ms)
-      Promise.all([Settings.load(), loadNotes()]).then(([settings, loadedNotes]) => {
-        // Show/hide password generator based on setting
-        const passgenSection = document.querySelector('.passgen-section');
-        if (passgenSection) { passgenSection.style.display = settings.passgenEnabled !== false ? '' : 'none'; }
-
-        const pg = settings.passgen;
-        if (elLower) { elLower.checked = pg.lower; }
-        if (elUpper) { elUpper.checked = pg.upper; }
-        if (elNum) { elNum.checked = pg.numbers; }
-        if (elSym) { elSym.checked = pg.symbols; }
-        if (elNoSimilar) { elNoSimilar.checked = pg.excludeSimilar; }
-        if (lengthSlider) { lengthSlider.value = pg.length; }
-        if (lengthVal) { lengthVal.textContent = pg.length; }
-
+      loadNotes().then((loadedNotes) => {
         notes = loadedNotes;
         renderNotes();
-
-        // Generate initial password
-        refreshPassword();
       });
-    },
-
-    onActivate() {
-      if (!passwordInitialized) {
-        refreshPassword();
-        passwordInitialized = true;
-      }
     },
   });
 }

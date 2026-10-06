@@ -44,10 +44,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Step 2: Load settings, apply i18n and theme. Since they hit the localStorage cache, this is virtually synchronous (~0.2ms).
   const settings = await Settings.load();
-  await I18n.init(settings.language);
+  await I18n.init();
   Theme.init(settings.theme || 'auto');
   Theme.applyFont(settings.font || 'system');
-  Theme.applyGrain(settings.grainEnabled || false, settings.grainOpacity !== undefined ? settings.grainOpacity : 0.05, settings.grainContrast !== undefined ? settings.grainContrast : 100);
 
   // Verify tab match or resolve startup Tab async if it was a cold load
   if (settings.startupTab === 'last') {
@@ -333,6 +332,19 @@ ${apiLogs}
     }
   });
 
+  // Keyboard support for non-<button> controls marked role="button" (Enter/Space = click)
+  document.addEventListener('keydown', (e) => {
+    if ((e.key === 'Enter' || e.key === ' ') && e.target.getAttribute?.('role') === 'button') {
+      e.preventDefault();
+      e.target.click();
+    }
+  });
+
+  // Request throttling (session only, resets when the popup closes)
+  document.getElementById('debug-throttle')?.addEventListener('change', (e) => {
+    window.liloThrottleMs = Number(e.target.value);
+  });
+
   // Debug card buttons
   const btnDebugClearStorage = document.getElementById('btn-debug-clear-storage');
   const btnDebugReload = document.getElementById('btn-debug-reload');
@@ -340,8 +352,8 @@ ${apiLogs}
 
   btnDebugClearStorage?.addEventListener('click', async () => {
     if (confirm('Are you sure you want to reset all storage to default?')) {
-      await new Promise(r => chrome.storage.local.clear(r));
-      Settings.invalidate();
+      await chrome.storage.local.clear();
+      await Settings.reset();
       const { Utils } = await import('./core/utils.js');
       Utils.showToast('Storage successfully reset!');
       setTimeout(() => location.reload(), 800);

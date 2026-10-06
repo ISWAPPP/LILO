@@ -69,7 +69,7 @@ export function initPicsFeature() {
         statusBox.innerHTML = PicsRenderer.preview(dataUrl, 0);
       }
 
-      const url = await Api.uploadImage(file, (percent) => {
+      const { url, error } = await Api.uploadImage(file, (percent) => {
         if (statusBox) {
           statusBox.innerHTML = PicsRenderer.preview(dataUrl, percent);
         }
@@ -96,7 +96,7 @@ export function initPicsFeature() {
           uploadZone.style.display = '';
         }
         if (statusBox) {
-          statusBox.innerHTML = PicsRenderer.error();
+          statusBox.innerHTML = PicsRenderer.error(`${I18n.t('pics_error_failed')} (${error})`);
         }
       }
     };

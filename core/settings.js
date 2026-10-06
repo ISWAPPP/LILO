@@ -1,23 +1,50 @@
 let cache = null;
 
 const defaultSettings = {
-  language: 'auto',
   theme: 'auto',
   startupTab: 'last',
   dnsProvider: 'google',
-  sslProvider: 'certist',
+  geoProvider: 'ipwhois',
+  tabShortcutModifier: 'off',
   dnsHistoryLimit: 4,
   picsHistoryLimit: 5,
   font: 'system',
-  grainEnabled: false,
-  grainOpacity: 0.05,
-  grainContrast: 100,
   experimentalNotes: false,
   passgenEnabled: true,
   passgen: { lower: true, upper: true, numbers: true, symbols: false, excludeSimilar: false, length: 16 },
-  dnsQueries: { a: true, aaaa: false, mx: true, txt: false, spf: false, dkim: false, dmarc: false, ns: true },
+  dnsQueries: { a: true, aaaa: false, mx: true, txt: false, spf: false, dkim: false, dmarc: false, ns: true, caa: false, soa: false },
   dnsToolbarButtons: { ssl: true, dns: true, whois: false }
 };
+
+function writeLocalCache(saved) {
+  try {
+    localStorage.setItem('lilo_settings_cache', JSON.stringify(saved));
+  } catch {
+    // Ignored
+  }
+}
+
+/** Reads settings from chrome.storage.sync; one-time migrates the old chrome.storage.local copy. */
+async function readSynced() {
+  const { lilo_settings: synced } = await chrome.storage.sync.get('lilo_settings');
+  if (synced) {
+    return synced;
+  }
+  const { lilo_settings: legacy } = await chrome.storage.local.get('lilo_settings');
+  if (legacy) {
+    await chrome.storage.sync.set({ lilo_settings: legacy });
+    await chrome.storage.local.remove('lilo_settings');
+  }
+  return legacy || {};
+}
+
+// Settings changed on another device (or another open popup): drop stale copies.
+globalThis.chrome?.storage?.onChanged?.addListener((changes, area) => {
+  if (area === 'sync' && changes.lilo_settings) {
+    cache = changes.lilo_settings.newValue || {};
+    writeLocalCache(cache);
+  }
+});
 
 function mergeSettings(saved) {
   return {
@@ -37,36 +64,21 @@ export const Settings = {
       return mergeSettings(cache);
     }
 
-    // Try synchronous localStorage cache first for near-instant (0.1ms) load
+    // localStorage copy gives a near-instant (0.1ms) start; chrome.storage.sync is the source of truth.
     try {
       const localSaved = localStorage.getItem('lilo_settings_cache');
       if (localSaved) {
-        const parsed = JSON.parse(localSaved);
-        cache = parsed;
-        // Keep chrome.storage in sync in background
-        chrome.storage.local.get(['lilo_settings'], (result) => {
-          if (result.lilo_settings) {
-            localStorage.setItem('lilo_settings_cache', JSON.stringify(result.lilo_settings));
-          }
-        });
-        return mergeSettings(parsed);
+        cache = JSON.parse(localSaved);
+        readSynced().then(writeLocalCache); // refresh copy in background (picks up other devices)
+        return mergeSettings(cache);
       }
     } catch (e) {
       console.warn('Failed to load from localStorage cache:', e);
     }
 
-    return new Promise((resolve) => {
-      chrome.storage.local.get(['lilo_settings'], (result) => {
-        const saved = result.lilo_settings || {};
-        cache = saved;
-        try {
-          localStorage.setItem('lilo_settings_cache', JSON.stringify(saved));
-        } catch {
-          // Ignored
-        }
-        resolve(mergeSettings(saved));
-      });
-    });
+    cache = await readSynced();
+    writeLocalCache(cache);
+    return mergeSettings(cache);
   },
 
   async save(settings) {
@@ -76,16 +88,15 @@ export const Settings = {
       dnsQueries: { ...settings.dnsQueries },
       dnsToolbarButtons: { ...settings.dnsToolbarButtons },
     };
+    writeLocalCache(cache);
+    await chrome.storage.sync.set({ lilo_settings: cache });
+  },
 
-    try {
-      localStorage.setItem('lilo_settings_cache', JSON.stringify(cache));
-    } catch {
-      // Ignored
-    }
-
-    return new Promise((resolve) => {
-      chrome.storage.local.set({ lilo_settings: cache }, resolve);
-    });
+  /** Removes saved settings everywhere (sync + legacy local) — back to defaults. */
+  async reset() {
+    await chrome.storage.sync.remove('lilo_settings');
+    await chrome.storage.local.remove('lilo_settings');
+    this.invalidate();
   },
 
   invalidate() {

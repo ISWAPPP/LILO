@@ -30,17 +30,16 @@ export const TabManager = {
       btn.addEventListener('click', () => this.switchTo(btn.dataset.tab));
     });
 
-    document.addEventListener('keydown', (e) => {
-      if (e.altKey && !e.shiftKey && !e.ctrlKey) {
-        if (e.key === '1') {
-          this.switchTo('dns');
-        } else if (e.key === '2') {
-          this.switchTo('pics');
-        } else if (e.key === '3') {
-          this.switchTo('notes');
-        } else if (e.key === '4') {
-          this.switchTo('settings');
-        }
+    const tabByCode = { Digit1: 'dns', Digit2: 'pics', Digit3: 'notes', Digit4: 'settings' };
+    document.addEventListener('keydown', async (e) => {
+      const tab = tabByCode[e.code]; // e.code ignores keyboard layout and Mac Option symbols
+      if (!tab || e.shiftKey || e.metaKey) {
+        return;
+      }
+      const { tabShortcutModifier: mod = 'off' } = await Settings.load();
+      if ((mod === 'alt' && e.altKey && !e.ctrlKey) || (mod === 'ctrl' && e.ctrlKey && !e.altKey)) {
+        e.preventDefault();
+        this.switchTo(tab);
       }
     });
 

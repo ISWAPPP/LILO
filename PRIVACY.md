@@ -11,7 +11,7 @@ We **do not collect, store, or transmit** any personal data, browsing history, o
 LILO Tools integrates with third-party APIs solely to provide core functionality:
 
 - **DNS Lookup**: Queries are sent directly to the selected provider (Google Public DNS or Cloudflare DNS) depending on your settings.
-- **SSL Certificate Checking**: Requests are sent to the selected SSL checker service (e.g., `api.cert.ist` or `ssl-checker.io`).
+- **SSL Certificate Checking**: Requests are sent to `api.cert.ist`.
 - **Image Uploads (PICS)**: If you choose to upload an image, it is uploaded to third-party image hosting. Please **do not upload private or sensitive images**, as they are stored on external public servers.
 
 ### 3. Permissions

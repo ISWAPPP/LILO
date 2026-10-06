@@ -1,5 +1,40 @@
 # Changelog — LILO Tools
 
+## 1.1.8 — 2026-10-06
+
+### Added
+
+- **Settings Sync Across Devices**: Settings now live in `chrome.storage.sync` (Chrome account sync). Existing settings migrate automatically on first launch; the `localStorage` copy is kept only as a fast-start cache. Notes and DNS/PICS history stay local.
+- **IP Geolocation Provider Selector**: Choose between ipwho.is (HTTPS, default), ipinfo.io (HTTPS) or ip-api.com (legacy, HTTP).
+- **CAA & SOA Records**: New DNS query chips, disabled by default.
+- **Open Shortcut**: `Alt+Shift+L` (Mac: `Option+Shift+L`) opens the popup; editable at `chrome://extensions/shortcuts` (link in Settings).
+- **Tab Switch Shortcut Setting**: Off (default), `Alt/Option + 1–4` or `Ctrl + 1–4`.
+- **Debug Console Request Throttling**: Session-only artificial delay (+1/+3/+7 s) for all API requests.
+- **Upload Error Details**: Failed PICS uploads show the reason (HTTP status, server message, network error or timeout).
+- **Password Generator Test**: `node features/passgen/passgen.test.mjs`.
+
+### Changed
+
+- **DNS Loading Skeleton**: Replaced the spinner with a skeleton matching the enabled record types; results fade in place instead of sliding.
+- **Trailing Dots Removed**: Hostnames in NS/MX/CNAME/SOA records are shown and copied without the root dot.
+- **Keyboard Accessibility**: Visible `:focus-visible` outline; theme swatches and DNS history chips are focusable and work with Enter/Space; icon-only controls got `aria-label`.
+- **English Only**: Removed the Ukrainian locale and the language selector.
+- **Password Generator Module**: Moved from `features/notes/notes.js` to `features/passgen/passgen.js`.
+- **Inline Styles**: Repeated settings/debug styles moved to `.settings-label`, `.settings-select`, `.metric-row`.
+
+### Removed
+
+- **Soft Grain Effect**: Overlay, its settings and cached keys (cleaned from `localStorage` on start).
+- **ssl-checker.io Provider**: The service is gone (domain parked); SSL checks always use api.cert.ist.
+- **JSHint** and the no-op `build` script; ESLint is the only linter.
+
+### Fixed
+
+- **Notes Lost on Popup Close**: Notes were saved with a 500 ms delay and could be lost if the popup closed; now saved immediately.
+- **MX IPs Missing With A Records Disabled**: MX target resolution crashed when A queries were off.
+- **Alt+1–4 on macOS**: Shortcuts matched the typed character (`¡` for Option+1); they now use the physical key.
+- **Version Mismatch**: `package.json` aligned with `manifest.json`.
+
 ## 1.1.7 — 2026-06-02
 
 ### Added

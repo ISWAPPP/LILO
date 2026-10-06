@@ -210,30 +210,30 @@
                     <line x1="10" y1="22" x2="14" y2="22"></line>
                 </svg>
                 <div>
-                    <b data-i18n="settings_shortcuts_title">Quick Navigation:</b> <span
-                        data-i18n="settings_shortcuts_desc">Use Alt+1 (DNS), Alt+2 (PICS), Alt+3 (NOTES) or Alt+4
-                        (Settings).</span>
+                    <b>Open LILO:</b> Alt+Shift+L (Mac: Option+Shift+L).
+                    <a href="#" id="open-shortcuts-page">Change</a>
+                    <div id="tab-shortcut-line" hidden><b>Switch tabs:</b> <span id="tab-shortcut-hint"></span>+1 DNS, +2 PICS, +3 NOTES, +4 Settings.</div>
                 </div>
             </div>
 
             <div class="settings-group" style="margin-bottom: 12px;">
-                <label for="setting-language" data-i18n="settings_lang"
-                    style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);">Interface
-                    Language</label>
-                <select id="setting-language"
-                    style="width: 100%; padding: 8px; border-radius: var(--radius-md); border: 1px solid var(--border-light); background: var(--bg-main); color: var(--text-main);">
-                    <option value="auto" data-i18n="settings_lang_auto">Auto (Browser)</option>
-                    <option value="uk" data-i18n="settings_lang_uk">Українська</option>
-                    <option value="en" data-i18n="settings_lang_en">English</option>
+                <label for="setting-tab-shortcut"
+                    class="settings-label">Tab
+                    Switch Shortcut</label>
+                <select id="setting-tab-shortcut"
+                    class="settings-select">
+                    <option value="off">Off</option>
+                    <option value="alt">Alt / Option + 1–4</option>
+                    <option value="ctrl">Ctrl + 1–4</option>
                 </select>
             </div>
 
             <div class="settings-group" style="margin-bottom: 12px;">
                 <label for="setting-font" data-i18n="settings_font"
-                    style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);">Interface
+                    class="settings-label">Interface
                     Font</label>
                 <select id="setting-font"
-                    style="width: 100%; padding: 8px; border-radius: var(--radius-md); border: 1px solid var(--border-light); background: var(--bg-main); color: var(--text-main);">
+                    class="settings-select">
                     <option value="system" data-i18n="settings_font_system">System Default</option>
                     <option value="georgia" data-i18n="settings_font_georgia">Georgia (Elegant Serif)</option>
                     <option value="garamond" data-i18n="settings_font_garamond">Garamond (Classic Book Serif)</option>
@@ -249,10 +249,10 @@
 
             <div class="settings-group" style="margin-bottom: 12px;">
                 <label for="setting-startup-tab" data-i18n="settings_startup"
-                    style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);">Startup
+                    class="settings-label">Startup
                     Tab</label>
                 <select id="setting-startup-tab"
-                    style="width: 100%; padding: 8px; border-radius: var(--radius-md); border: 1px solid var(--border-light); background: var(--bg-main); color: var(--text-main);">
+                    class="settings-select">
                     <option value="last" data-i18n="settings_startup_last">Last Opened</option>
                     <option value="dns" data-i18n="settings_startup_dns">DNS</option>
                     <option value="pics" data-i18n="settings_startup_pics" id="setting-startup-pics">PICS</option>
@@ -262,7 +262,7 @@
 
             <div class="settings-group" style="margin-top: 12px;">
                 <label for="setting-history-limit"
-                    style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);"
+                    class="settings-label"
                     data-i18n="settings_history_limit">Max DNS History Domains</label>
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <input type="range" id="setting-history-limit" min="1" max="9" step="1" value="4"
@@ -274,7 +274,7 @@
 
             <div class="settings-group" style="margin-top: 12px;">
                 <label for="setting-pics-history-limit"
-                    style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);"
+                    class="settings-label"
                     data-i18n="settings_pics_history_limit">Max Image History Buffer</label>
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <input type="range" id="setting-pics-history-limit" min="1" max="20" step="1" value="5"
@@ -300,7 +300,7 @@
 
             <div class="settings-group" style="margin-bottom: 14px;">
                 <select id="setting-dns-provider"
-                    style="width: 100%; padding: 8px; border-radius: var(--radius-md); border: 1px solid var(--border-light); background: var(--bg-main); color: var(--text-main);">
+                    class="settings-select">
                     <option value="google" data-i18n="settings_dns_google">Google (8.8.8.8)</option>
                     <option value="cloudflare" data-i18n="settings_dns_cloudflare">Cloudflare (1.1.1.1)</option>
                 </select>
@@ -308,18 +308,19 @@
 
             <div class="settings-group" style="margin-bottom: 14px;">
                 <label
-                    style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);"
-                    data-i18n="settings_ssl_provider_label">SSL Checker Provider</label>
-                <select id="setting-ssl-provider"
-                    style="width: 100%; padding: 8px; border-radius: var(--radius-md); border: 1px solid var(--border-light); background: var(--bg-main); color: var(--text-main);">
-                    <option value="certist" data-i18n="settings_ssl_certist">api.cert.ist</option>
-                    <option value="sslchecker" data-i18n="settings_ssl_sslchecker">ssl-checker.io</option>
+                    class="settings-label"
+                    data-i18n="settings_geo_provider_label">IP Geolocation Provider</label>
+                <select id="setting-geo-provider"
+                    class="settings-select">
+                    <option value="ipwhois">ipwho.is</option>
+                    <option value="ipinfo">ipinfo.io</option>
+                    <option value="ipapi">ip-api.com (HTTP)</option>
                 </select>
             </div>
 
             <div class="settings-group">
                 <label
-                    style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);"
+                    class="settings-label"
                     data-i18n="settings_dns_queries">DNS Queries</label>
                 <div class="query-chips-grid">
                     <label class="query-chip">
@@ -354,12 +355,20 @@
                         <input type="checkbox" id="setting-query-dmarc">
                         <div class="query-chip-inner">DMARC</div>
                     </label>
+                    <label class="query-chip">
+                        <input type="checkbox" id="setting-query-caa">
+                        <div class="query-chip-inner">CAA</div>
+                    </label>
+                    <label class="query-chip">
+                        <input type="checkbox" id="setting-query-soa">
+                        <div class="query-chip-inner">SOA</div>
+                    </label>
                 </div>
             </div>
 
             <div class="settings-group" style="margin-top: 14px;">
                 <label
-                    style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-muted);"
+                    class="settings-label"
                     data-i18n="settings_toolbar_buttons">Toolbar Buttons</label>
                 <div class="query-chips-grid" style="grid-template-columns: repeat(3, 1fr);">
                     <label class="query-chip">
@@ -389,118 +398,86 @@
             </h3>
 
             <div class="zen-palette-container">
-                <button class="zen-scroll-btn left" id="zen-scroll-left">‹</button>
+                <button class="zen-scroll-btn left" id="zen-scroll-left" aria-label="Scroll themes left">‹</button>
                 <div class="theme-palette zen-scroll-area" id="setting-theme-palette">
                     <!-- GROUP 1: LIGHT -->
-                    <div class="theme-swatch" data-value="paper" data-i18n-title="settings_theme_paper" title="Paper"
+                    <div class="theme-swatch" role="button" tabindex="0" data-value="paper" data-i18n-title="settings_theme_paper" title="Paper"
                         style="background: #fcfaf2; --swatch-accent: #8b4513; border: 1px solid var(--border-light) !important;">
                     </div>
-                    <div class="theme-swatch" data-value="sand" data-i18n-title="settings_theme_sand" title="Sand"
+                    <div class="theme-swatch" role="button" tabindex="0" data-value="sand" data-i18n-title="settings_theme_sand" title="Sand"
                         style="background: #fdfaf6; --swatch-accent: #b58d3d; border: 1px solid var(--border-light) !important;">
                     </div>
-                    <div class="theme-swatch" data-value="matcha" data-i18n-title="settings_theme_matcha" title="Matcha"
+                    <div class="theme-swatch" role="button" tabindex="0" data-value="matcha" data-i18n-title="settings_theme_matcha" title="Matcha"
                         style="background: #f3f7f2; --swatch-accent: #88ab75; border: 1px solid var(--border-light) !important;">
                     </div>
-                    <div class="theme-swatch" data-value="mint" data-i18n-title="settings_theme_mint" title="Mint"
+                    <div class="theme-swatch" role="button" tabindex="0" data-value="mint" data-i18n-title="settings_theme_mint" title="Mint"
                         style="background: #f2fbf5; --swatch-accent: #10b981; border: 1px solid var(--border-light) !important;">
                     </div>
-                    <div class="theme-swatch" data-value="breeze" data-i18n-title="settings_theme_breeze" title="Breeze"
+                    <div class="theme-swatch" role="button" tabindex="0" data-value="breeze" data-i18n-title="settings_theme_breeze" title="Breeze"
                         style="background: #f0f8ff; --swatch-accent: #0077ff; border: 1px solid var(--border-light) !important;">
                     </div>
-                    <div class="theme-swatch" data-value="lavender" data-i18n-title="settings_theme_lavender"
+                    <div class="theme-swatch" role="button" tabindex="0" data-value="lavender" data-i18n-title="settings_theme_lavender"
                         title="Lavender"
                         style="background: #f8f7ff; --swatch-accent: #9370db; border: 1px solid var(--border-light) !important;">
                     </div>
-                    <div class="theme-swatch" data-value="sakura" data-i18n-title="settings_theme_sakura" title="Sakura"
+                    <div class="theme-swatch" role="button" tabindex="0" data-value="sakura" data-i18n-title="settings_theme_sakura" title="Sakura"
                         style="background: #fff5f6; --swatch-accent: #ff8595; border: 1px solid var(--border-light) !important;">
                     </div>
-                    <div class="theme-swatch" data-value="rose" data-i18n-title="settings_theme_rose" title="Rose"
+                    <div class="theme-swatch" role="button" tabindex="0" data-value="rose" data-i18n-title="settings_theme_rose" title="Rose"
                         style="background: #fff0f5; --swatch-accent: #ec4899; border: 1px solid var(--border-light) !important;">
                     </div>
-                    <div class="theme-swatch" data-value="peach" data-i18n-title="settings_theme_peach" title="Peach"
+                    <div class="theme-swatch" role="button" tabindex="0" data-value="peach" data-i18n-title="settings_theme_peach" title="Peach"
                         style="background: #fff5f2; --swatch-accent: #ff8a65; border: 1px solid var(--border-light) !important;">
                     </div>
-                    <div class="theme-swatch" data-value="solarized-light"
+                    <div class="theme-swatch" role="button" tabindex="0" data-value="solarized-light"
                         data-i18n-title="settings_theme_solarized_light" title="Solarized Light"
                         style="background: #fdf6e3; --swatch-accent: #268bd2; border: 1px solid var(--border-light) !important;">
                     </div>
                     <!-- GROUP 2: DARK & BROWN -->
-                    <div class="theme-swatch" data-value="nord" data-i18n-title="settings_theme_nord" title="Nord"
+                    <div class="theme-swatch" role="button" tabindex="0" data-value="nord" data-i18n-title="settings_theme_nord" title="Nord"
                         style="background: #2e3440; --swatch-accent: #88c0d0;"></div>
-                    <div class="theme-swatch" data-value="gruvbox" data-i18n-title="settings_theme_gruvbox"
+                    <div class="theme-swatch" role="button" tabindex="0" data-value="gruvbox" data-i18n-title="settings_theme_gruvbox"
                         title="Gruvbox" style="background: #282828; --swatch-accent: #fe8019;"></div>
-                    <div class="theme-swatch" data-value="coffee" data-i18n-title="settings_theme_coffee" title="Coffee"
+                    <div class="theme-swatch" role="button" tabindex="0" data-value="coffee" data-i18n-title="settings_theme_coffee" title="Coffee"
                         style="background: #3e2723; --swatch-accent: #ffb300;"></div>
-                    <div class="theme-swatch" data-value="autumn" data-i18n-title="settings_theme_autumn" title="Autumn"
+                    <div class="theme-swatch" role="button" tabindex="0" data-value="autumn" data-i18n-title="settings_theme_autumn" title="Autumn"
                         style="background: #1f1105; --swatch-accent: #ff8c1a;"></div>
                     <!-- GROUP 3: COLORFUL DARK -->
-                    <div class="theme-swatch" data-value="oceanic" data-i18n-title="settings_theme_oceanic"
+                    <div class="theme-swatch" role="button" tabindex="0" data-value="oceanic" data-i18n-title="settings_theme_oceanic"
                         title="Oceanic" style="background: #0a192f; --swatch-accent: #64ffda;"></div>
-                    <div class="theme-swatch" data-value="navy" data-i18n-title="settings_theme_navy" title="Navy"
+                    <div class="theme-swatch" role="button" tabindex="0" data-value="navy" data-i18n-title="settings_theme_navy" title="Navy"
                         style="background: #001f3f; --swatch-accent: #0074d9;"></div>
-                    <div class="theme-swatch" data-value="sea" data-i18n-title="settings_theme_sea" title="Sea"
+                    <div class="theme-swatch" role="button" tabindex="0" data-value="sea" data-i18n-title="settings_theme_sea" title="Sea"
                         style="background: #04121d; --swatch-accent: #38bdf8;"></div>
-                    <div class="theme-swatch" data-value="solarized-dark"
+                    <div class="theme-swatch" role="button" tabindex="0" data-value="solarized-dark"
                         data-i18n-title="settings_theme_solarized_dark" title="Solarized Dark"
                         style="background: #002b36; --swatch-accent: #268bd2;"></div>
-                    <div class="theme-swatch" data-value="forest" data-i18n-title="settings_theme_forest" title="Forest"
+                    <div class="theme-swatch" role="button" tabindex="0" data-value="forest" data-i18n-title="settings_theme_forest" title="Forest"
                         style="background: #141d14; --swatch-accent: #4ade80;"></div>
-                    <div class="theme-swatch" data-value="sunset" data-i18n-title="settings_theme_sunset" title="Sunset"
+                    <div class="theme-swatch" role="button" tabindex="0" data-value="sunset" data-i18n-title="settings_theme_sunset" title="Sunset"
                         style="background: #2b1d24; --swatch-accent: #ff7e67;"></div>
-                    <div class="theme-swatch" data-value="blood" data-i18n-title="settings_theme_blood" title="Blood"
+                    <div class="theme-swatch" role="button" tabindex="0" data-value="blood" data-i18n-title="settings_theme_blood" title="Blood"
                         style="background: #0a0000; --swatch-accent: #ff0000;"></div>
                     <!-- GROUP 4: NEON/RETRO -->
-                    <div class="theme-swatch" data-value="monochrome" data-i18n-title="settings_theme_monochrome"
+                    <div class="theme-swatch" role="button" tabindex="0" data-value="monochrome" data-i18n-title="settings_theme_monochrome"
                         title="Monochrome"
                         style="background: #000000; --swatch-accent: #ffffff; border: 1px solid #333 !important;"></div>
-                    <div class="theme-swatch" data-value="terminal" data-i18n-title="settings_theme_terminal"
+                    <div class="theme-swatch" role="button" tabindex="0" data-value="terminal" data-i18n-title="settings_theme_terminal"
                         title="Terminal" style="background: #000000; --swatch-accent: #00ff00;"></div>
-                    <div class="theme-swatch" data-value="amber" data-i18n-title="settings_theme_amber" title="Amber"
+                    <div class="theme-swatch" role="button" tabindex="0" data-value="amber" data-i18n-title="settings_theme_amber" title="Amber"
                         style="background: #0d0900; --swatch-accent: #ffb000;"></div>
-                    <div class="theme-swatch" data-value="midnight" data-i18n-title="settings_theme_midnight"
+                    <div class="theme-swatch" role="button" tabindex="0" data-value="midnight" data-i18n-title="settings_theme_midnight"
                         title="Midnight" style="background: #05051a; --swatch-accent: #8c8cff;"></div>
-                    <div class="theme-swatch" data-value="dracula" data-i18n-title="settings_theme_dracula"
+                    <div class="theme-swatch" role="button" tabindex="0" data-value="dracula" data-i18n-title="settings_theme_dracula"
                         title="Dracula" style="background: #282a36; --swatch-accent: #ff79c6;"></div>
-                    <div class="theme-swatch" data-value="synthwave" data-i18n-title="settings_theme_synthwave"
+                    <div class="theme-swatch" role="button" tabindex="0" data-value="synthwave" data-i18n-title="settings_theme_synthwave"
                         title="Synthwave" style="background: #0b0014; --swatch-accent: #ff9900;"></div>
-                    <div class="theme-swatch" data-value="cyberpunk" data-i18n-title="settings_theme_cyberpunk"
+                    <div class="theme-swatch" role="button" tabindex="0" data-value="cyberpunk" data-i18n-title="settings_theme_cyberpunk"
                         title="Cyberpunk" style="background: #0d0221; --swatch-accent: #ff00ff;"></div>
-                    <div class="theme-swatch" data-value="neon-cyan" data-i18n-title="settings_theme_neon_cyan"
+                    <div class="theme-swatch" role="button" tabindex="0" data-value="neon-cyan" data-i18n-title="settings_theme_neon_cyan"
                         title="Neon Cyan" style="background: #020608; --swatch-accent: #00ffff;"></div>
                 </div>
-                <button class="zen-scroll-btn right" id="zen-scroll-right">›</button>
-            </div>
-
-            <div class="settings-group"
-                style="margin-top: 15px; border-top: 1px solid var(--border-light); padding-top: 15px;">
-                <label
-                    style="display: block; font-size: 12px; font-weight: 600; margin-bottom: 8px; color: var(--text-muted);"
-                    data-i18n="settings_grain_title">Soft Grain</label>
-                <div class="switch-container">
-                    <span style="font-size: 13px;" data-i18n="settings_grain_enable">Enable Grain</span>
-                    <label class="switch">
-                        <input type="checkbox" id="setting-grain-enabled">
-                        <span class="switch-slider"></span>
-                    </label>
-                </div>
-                <div id="grain-opacity-container"
-                    style="display: flex; align-items: center; gap: 10px; transition: opacity 0.2s;">
-                    <span style="font-size: 12px; color: var(--text-muted); width: 60px;"
-                        data-i18n="settings_grain_opacity">Intensity</span>
-                    <input type="range" id="setting-grain-opacity" min="0.01" max="0.15" step="0.01" value="0.05"
-                        style="flex: 1; accent-color: var(--accent);">
-                    <span id="setting-grain-opacity-val"
-                        style="font-weight: 700; width: 35px; text-align: right; color: var(--accent); font-size: 12px;">5%</span>
-                </div>
-                <div id="grain-contrast-container"
-                    style="display: flex; align-items: center; gap: 10px; margin-top: 10px; transition: opacity 0.2s;">
-                    <span style="font-size: 12px; color: var(--text-muted); width: 60px;"
-                        data-i18n="settings_grain_contrast">Contrast</span>
-                    <input type="range" id="setting-grain-contrast" min="50" max="300" step="10" value="100"
-                        style="flex: 1; accent-color: var(--accent);">
-                    <span id="setting-grain-contrast-val"
-                        style="font-weight: 700; width: 35px; text-align: right; color: var(--accent); font-size: 12px;">100%</span>
-                </div>
+                <button class="zen-scroll-btn right" id="zen-scroll-right" aria-label="Scroll themes right">›</button>
             </div>
 
             <div class="settings-group"
@@ -648,17 +625,17 @@
                 style="font-weight: 700; color: var(--accent); border-bottom: 1px solid var(--border-light); padding-bottom: 2px; margin-top: 5px;">
                 [1] PERFORMANCE & LATENCY</div>
             <div
-                style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border-light); padding-bottom: 4px; padding-left: 6px;">
+                class="metric-row">
                 <span style="color: var(--text-muted);">Popup Startup Time:</span>
                 <span id="metric-startup" style="font-weight: 700;">-</span>
             </div>
             <div
-                style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border-light); padding-bottom: 4px; padding-left: 6px;">
+                class="metric-row">
                 <span style="color: var(--text-muted);">Active Provider (DNS):</span>
                 <span id="metric-dns-provider" style="font-weight: 700;">-</span>
             </div>
             <div
-                style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border-light); padding-bottom: 4px; padding-left: 6px; align-items: flex-start;">
+                class="metric-row" style="align-items: flex-start;">
                 <span style="color: var(--text-muted);">Tab Load Metrics:</span>
                 <span id="metric-tab-times"
                     style="font-weight: 700; text-align: right; white-space: pre-line; line-height: 1.3;">-</span>
@@ -669,17 +646,17 @@
                 style="font-weight: 700; color: var(--accent); border-bottom: 1px solid var(--border-light); padding-bottom: 2px; margin-top: 8px;">
                 [2] STORAGE DIAGNOSTIC STATS</div>
             <div
-                style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border-light); padding-bottom: 4px; padding-left: 6px;">
+                class="metric-row">
                 <span style="color: var(--text-muted);">Local Storage Usage:</span>
                 <span id="metric-storage-size" style="font-weight: 700;">-</span>
             </div>
             <div
-                style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border-light); padding-bottom: 4px; padding-left: 6px;">
+                class="metric-row">
                 <span style="color: var(--text-muted);">Stored Notes Count:</span>
                 <span id="metric-notes-count" style="font-weight: 700;">0 notes</span>
             </div>
             <div
-                style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border-light); padding-bottom: 4px; padding-left: 6px;">
+                class="metric-row">
                 <span style="color: var(--text-muted);">Pics History Count:</span>
                 <span id="metric-pics-count" style="font-weight: 700;">0 images</span>
             </div>
@@ -689,9 +666,18 @@
                 style="font-weight: 700; color: var(--accent); border-bottom: 1px solid var(--border-light); padding-bottom: 2px; margin-top: 8px;">
                 [3] API LATENCY LOGS</div>
             <div
-                style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border-light); padding-bottom: 4px; padding-left: 6px;">
+                class="metric-row">
                 <span style="color: var(--text-muted);">Session HTTP Requests:</span>
                 <span id="metric-api-calls" style="font-weight: 700;">0 requests</span>
+            </div>
+            <div class="metric-row">
+                <label for="debug-throttle" style="color: var(--text-muted);">Request Throttling:</label>
+                <select id="debug-throttle">
+                    <option value="0">Off</option>
+                    <option value="1000">+1 s</option>
+                    <option value="3000">+3 s</option>
+                    <option value="7000">+7 s (hits timeouts)</option>
+                </select>
             </div>
             <div id="metric-api-details-container"
                 style="max-height: 90px; overflow-y: auto; padding: 4px 6px; background: rgba(100, 100, 100, 0.05); border-radius: var(--radius-sm); line-height: 1.4; border: 1px solid var(--border-light); font-size: 10px;">
@@ -704,17 +690,17 @@
                 style="font-weight: 700; color: var(--accent); border-bottom: 1px solid var(--border-light); padding-bottom: 2px; margin-top: 8px;">
                 [4] SYSTEM & ENVIRONMENT</div>
             <div
-                style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border-light); padding-bottom: 4px; padding-left: 6px;">
+                class="metric-row">
                 <span style="color: var(--text-muted);">Extension Version:</span>
                 <span id="metric-ext-version" style="font-weight: 700;">-</span>
             </div>
             <div
-                style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border-light); padding-bottom: 4px; padding-left: 6px;">
+                class="metric-row">
                 <span style="color: var(--text-muted);">Viewport & DOM:</span>
                 <span id="metric-viewport" style="font-weight: 700;">-</span>
             </div>
             <div
-                style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border-light); padding-bottom: 4px; padding-left: 6px;">
+                class="metric-row">
                 <span style="color: var(--text-muted);">Current Local Time:</span>
                 <span id="metric-local-time" style="font-weight: 700;">-</span>
             </div>

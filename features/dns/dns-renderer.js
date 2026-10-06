@@ -5,15 +5,17 @@ import { I18n } from '../../core/i18n.js';
 
 export const DnsRenderer = {
   /** Full block of DNS check results. */
-  results({ ips, ipv6, mx, txt, dmarc, dkim, ns, ipGeos, dq }) {
+  results({ ips, ipv6, mx, txt, dmarc, dkim, ns, caa, soa, ipGeos, dq }) {
     let html = `<div class="results-container animate-fade-in-up">`;
     
     // Group 1: Addressing & Routing (A, AAAA, NS)
     const hasA = dq.a && ips && ips.length > 0;
     const hasAAAA = dq.aaaa && ipv6 && ipv6.length > 0;
     const hasNS = dq.ns && ns && ns.length > 0;
+    const hasCAA = dq.caa && caa && caa.length > 0;
+    const hasSOA = dq.soa && soa && soa.length > 0;
     
-    if (hasA || hasAAAA || hasNS) {
+    if (hasA || hasAAAA || hasNS || hasCAA || hasSOA) {
       html += `
         <div class="dns-group-card">
           <div class="dns-group-header no-copy">
@@ -58,20 +60,9 @@ export const DnsRenderer = {
           </div>`;
       }
       
-      if (hasNS) {
-        const valRows = ns.map(r => `<div class="dns-val-row"><span class="dns-single-val" title="Click to copy only this record">${Utils.escapeHTML(r.data)}</span></div>`).join('');
-
-        html += `
-          <div class="result-row dns-record-block">
-            <div class="dns-record-header no-copy">
-              <span class="dns-record-label">NS</span>
-              <span class="dns-record-copy-indicator no-copy">
-                <svg class="copy-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                <svg class="check-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
-              </span>
-            </div><div class="result-value dns-record-value" style="white-space: normal;">${valRows}</div>
-          </div>`;
-      }
+      if (hasNS) { html += this.listBlock('NS', ns); }
+      if (hasCAA) { html += this.listBlock('CAA', caa); }
+      if (hasSOA) { html += this.listBlock('SOA', soa); }
       
       html += `</div>`;
     }
@@ -209,6 +200,21 @@ export const DnsRenderer = {
     return html;
   },
 
+  /** One record block listing every value on its own copyable row. */
+  listBlock(label, records) {
+    const valRows = records.map(r => `<div class="dns-val-row"><span class="dns-single-val" title="Click to copy only this record">${Utils.escapeHTML(r.data)}</span></div>`).join('');
+    return `
+          <div class="result-row dns-record-block">
+            <div class="dns-record-header no-copy">
+              <span class="dns-record-label">${label}</span>
+              <span class="dns-record-copy-indicator no-copy">
+                <svg class="copy-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                <svg class="check-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </span>
+            </div><div class="result-value dns-record-value" style="white-space: normal;">${valRows}</div>
+          </div>`;
+  },
+
   row(label, content) {
     if (!content || content === '—') {
       return '';
@@ -237,8 +243,16 @@ export const DnsRenderer = {
       }).join('<br>');
   },
 
-  loader() {
-    return '<div class="loader-container animate-fade-in-up"><div class="loader"></div></div>';
+  /** Skeleton mirroring the result cards for the enabled record types (dq), so the swap doesn't jump. */
+  loader(dq) {
+    const line = w => `<div class="skeleton-line" style="width: ${w}%"></div>`;
+    const block = () => `<div class="dns-record-block">${line(15)}${line(70)}</div>`;
+    const card = n => n ? `<div class="dns-group-card">${line(35)}${block().repeat(n)}</div>` : '';
+    const count = keys => keys.filter(k => dq?.[k]).length;
+    const cards = dq
+      ? card(count(['a', 'aaaa', 'ns', 'caa', 'soa'])) + card(count(['mx'])) + card(count(['spf', 'dkim', 'dmarc'])) + card(count(['txt']))
+      : card(2); // IP lookup: one info card
+    return `<div class="results-container" aria-busy="true" aria-label="Loading">${cards}</div>`;
   },
 
   ipResults(ip, geo) {

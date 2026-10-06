@@ -10,26 +10,29 @@ export function initSettingsFeature() {
     async init() {
       const settings = await Settings.load();
       
-      const langSelect = document.getElementById('setting-language');
       const fontSelect = document.getElementById('setting-font');
       const startupSelect = document.getElementById('setting-startup-tab');
       const dnsSelect = document.getElementById('setting-dns-provider');
-      const sslSelect = document.getElementById('setting-ssl-provider');
+      const geoSelect = document.getElementById('setting-geo-provider');
+      const tabShortcutSelect = document.getElementById('setting-tab-shortcut');
+      const showTabShortcut = (mod) => {
+        const key = { alt: 'Alt', ctrl: 'Ctrl' }[mod];
+        const line = document.getElementById('tab-shortcut-line');
+        if (line) { line.hidden = !key; }
+        if (key) { document.getElementById('tab-shortcut-hint').textContent = key; }
+      };
+      document.getElementById('open-shortcuts-page')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        chrome.tabs.create({ url: 'chrome://extensions/shortcuts' });
+      });
       const historyLimitSlider = document.getElementById('setting-history-limit');
       const historyLimitVal = document.getElementById('setting-history-limit-val');
       const picsHistoryLimitSlider = document.getElementById('setting-pics-history-limit');
       const picsHistoryLimitVal = document.getElementById('setting-pics-history-limit-val');
-      const grainEnabledCheckbox = document.getElementById('setting-grain-enabled');
-      const grainOpacitySlider = document.getElementById('setting-grain-opacity');
-      const grainOpacityVal = document.getElementById('setting-grain-opacity-val');
-      const grainOpacityContainer = document.getElementById('grain-opacity-container');
-      const grainContrastSlider = document.getElementById('setting-grain-contrast');
-      const grainContrastVal = document.getElementById('setting-grain-contrast-val');
-      const grainContrastContainer = document.getElementById('grain-contrast-container');
       const experimentalNotesCheckbox = document.getElementById('setting-experimental-notes');
       const passgenEnabledCheckbox = document.getElementById('setting-btn-passgen');
 
-      const dq = settings.dnsQueries || { a: true, aaaa: false, mx: true, txt: false, spf: false, dkim: false, dmarc: false, ns: true };
+      const dq = settings.dnsQueries || { a: true, aaaa: false, mx: true, txt: false, spf: false, dkim: false, dmarc: false, ns: true, caa: false, soa: false };
       const qA = document.getElementById('setting-query-a');
       const qAAAA = document.getElementById('setting-query-aaaa');
       const qMX = document.getElementById('setting-query-mx');
@@ -38,6 +41,8 @@ export function initSettingsFeature() {
       const qSPF = document.getElementById('setting-query-spf');
       const qDKIM = document.getElementById('setting-query-dkim');
       const qDMARC = document.getElementById('setting-query-dmarc');
+      const qCAA = document.getElementById('setting-query-caa');
+      const qSOA = document.getElementById('setting-query-soa');
 
       if (qA) { qA.checked = dq.a; }
       if (qAAAA) { qAAAA.checked = dq.aaaa; }
@@ -47,6 +52,8 @@ export function initSettingsFeature() {
       if (qSPF) { qSPF.checked = dq.spf; }
       if (qDKIM) { qDKIM.checked = dq.dkim; }
       if (qDMARC) { qDMARC.checked = dq.dmarc; }
+      if (qCAA) { qCAA.checked = dq.caa; }
+      if (qSOA) { qSOA.checked = dq.soa; }
       
       const tb = settings.dnsToolbarButtons || { ssl: true, dns: true, whois: false };
       const tbSsl = document.getElementById('setting-btn-ssl');
@@ -87,11 +94,12 @@ export function initSettingsFeature() {
         });
       }
  
-      if (langSelect) { langSelect.value = settings.language; }
       if (fontSelect) { fontSelect.value = settings.font || 'system'; }
       if (startupSelect) { startupSelect.value = settings.startupTab; }
       if (dnsSelect) { dnsSelect.value = settings.dnsProvider || 'google'; }
-      if (sslSelect) { sslSelect.value = settings.sslProvider || 'certist'; }
+      if (geoSelect) { geoSelect.value = settings.geoProvider || 'ipwhois'; }
+      if (tabShortcutSelect) { tabShortcutSelect.value = settings.tabShortcutModifier || 'off'; }
+      showTabShortcut(settings.tabShortcutModifier);
 
       if (historyLimitSlider) {
         historyLimitSlider.value = settings.dnsHistoryLimit || 4;
@@ -106,30 +114,6 @@ export function initSettingsFeature() {
           picsHistoryLimitVal.textContent = settings.picsHistoryLimit || 5;
         }
       }
-
-      if (grainEnabledCheckbox) {
-        grainEnabledCheckbox.checked = settings.grainEnabled || false;
-      }
-      if (grainOpacitySlider) {
-        grainOpacitySlider.value = settings.grainOpacity !== undefined ? settings.grainOpacity : 0.05;
-        if (grainOpacityVal) {
-          grainOpacityVal.textContent = `${Math.round((settings.grainOpacity !== undefined ? settings.grainOpacity : 0.05) * 100)}%`;
-        }
-      }
-      if (grainOpacityContainer) {
-        grainOpacityContainer.style.opacity = (settings.grainEnabled || false) ? '1' : '0.5';
-        grainOpacityContainer.style.pointerEvents = (settings.grainEnabled || false) ? 'auto' : 'none';
-      }
-      if (grainContrastSlider) {
-        grainContrastSlider.value = settings.grainContrast !== undefined ? settings.grainContrast : 100;
-        if (grainContrastVal) {
-          grainContrastVal.textContent = `${settings.grainContrast !== undefined ? settings.grainContrast : 100}%`;
-        }
-      }
-      if (grainContrastContainer) {
-        grainContrastContainer.style.opacity = (settings.grainEnabled || false) ? '1' : '0.5';
-        grainContrastContainer.style.pointerEvents = (settings.grainEnabled || false) ? 'auto' : 'none';
-      }
       if (experimentalNotesCheckbox) {
         experimentalNotesCheckbox.checked = settings.experimentalNotes || false;
       }
@@ -138,17 +122,14 @@ export function initSettingsFeature() {
         const current = await Settings.load();
         const newSettings = {
           ...current,
-          language: langSelect?.value || 'auto',
           font: fontSelect?.value || 'system',
           theme: currentTheme,
           startupTab: startupSelect?.value || 'last',
           dnsProvider: dnsSelect?.value || 'google',
-          sslProvider: sslSelect?.value || 'certist',
+          geoProvider: geoSelect?.value || 'ipwhois',
+          tabShortcutModifier: tabShortcutSelect?.value || 'off',
           dnsHistoryLimit: parseInt(historyLimitSlider?.value || '4', 10),
           picsHistoryLimit: parseInt(picsHistoryLimitSlider?.value || '5', 10),
-          grainEnabled: grainEnabledCheckbox ? grainEnabledCheckbox.checked : false,
-          grainOpacity: grainOpacitySlider ? parseFloat(grainOpacitySlider.value) : 0.05,
-          grainContrast: grainContrastSlider ? parseInt(grainContrastSlider.value, 10) : 100,
           experimentalNotes: experimentalNotesCheckbox ? experimentalNotesCheckbox.checked : false,
           passgenEnabled: passgenEnabledCheckbox ? passgenEnabledCheckbox.checked : true,
           dnsQueries: {
@@ -159,7 +140,9 @@ export function initSettingsFeature() {
             txt: qTXT?.checked,
             spf: qSPF?.checked,
             dkim: qDKIM?.checked,
-            dmarc: qDMARC?.checked
+            dmarc: qDMARC?.checked,
+            caa: qCAA?.checked,
+            soa: qSOA?.checked
           },
           dnsToolbarButtons: {
             ssl: tbSsl?.checked,
@@ -170,13 +153,9 @@ export function initSettingsFeature() {
         };
         await Settings.save(newSettings);
         
-        // Update i18n
-        await I18n.init(newSettings.language);
-        
         // Update theme
         Theme.apply(newSettings.theme);
         Theme.applyFont(newSettings.font);
-        Theme.applyGrain(newSettings.grainEnabled, newSettings.grainOpacity, newSettings.grainContrast);
         
         // Update toolbar buttons visibility immediately
         const activeTb = newSettings.dnsToolbarButtons || { ssl: true, dns: true, whois: false };
@@ -194,13 +173,13 @@ export function initSettingsFeature() {
         Utils.showToast(I18n.t('toast_saved'));
       };
  
-      langSelect?.addEventListener('change', () => handleSave());
       fontSelect?.addEventListener('change', () => handleSave());
       startupSelect?.addEventListener('change', () => handleSave());
       dnsSelect?.addEventListener('change', () => handleSave());
-      sslSelect?.addEventListener('change', () => handleSave());
+      geoSelect?.addEventListener('change', () => handleSave());
+      tabShortcutSelect?.addEventListener('change', () => { showTabShortcut(tabShortcutSelect.value); handleSave(); });
       
-      const queryCheckboxes = [qA, qAAAA, qMX, qNS, qTXT, qSPF, qDKIM, qDMARC];
+      const queryCheckboxes = [qA, qAAAA, qMX, qNS, qTXT, qSPF, qDKIM, qDMARC, qCAA, qSOA];
       queryCheckboxes.forEach(cb => {
         cb?.addEventListener('change', () => handleSave());
       });
@@ -235,32 +214,6 @@ export function initSettingsFeature() {
       });
       picsHistoryLimitSlider?.addEventListener('change', () => handleSave());
 
-      grainEnabledCheckbox?.addEventListener('change', () => {
-        const isEnabled = grainEnabledCheckbox.checked;
-        if (grainOpacityContainer) {
-          grainOpacityContainer.style.opacity = isEnabled ? '1' : '0.5';
-          grainOpacityContainer.style.pointerEvents = isEnabled ? 'auto' : 'none';
-        }
-        if (grainContrastContainer) {
-          grainContrastContainer.style.opacity = isEnabled ? '1' : '0.5';
-          grainContrastContainer.style.pointerEvents = isEnabled ? 'auto' : 'none';
-        }
-        handleSave();
-      });
-
-      grainOpacitySlider?.addEventListener('input', () => {
-        if (grainOpacityVal) {
-          grainOpacityVal.textContent = `${Math.round(parseFloat(grainOpacitySlider.value) * 100)}%`;
-        }
-      });
-      grainOpacitySlider?.addEventListener('change', () => handleSave());
-
-      grainContrastSlider?.addEventListener('input', () => {
-        if (grainContrastVal) {
-          grainContrastVal.textContent = `${grainContrastSlider.value}%`;
-        }
-      });
-      grainContrastSlider?.addEventListener('change', () => handleSave());
       experimentalNotesCheckbox?.addEventListener('change', () => handleSave());
  
       // Data Management
@@ -273,6 +226,7 @@ export function initSettingsFeature() {
       btnExport?.addEventListener('click', async () => {
         const data = {};
         await new Promise(r => chrome.storage.local.get(null, res => { Object.assign(data, res); r(); }));
+        data.lilo_settings = await Settings.load(); // settings live in chrome.storage.sync
         const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -310,7 +264,11 @@ export function initSettingsFeature() {
               throw new Error('No valid data found');
             }
             
-            await new Promise(r => chrome.storage.local.set(filteredData, r));
+            if (filteredData.lilo_settings) {
+              await Settings.save(filteredData.lilo_settings);
+              delete filteredData.lilo_settings;
+            }
+            await chrome.storage.local.set(filteredData);
             Settings.invalidate();
             Utils.showToast(I18n.t('toast_imported'));
             setTimeout(() => location.reload(), 1000);
@@ -324,16 +282,15 @@ export function initSettingsFeature() {
   
       btnReset?.addEventListener('click', async () => {
         if (!confirm(I18n.t('settings_confirm_reset'))) { return; }
-        await new Promise(r => chrome.storage.local.remove('lilo_settings', r));
-        Settings.invalidate();
+        await Settings.reset();
         Utils.showToast(I18n.t('toast_reset'));
         setTimeout(() => location.reload(), 800);
       });
   
       btnClear?.addEventListener('click', async () => {
         if (!confirm(I18n.t('settings_confirm_clear'))) { return; }
-        await new Promise(r => chrome.storage.local.clear(r));
-        Settings.invalidate();
+        await chrome.storage.local.clear();
+        await Settings.reset();
         localStorage.clear();
         Utils.showToast(I18n.t('toast_cleared'));
         setTimeout(() => location.reload(), 800);
