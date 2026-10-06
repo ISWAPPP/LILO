@@ -9,7 +9,6 @@ const defaultSettings = {
   dnsHistoryLimit: 4,
   picsHistoryLimit: 5,
   font: 'system',
-  experimentalNotes: false,
   passgenEnabled: true,
   passgen: { lower: true, upper: true, numbers: true, symbols: false, excludeSimilar: false, length: 16 },
   dnsQueries: { a: true, aaaa: false, mx: true, txt: false, spf: false, dkim: false, dmarc: false, ns: true, caa: false, soa: false },

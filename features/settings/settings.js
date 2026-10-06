@@ -29,7 +29,6 @@ export function initSettingsFeature() {
       const historyLimitVal = document.getElementById('setting-history-limit-val');
       const picsHistoryLimitSlider = document.getElementById('setting-pics-history-limit');
       const picsHistoryLimitVal = document.getElementById('setting-pics-history-limit-val');
-      const experimentalNotesCheckbox = document.getElementById('setting-experimental-notes');
       const passgenEnabledCheckbox = document.getElementById('setting-btn-passgen');
 
       const dq = settings.dnsQueries || { a: true, aaaa: false, mx: true, txt: false, spf: false, dkim: false, dmarc: false, ns: true, caa: false, soa: false };
@@ -114,9 +113,6 @@ export function initSettingsFeature() {
           picsHistoryLimitVal.textContent = settings.picsHistoryLimit || 5;
         }
       }
-      if (experimentalNotesCheckbox) {
-        experimentalNotesCheckbox.checked = settings.experimentalNotes || false;
-      }
  
       const handleSave = async (updatedSettings = {}) => {
         const current = await Settings.load();
@@ -130,7 +126,6 @@ export function initSettingsFeature() {
           tabShortcutModifier: tabShortcutSelect?.value || 'off',
           dnsHistoryLimit: parseInt(historyLimitSlider?.value || '4', 10),
           picsHistoryLimit: parseInt(picsHistoryLimitSlider?.value || '5', 10),
-          experimentalNotes: experimentalNotesCheckbox ? experimentalNotesCheckbox.checked : false,
           passgenEnabled: passgenEnabledCheckbox ? passgenEnabledCheckbox.checked : true,
           dnsQueries: {
             a: qA?.checked,
@@ -214,7 +209,6 @@ export function initSettingsFeature() {
       });
       picsHistoryLimitSlider?.addEventListener('change', () => handleSave());
 
-      experimentalNotesCheckbox?.addEventListener('change', () => handleSave());
  
       // Data Management
       const btnExport = document.getElementById('btn-export-data');

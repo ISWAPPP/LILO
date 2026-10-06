@@ -509,26 +509,29 @@
     cursor: text;
 }
 
-/* Experimental multi-column (masonry-like) layout for notes */
-#notes-list.experimental-active {
-    display: block !important;
-    column-count: 2;
+/* Two-column masonry: 1px grid rows, each note spans its own height (set in JS, notes.js
+   layoutMasonry), so several short stickers stack beside one tall one. Full-width notes
+   span both columns; data-side="right" pins a lone mini sticker to the right column. */
+#notes-list {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    grid-auto-rows: 1px;
     column-gap: 8px;
+    align-items: start;
 }
 
-#notes-list.experimental-active .note-item {
-    display: inline-block;
-    width: 100%;
-    margin-bottom: 8px;
-    box-sizing: border-box;
-    break-inside: avoid;
-    vertical-align: top;
+#notes-list .note-item {
+    margin-bottom: 0;
+    min-width: 0;
 }
 
-#notes-list.experimental-active .note-item.full-width {
-    column-span: all;
-    display: block;
-    width: 100%;
+#notes-list .notes-empty-state,
+#notes-list .note-item.full-width {
+    grid-column: 1 / -1;
+}
+
+#notes-list .note-item.mini-sticker[data-side="right"] {
+    grid-column: 2;
 }
 
 /* Resize handle highlight */
@@ -681,8 +684,6 @@
     opacity: 1;
 }
 
-.note-move-up-btn,
-.note-move-down-btn,
 .note-copy-btn,
 .note-edit-btn,
 .note-delete-btn {
@@ -701,8 +702,6 @@
     transition: all 0.2s;
 }
 
-.note-move-up-btn:hover,
-.note-move-down-btn:hover,
 .note-copy-btn:hover,
 .note-edit-btn:hover {
     color: var(--note-btn-hover-color);

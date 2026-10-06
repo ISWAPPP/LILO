@@ -11,7 +11,8 @@
 - **Tab Switch Shortcut Setting**: Off (default), `Alt/Option + 1–4` or `Ctrl + 1–4`.
 - **Debug Console Request Throttling**: Session-only artificial delay (+1/+3/+7 s) for all API requests.
 - **Upload Error Details**: Failed PICS uploads show the reason (HTTP status, server message, network error or timeout).
-- **Password Generator Test**: `node features/passgen/passgen.test.mjs`.
+- **Sticky Notes Layout (formerly Experimental)**: Always on — drag & drop reordering, mini stickers (resize via the bottom-left corner) and a two-column masonry grid where several short stickers fit beside one tall note. A lone mini sticker can be dropped into either column.
+- **Tests**: `node features/passgen/passgen.test.mjs`, `node features/notes/notes.test.mjs`.
 
 ### Changed
 
@@ -24,6 +25,8 @@
 
 ### Removed
 
+- **Experimental Features Toggle**: The sticky notes layout is now the default (`experimentalNotes` setting dropped).
+- **Note Move Up/Down Arrows**: Replaced by drag & drop.
 - **Soft Grain Effect**: Overlay, its settings and cached keys (cleaned from `localStorage` on start).
 - **ssl-checker.io Provider**: The service is gone (domain parked); SSL checks always use api.cert.ist.
 - **JSHint** and the no-op `build` script; ESLint is the only linter.
@@ -33,6 +36,8 @@
 - **Notes Lost on Popup Close**: Notes were saved with a 500 ms delay and could be lost if the popup closed; now saved immediately.
 - **MX IPs Missing With A Records Disabled**: MX target resolution crashed when A queries were off.
 - **Alt+1–4 on macOS**: Shortcuts matched the typed character (`¡` for Option+1); they now use the physical key.
+- **Notes Empty State**: Icon and text no longer split across the two columns.
+- **Note Drag Flicker**: Dragging no longer re-inserts the note on every `dragover` event.
 - **Version Mismatch**: `package.json` aligned with `manifest.json`.
 
 ## 1.1.7 — 2026-06-02

@@ -4,7 +4,6 @@ import { Config } from '../../config.js';
 import { Utils } from '../../core/utils.js';
 import { TabManager } from '../../core/tabs.js';
 import { NotesRenderer } from './notes-renderer.js';
-import { Settings } from '../../core/settings.js';
 import { initPassgen } from '../passgen/passgen.js';
 
 // ==================== STORAGE ====================
@@ -28,11 +27,7 @@ async function renderNotes() {
   if (!list) {
     return;
   }
-  const settings = await Settings.load();
-  const experimentalActive = settings.experimentalNotes || false;
-  
-  list.classList.toggle('experimental-active', experimentalActive);
-  list.innerHTML = NotesRenderer.notesList(notes, experimentalActive);
+  list.innerHTML = NotesRenderer.notesList(notes);
 
   // Calibrate and apply bottom indicators dynamically on mount
   setTimeout(() => {
@@ -118,28 +113,6 @@ async function animateReorderAndRender(action) {
   });
 }
 
-async function moveNoteUp(id) {
-  const index = notes.findIndex(n => n.id === id);
-  if (index > 0) {
-    await animateReorderAndRender(async () => {
-      [notes[index - 1], notes[index]] = [notes[index], notes[index - 1]];
-      await saveNotes();
-      await renderNotes();
-    });
-  }
-}
-
-async function moveNoteDown(id) {
-  const index = notes.findIndex(n => n.id === id);
-  if (index < notes.length - 1) {
-    await animateReorderAndRender(async () => {
-      [notes[index + 1], notes[index]] = [notes[index], notes[index + 1]];
-      await saveNotes();
-      await renderNotes();
-    });
-  }
-}
-
 async function copyNote(id) {
   const note = notes.find(n => n.id === id);
   if (!note) {
@@ -170,10 +143,7 @@ async function startEditing(id) {
     return;
   }
 
-  const settings = await Settings.load();
-  const experimentalActive = settings.experimentalNotes || false;
-
-  item.outerHTML = NotesRenderer.noteItemEditing(note, experimentalActive);
+  item.outerHTML = NotesRenderer.noteItemEditing(note);
 
   // Focus on input
   const newItem = document.querySelector(`.note-item[data-id="${id}"]`);
@@ -223,11 +193,43 @@ function updateScrollIndicators(item) {
 
 // ==================== EVENT DELEGATION ====================
 
+/** Live preview while dragging: apply the same side rules to the DOM order. */
+function syncDomSides(list) {
+  const items = Array.from(list.querySelectorAll('.note-item'));
+  const pseudo = items.map(el => ({
+    width: el.classList.contains('mini-sticker') ? 48 : 100,
+    side: el.dataset.side,
+  }));
+  NotesRenderer.normalizeSides(pseudo).forEach((p, idx) => {
+    const side = p.side === 'right' ? 'right' : 'left';
+    if (items[idx].dataset.side !== side) {
+      items[idx].dataset.side = side;
+    }
+  });
+}
+
+const MASONRY_GAP = 8; // vertical gap between notes, px (grid rows are 1px)
+
+/** Each note spans as many 1px grid rows as it is tall, so the grid packs like masonry. */
+function layoutMasonry(list, resizeObserver) {
+  list.querySelectorAll('.note-item').forEach(item => {
+    resizeObserver.observe(item); // no-op if already observed
+    const span = `span ${Math.ceil(item.getBoundingClientRect().height) + MASONRY_GAP}`;
+    if (item.style.gridRowEnd !== span) {
+      item.style.gridRowEnd = span;
+    }
+  });
+}
+
 function setupNoteEvents() {
   const list = document.getElementById('notes-list');
   if (!list) {
     return;
   }
+
+  // Re-pack on re-render / edit mode / drag reorder (childList) and on any note height change.
+  const resizeObserver = new ResizeObserver(() => layoutMasonry(list, resizeObserver));
+  new MutationObserver(() => layoutMasonry(list, resizeObserver)).observe(list, { childList: true });
 
   // Global click listener to reset delete confirmations
   document.addEventListener('click', (e) => {
@@ -311,17 +313,7 @@ function setupNoteEvents() {
       return;
     }
 
-    // Move Up
-    if (e.target.closest('.note-move-up-btn')) {
-      moveNoteUp(id);
-      return;
-    }
 
-    // Move Down
-    if (e.target.closest('.note-move-down-btn')) {
-      moveNoteDown(id);
-      return;
-    }
 
     // Cancel button
     if (e.target.closest('.note-cancel-btn')) {
@@ -417,7 +409,18 @@ function setupNoteEvents() {
   list.addEventListener('dragover', (e) => {
     e.preventDefault();
     const draggingItem = list.querySelector('.dragging');
-    if (!draggingItem) { return; }
+    // Pointer over the dragged note itself: it is already where the pointer is. Moving it
+    // here would shift the layout under the pointer and flip back next event (flicker loop).
+    if (!draggingItem || e.target.closest('.note-item') === draggingItem) { return; }
+
+    // Mini sticker: the pointer's half of the list decides its column.
+    if (draggingItem.classList.contains('mini-sticker')) {
+      const rect = list.getBoundingClientRect();
+      const side = e.clientX > rect.left + rect.width / 2 ? 'right' : 'left';
+      if (draggingItem.dataset.side !== side) {
+        draggingItem.dataset.side = side;
+      }
+    }
     
     const items = Array.from(list.querySelectorAll('.note-item:not(.dragging)'));
     if (items.length === 0) { return; }
@@ -453,9 +456,12 @@ function setupNoteEvents() {
       }
     });
     
-    if (closestItem) {
-      list.insertBefore(draggingItem, isAfter ? closestItem.nextSibling : closestItem);
+    const target = isAfter ? closestItem?.nextSibling : closestItem;
+    // dragover fires continuously; only touch the DOM when the position actually changes.
+    if (closestItem && target !== draggingItem && draggingItem.nextSibling !== target) {
+      list.insertBefore(draggingItem, target);
     }
+    syncDomSides(list);
   });
 
   list.addEventListener('drop', async (e) => {
@@ -474,6 +480,11 @@ function setupNoteEvents() {
         reorderedNotes.push(note);
       }
     });
+    const dragged = notes.find(n => n.id === draggedId);
+    const draggedEl = list.querySelector(`.note-item[data-id="${CSS.escape(draggedId)}"]`);
+    if (dragged && draggedEl) {
+      dragged.side = draggedEl.dataset.side;
+    }
     
     await animateReorderAndRender(async () => {
       notes = reorderedNotes;
