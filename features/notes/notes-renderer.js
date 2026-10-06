@@ -71,19 +71,18 @@ export const NotesRenderer = {
   },
 
   /** Single note item (normal state). */
-  noteItem(note, experimentalActive = false) {
+  noteItem(note) {
     const rendered = this.parseMarkdown(note.text);
     const escapedTitle = note.title ? Utils.escapeHTML(note.title) : '';
     
-    const isMini = experimentalActive && note.width && note.width < 100;
+    const isMini = note.width && note.width < 100;
     const baseClass = isMini ? 'note-item mini-sticker' : 'note-item full-width';
     const noteClass = escapedTitle ? baseClass : `${baseClass} no-title`;
     
     const inlineStyle = (note.color 
       ? `background-color: ${note.color}; --note-bg: ${note.color}; --note-text: #1a1a1a; --note-btn-hover-bg: rgba(0, 0, 0, 0.08); --note-border: rgba(0, 0, 0, 0.09);` 
-      : '') + (experimentalActive && note.width ? ` --note-width: calc(${note.width}% - 4px); flex: 0 0 calc(${note.width}% - 4px); max-width: 100%;` : '');
+      : '') + (note.width ? ` --note-width: calc(${note.width}% - 4px); flex: 0 0 calc(${note.width}% - 4px); max-width: 100%;` : '');
     const lines = note.lines !== undefined ? note.lines : 20;
-    const draggableAttr = experimentalActive ? 'draggable="true"' : '';
 
     let bodyStyle = `max-height: calc(${lines} * 1.5em); overflow-y: auto;`;
     let headerStyle = '';
@@ -102,23 +101,12 @@ export const NotesRenderer = {
       }
     }
 
-    const moveButtons = experimentalActive
-      ? ''
-      : `
-        <button class="note-move-up-btn" title="${I18n.t('notes_move_up')}">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"></polyline></svg>
-        </button>
-        <button class="note-move-down-btn" title="${I18n.t('notes_move_down')}">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
-        </button>
-      `;
 
     return `
-      <div class="${noteClass}" data-id="${note.id}" style="${inlineStyle}" ${draggableAttr}>
+      <div class="${noteClass}" data-id="${note.id}" style="${inlineStyle}" data-side="${note.side === 'right' ? 'right' : 'left'}" draggable="true">
         <div class="note-header" style="${headerStyle}">
           <div class="note-title">${escapedTitle}</div>
           <div class="note-actions">
-            ${moveButtons}
             <button class="note-copy-btn" title="${I18n.t('notes_copy_tooltip')}">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
             </button>
@@ -135,7 +123,7 @@ export const NotesRenderer = {
   },
  
   /** Single note item (editing mode). */
-  noteItemEditing(note, experimentalActive = false) {
+  noteItemEditing(note) {
     const escaped = Utils.escapeHTML(note.text);
     const escapedTitle = note.title ? Utils.escapeHTML(note.title) : '';
     const colors = [
@@ -160,25 +148,22 @@ export const NotesRenderer = {
       return `<div class="color-swatch${isActive ? ' active' : ''}" data-color="${c}" style="background:${c || 'var(--bg-main)'};" title="${c ? c : 'Default'}"></div>`;
     }).join('');
     
-    const isMini = experimentalActive && note.width && note.width < 100;
+    const isMini = note.width && note.width < 100;
     const noteClass = isMini ? 'note-item editing mini-sticker' : 'note-item editing full-width';
     const inlineStyle = (note.color 
       ? `background-color: ${note.color}; --note-bg: ${note.color}; --note-text: #1a1a1a; --note-btn-hover-bg: rgba(0, 0, 0, 0.08); --note-border: rgba(0, 0, 0, 0.09);` 
-      : '') + (experimentalActive && note.width ? ` --note-width: calc(${note.width}% - 4px); flex: 0 0 calc(${note.width}% - 4px); max-width: 100%;` : '');
+      : '') + (note.width ? ` --note-width: calc(${note.width}% - 4px); flex: 0 0 calc(${note.width}% - 4px); max-width: 100%;` : '');
     
     const lines = note.lines !== undefined ? note.lines : 20;
     const noteWidthVal = note.width !== undefined ? note.width : 100;
 
-    let resizeHandle = '';
-    if (experimentalActive) {
-      resizeHandle = `<div class="note-resize-handle" title="Drag to resize note width"></div>`;
-    }
+    const resizeHandle = `<div class="note-resize-handle" title="Drag to resize note width"></div>`;
 
     const textLines = note.text ? note.text.split('\n').length : 1;
     const rowsCount = Math.min(textLines, 10);
 
     return `
-      <div class="${noteClass}" data-id="${note.id}" style="${inlineStyle}" data-selected-width="${noteWidthVal}">
+      <div class="${noteClass}" data-id="${note.id}" style="${inlineStyle}" data-side="${note.side === 'right' ? 'right' : 'left'}" data-selected-width="${noteWidthVal}">
         ${resizeHandle}
         <div class="note-header" style="margin-bottom: 4px !important; padding-bottom: 0 !important; border-bottom: none !important;">
           <input type="text" class="note-edit-title-input" placeholder="${I18n.t('notes_title_placeholder')}" value="${escapedTitle}" autocomplete="off">
@@ -206,17 +191,44 @@ export const NotesRenderer = {
       </div>`;
   },
  
+  /**
+   * Keeps side='right' only where it can apply: a mini sticker that starts a grid row.
+   * Paired / full-width notes drop stale sides, so a saved side never blocks reordering.
+   */
+  normalizeSides(notes) {
+    const isMini = n => n.width && n.width < 100;
+    let i = 0;
+    while (i < notes.length) {
+      const n = notes[i];
+      if (!isMini(n)) {
+        delete n.side;
+        i += 1;
+      } else if (n.side === 'right') {
+        i += 1; // alone in its row, right column
+      } else {
+        delete n.side;
+        if (isMini(notes[i + 1] || {})) {
+          delete notes[i + 1].side; // second of a pair
+          i += 2;
+        } else {
+          i += 1;
+        }
+      }
+    }
+    return notes;
+  },
+
   /** Full list of notes. */
-  notesList(notes, experimentalActive = false) {
+  notesList(notes) {
     if (!notes || notes.length === 0) {
       return `
-        <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 40px 0; color: var(--text-muted); opacity: 0.7;">
+        <div class="notes-empty-state" style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 40px 0; color: var(--text-muted); opacity: 0.7;">
           <svg class="icon icon-large" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width: 48px; height: 48px; margin-bottom: 10px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
           <p style="margin:0; font-size: 13px; font-weight: 500;">${I18n.t('notes_empty')}</p>
         </div>
       `;
     }
-    return notes.map(n => this.noteItem(n, experimentalActive)).join('');
+    return this.normalizeSides(notes).map(n => this.noteItem(n)).join('');
   },
  
   /** Copy notification. */

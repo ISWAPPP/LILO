@@ -3,6 +3,29 @@
 import { Config } from '../config.js';
 import { Settings } from './settings.js';
 
+export const IP_API_ORIGIN = 'http://ip-api.com/*';
+
+const GEO_PROVIDERS = {
+  ipwhois: {
+    url: (ip) => `https://ipwho.is/${ip}`,
+    parse: (d) => d.success ? {
+      country: d.country, countryCode: d.country_code, regionName: d.region, city: d.city,
+      isp: d.connection?.isp, org: d.connection?.org, as: d.connection?.asn ? `AS${d.connection.asn} ${d.connection.org || ''}`.trim() : ''
+    } : null
+  },
+  ipinfo: {
+    url: (ip) => `https://ipinfo.io/${ip}/json`,
+    parse: (d) => d.country ? {
+      country: d.country, countryCode: d.country, regionName: d.region, city: d.city,
+      isp: (d.org || '').replace(/^AS\d+\s*/, ''), org: '', as: d.org || ''
+    } : null
+  },
+  ipapi: {
+    url: (ip) => `http://ip-api.com/json/${ip}?fields=status,message,country,countryCode,regionName,city,isp,org,as,query`,
+    parse: (d) => d.status === 'success' ? d : null
+  }
+};
+
 async function fetchWithTimeout(resource, options = {}) {
   window.liloApiCallsCount = (window.liloApiCallsCount || 0) + 1;
   const start = performance.now();
@@ -10,6 +33,10 @@ async function fetchWithTimeout(resource, options = {}) {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeout);
   try {
+    // Debug-console throttling: artificial delay before each request (session only).
+    if (window.liloThrottleMs) {
+      await new Promise(r => setTimeout(r, window.liloThrottleMs));
+    }
     const response = await fetch(resource, {
       ...options,
       signal: controller.signal
@@ -40,9 +67,9 @@ export const Api = {
         urlLabel = 'DNS Query (Google)';
       } else if (host === '1.1.1.1' && path === '/dns-query') {
         urlLabel = 'DNS Query (Cloudflare)';
-      } else if (host === 'ip-api.com' || host === 'www.ip-api.com') {
+      } else if (['ip-api.com', 'ipwho.is', 'ipinfo.io'].includes(host)) {
         urlLabel = 'IP Geo Check';
-      } else if (host === 'ssl-checker.io' || host === 'api.cert.ist') {
+      } else if (host === 'api.cert.ist') {
         urlLabel = 'SSL Expiry Check';
       } else if (host === 'who-dat.as93.net') {
         urlLabel = 'WHOIS Expiry Check';
@@ -96,31 +123,38 @@ export const Api = {
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
-      return await res.json();
+      const data = await res.json();
+      // Drop the FQDN root dot (example.com. -> example.com) from hostnames; TXT data is left untouched.
+      if (type !== 'TXT') {
+        data.Answer?.forEach(r => { r.data = r.data.replace(/\.(?=\s|$)/g, ''); });
+      }
+      return data;
     } catch (err) { 
       console.error('DNS query failed:', err);
       return { Answer: [] }; 
     }
   },
-  /** IP Geolocation via ip-api.com */
+  /** IP Geolocation via the selected provider, normalized to { country, countryCode, regionName, city, isp, org, as }. */
   async getIpGeo(ip) {
     try {
-      const res = await fetchWithTimeout(`http://ip-api.com/json/${encodeURIComponent(ip)}?fields=status,message,country,countryCode,regionName,city,isp,org,as,query`, { timeout: Config.timing.pingTimeout || 4000 });
+      let { geoProvider = 'ipwhois' } = await Settings.load();
+      // ip-api.com is an optional permission; settings may sync from a device where it was granted.
+      if (geoProvider === 'ipapi' && !(await chrome.permissions.contains({ origins: [IP_API_ORIGIN] }))) {
+        geoProvider = 'ipwhois';
+      }
+      const p = GEO_PROVIDERS[geoProvider] || GEO_PROVIDERS.ipwhois;
+      const res = await fetchWithTimeout(p.url(encodeURIComponent(ip)), { timeout: Config.timing.pingTimeout || 4000 });
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
       }
-      const data = await res.json();
-      if (data.status === 'success') {
-        return data;
-      }
-      return null;
+      return p.parse(await res.json());
     } catch (err) {
       console.error('IP Geo check failed:', err);
       return null;
     }
   },
 
-  /** Uploads an image to freeimage.host. Optional onProgress(0–100). */
+  /** Uploads an image to freeimage.host. Optional onProgress(0–100). Resolves { url } or { error }. */
   uploadImage(blob, onProgress) {
     window.liloApiCallsCount = (window.liloApiCallsCount || 0) + 1;
     const start = performance.now();
@@ -149,62 +183,42 @@ export const Api = {
         if (onProgress) {
           onProgress(100);
         }
-        if (xhr.status < 200 || xhr.status >= 300) {
-          console.error('Server error:', xhr.responseText);
-          resolve(null);
+        let result = null;
+        try {
+          result = JSON.parse(xhr.responseText);
+        } catch {
+          // Non-JSON body (e.g. HTML error page) — handled below
+        }
+        if (xhr.status >= 200 && xhr.status < 300 && result?.image?.url) {
+          resolve({ url: result.image.url });
           return;
         }
-        try {
-          const result = JSON.parse(xhr.responseText);
-          if (result?.image?.url) {
-            resolve(result.image.url);
-          } else {
-            console.error('Invalid response format', result);
-            resolve(null);
-          }
-        } catch (err) {
-          console.error('Upload parse failed:', err);
-          resolve(null);
-        }
+        console.error('Upload failed:', xhr.status, xhr.responseText);
+        const serverMsg = result?.error?.message || result?.status_txt || xhr.statusText;
+        resolve({ error: `HTTP ${xhr.status || '—'}${serverMsg ? `: ${serverMsg}` : ''}` });
       });
 
       xhr.addEventListener('error', () => {
         const latency = performance.now() - start;
         Api.recordCall('Image Upload', latency, 'Network Error');
         console.error('Upload failed: network error');
-        resolve(null);
+        resolve({ error: 'Network error' });
       });
 
       xhr.addEventListener('timeout', () => {
         const latency = performance.now() - start;
         Api.recordCall('Image Upload', latency, 'Timeout');
         console.error('Upload failed: timeout');
-        resolve(null);
+        resolve({ error: 'Timeout (15 s)' });
       });
 
       xhr.send(formData);
     });
   },
 
-  /** Gets SSL certificate info (days remaining) via the configured provider */
+  /** Gets SSL certificate days remaining via api.cert.ist */
   async getSslDays(domain) {
     try {
-      const settings = await Settings.load();
-      const provider = settings.sslProvider || 'certist';
-
-      if (provider === 'sslchecker') {
-        const res = await fetchWithTimeout(`https://ssl-checker.io/api/v1/check/${encodeURIComponent(domain)}`, { timeout: 6000 });
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
-        const data = await res.json();
-        if (data.status === 'ok' && data.result) {
-          return data.result.days_left !== undefined ? data.result.days_left : null;
-        }
-        return null;
-      }
-
-      // Default to certist
       const res = await fetchWithTimeout(`https://api.cert.ist/${encodeURIComponent(domain)}`, { timeout: 6000 });
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);

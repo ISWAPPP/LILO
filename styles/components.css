@@ -543,3 +543,47 @@ svg.icon-large {
 }
 
 
+
+/* --- Settings form & debug metrics (moved from inline styles) --- */
+.settings-label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: var(--text-muted);
+}
+
+.settings-select {
+    width: 100%;
+    padding: 8px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-light);
+    background: var(--bg-main);
+    color: var(--text-main);
+}
+
+.metric-row {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dashed var(--border-light);
+    padding-bottom: 4px;
+    padding-left: 6px;
+}
+
+/* --- DNS loading skeleton --- */
+.skeleton-line {
+    height: 10px;
+    margin: 5px 0;
+    border-radius: 6px;
+    background: linear-gradient(90deg, var(--border-light) 25%, var(--bg-main) 50%, var(--border-light) 75%);
+    background-size: 200% 100%;
+    animation: skeleton-shimmer 1.2s linear infinite;
+}
+
+@keyframes skeleton-shimmer {
+    to { background-position: -200% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .skeleton-line { animation: none; }
+}

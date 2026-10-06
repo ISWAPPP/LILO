@@ -54,14 +54,6 @@ export const Utils = {
     }
   },
 
-  debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-      clearTimeout(timeout);
-      timeout = setTimeout(() => func(...args), wait);
-    };
-  },
-
   showToast(message) {
     let container = document.getElementById('toast-container');
     if (!container) {

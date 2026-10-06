@@ -1,5 +1,50 @@
 # Changelog — LILO Tools
 
+## 1.1.8 — 2026-10-06
+
+### Added
+
+- **Settings Sync Across Devices**: Settings now live in `chrome.storage.sync` (Chrome account sync). Existing settings migrate automatically on first launch; the `localStorage` copy is kept only as a fast-start cache. Notes and DNS/PICS history stay local.
+- **IP Geolocation Provider Selector**: Choose between ipwho.is (HTTPS, default), ipinfo.io (HTTPS) or ip-api.com (legacy, HTTP).
+- **CAA & SOA Records**: New DNS query chips, disabled by default.
+- **Open Shortcut**: `Alt+Shift+L` (Mac: `Option+Shift+L`) opens the popup; editable at `chrome://extensions/shortcuts` (link in Settings).
+- **Tab Switch Shortcut Setting**: Off (default), `Alt/Option + 1–4` or `Ctrl + 1–4`.
+- **Debug Console Request Throttling**: Session-only artificial delay (+1/+3/+7 s) for all API requests.
+- **Upload Error Details**: Failed PICS uploads show the reason (HTTP status, server message, network error or timeout).
+- **Sticky Notes Layout (formerly Experimental)**: Always on — drag & drop reordering, mini stickers (resize via the bottom-left corner) and a two-column masonry grid where several short stickers fit beside one tall note. A lone mini sticker can be dropped into either column.
+- **Tests**: `node features/passgen/passgen.test.mjs`, `node features/notes/notes.test.mjs`.
+
+### Changed
+
+- **DNS Loading Skeleton**: Replaced the spinner with a skeleton matching the enabled record types; results fade in place instead of sliding.
+- **Trailing Dots Removed**: Hostnames in NS/MX/CNAME/SOA records are shown and copied without the root dot.
+- **Keyboard Accessibility**: Visible `:focus-visible` outline; theme swatches and DNS history chips are focusable and work with Enter/Space; icon-only controls got `aria-label`.
+- **English Only**: Removed the Ukrainian locale and the language selector.
+- **Password Generator Module**: Moved from `features/notes/notes.js` to `features/passgen/passgen.js`.
+- **Inline Styles**: Repeated settings/debug styles moved to `.settings-label`, `.settings-select`, `.metric-row`.
+
+### Security
+
+- **Fewer Permissions**: `tabs` replaced with `activeTab` (no "Read your browsing history" warning). Removed unused `cloudflare-dns.com` and `who-dat.as93.net` host permissions (the latter sends CORS headers, no permission needed). `ip-api.com` (HTTP) is now an optional permission requested when selected; falls back to ipwho.is if not granted.
+- **Privacy Policy**: Updated for settings sync, all third-party endpoints, actual permissions, and the public freeimage.host key. Added `homepage_url`.
+
+### Removed
+
+- **Experimental Features Toggle**: The sticky notes layout is now the default (`experimentalNotes` setting dropped).
+- **Note Move Up/Down Arrows**: Replaced by drag & drop.
+- **Soft Grain Effect**: Overlay, its settings and cached keys (cleaned from `localStorage` on start).
+- **ssl-checker.io Provider**: The service is gone (domain parked); SSL checks always use api.cert.ist.
+- **JSHint** and the no-op `build` script; ESLint is the only linter.
+
+### Fixed
+
+- **Notes Lost on Popup Close**: Notes were saved with a 500 ms delay and could be lost if the popup closed; now saved immediately.
+- **MX IPs Missing With A Records Disabled**: MX target resolution crashed when A queries were off.
+- **Alt+1–4 on macOS**: Shortcuts matched the typed character (`¡` for Option+1); they now use the physical key.
+- **Notes Empty State**: Icon and text no longer split across the two columns.
+- **Note Drag Flicker**: Dragging no longer re-inserts the note on every `dragover` event.
+- **Version Mismatch**: `package.json` aligned with `manifest.json`.
+
 ## 1.1.7 — 2026-06-02
 
 ### Added

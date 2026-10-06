@@ -1,5 +1,15 @@
 ---
+# ESLint (.eslintrc.json) is the project's JS linter. JSHint and PMD's JS parser predate
+# ES2020 (optional chaining, destructuring) and only produce false positives here.
 engines:
   csslint:
     exclude_paths:
       - "styles/**"
+  jshint:
+    exclude_paths:
+      - "**/*.js"
+      - "**/*.mjs"
+  pmd:
+    exclude_paths:
+      - "**/*.js"
+      - "**/*.mjs"

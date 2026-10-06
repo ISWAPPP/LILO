@@ -1,15 +1,12 @@
 {
   "name": "lilo-extension",
-  "version": "1.1.6",
+  "version": "1.1.8",
   "private": true,
   "description": "LILO Browser Extension",
   "scripts": {
-    "build": "mkdir -p dist && cp -r core features styles icons popup.html popup.js manifest.json config.js dist/ 2>/dev/null || true",
-    "lint": "eslint .",
-    "jshint": "jshint ."
+    "lint": "eslint ."
   },
   "devDependencies": {
-    "eslint": "^8.57.0",
-    "jshint": "^2.13.6"
+    "eslint": "^8.57.0"
   }
 }
