@@ -513,16 +513,13 @@ svg.icon-large {
 .switch-slider {
     position: absolute;
     cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    inset: 0;
     background-color: var(--border-light);
     transition: .2s ease;
     border-radius: 20px;
 }
 
-.switch-slider:before {
+.switch-slider::before {
     position: absolute;
     content: "";
     height: 14px;
@@ -538,7 +535,7 @@ svg.icon-large {
     background-color: var(--accent);
 }
 
-.switch input:checked + .switch-slider:before {
+.switch input:checked + .switch-slider::before {
     transform: translateX(16px);
 }
 
