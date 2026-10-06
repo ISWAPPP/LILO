@@ -3,6 +3,8 @@
 import { Config } from '../config.js';
 import { Settings } from './settings.js';
 
+export const IP_API_ORIGIN = 'http://ip-api.com/*';
+
 const GEO_PROVIDERS = {
   ipwhois: {
     url: (ip) => `https://ipwho.is/${ip}`,
@@ -135,7 +137,11 @@ export const Api = {
   /** IP Geolocation via the selected provider, normalized to { country, countryCode, regionName, city, isp, org, as }. */
   async getIpGeo(ip) {
     try {
-      const { geoProvider = 'ipwhois' } = await Settings.load();
+      let { geoProvider = 'ipwhois' } = await Settings.load();
+      // ip-api.com is an optional permission; settings may sync from a device where it was granted.
+      if (geoProvider === 'ipapi' && !(await chrome.permissions.contains({ origins: [IP_API_ORIGIN] }))) {
+        geoProvider = 'ipwhois';
+      }
       const p = GEO_PROVIDERS[geoProvider] || GEO_PROVIDERS.ipwhois;
       const res = await fetchWithTimeout(p.url(encodeURIComponent(ip)), { timeout: Config.timing.pingTimeout || 4000 });
       if (!res.ok) {

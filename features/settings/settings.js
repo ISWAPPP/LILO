@@ -4,6 +4,7 @@ import { TabManager } from '../../core/tabs.js';
 import { Theme } from '../../core/theme.js';
 import { Utils } from '../../core/utils.js';
 import { Config } from '../../config.js';
+import { IP_API_ORIGIN } from '../../core/api.js';
 
 export function initSettingsFeature() {
   TabManager.register('settings', {
@@ -171,7 +172,12 @@ export function initSettingsFeature() {
       fontSelect?.addEventListener('change', () => handleSave());
       startupSelect?.addEventListener('change', () => handleSave());
       dnsSelect?.addEventListener('change', () => handleSave());
-      geoSelect?.addEventListener('change', () => handleSave());
+      geoSelect?.addEventListener('change', async () => {
+        if (geoSelect.value === 'ipapi' && !(await chrome.permissions.request({ origins: [IP_API_ORIGIN] }))) {
+          geoSelect.value = 'ipwhois'; // permission denied: stay on the HTTPS default
+        }
+        handleSave();
+      });
       tabShortcutSelect?.addEventListener('change', () => { showTabShortcut(tabShortcutSelect.value); handleSave(); });
       
       const queryCheckboxes = [qA, qAAAA, qMX, qNS, qTXT, qSPF, qDKIM, qDMARC, qCAA, qSOA];

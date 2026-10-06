@@ -23,6 +23,11 @@
 - **Password Generator Module**: Moved from `features/notes/notes.js` to `features/passgen/passgen.js`.
 - **Inline Styles**: Repeated settings/debug styles moved to `.settings-label`, `.settings-select`, `.metric-row`.
 
+### Security
+
+- **Fewer Permissions**: `tabs` replaced with `activeTab` (no "Read your browsing history" warning). Removed unused `cloudflare-dns.com` and `who-dat.as93.net` host permissions (the latter sends CORS headers, no permission needed). `ip-api.com` (HTTP) is now an optional permission requested when selected; falls back to ipwho.is if not granted.
+- **Privacy Policy**: Updated for settings sync, all third-party endpoints, actual permissions, and the public freeimage.host key. Added `homepage_url`.
+
 ### Removed
 
 - **Experimental Features Toggle**: The sticky notes layout is now the default (`experimentalNotes` setting dropped).
