@@ -2,11 +2,11 @@
 
 **LILO Tools** is designed with user privacy as a fundamental principle.
 
-### 1. No Data Collection
+## 1. No Data Collection
 
 We **do not collect, store, or transmit** any personal data, browsing history, or private information. Notes and DNS/PICS history are stored locally in your browser (`chrome.storage.local` / `localStorage`) and never leave your device. Settings are stored in `chrome.storage.sync`, so if Chrome Sync is enabled, Google syncs them between your own browsers; the developer has no access to them.
 
-### 2. Third-Party Services
+## 2. Third-Party Services
 
 LILO Tools integrates with third-party APIs solely to provide core functionality:
 
@@ -18,7 +18,7 @@ LILO Tools integrates with third-party APIs solely to provide core functionality
 
 **About the freeimage.host API key:** the key in `config.js` is a public, shared key for anonymous uploads to freeimage.host. It is not a secret, is not tied to your identity, and grants no access to your data or anyone else's account.
 
-### 3. Permissions
+## 3. Permissions
 
 The extension requests only the minimum permissions required to perform its functions:
 
@@ -26,7 +26,7 @@ The extension requests only the minimum permissions required to perform its func
 - `activeTab`: To read the domain of the current tab **only when you open the extension**, so the DNS tab can pre-fill it. No browsing history is read or stored.
 - Host permissions: only the API endpoints listed above. `ip-api.com` is optional and requested only if you select it.
 
-### 4. Changes to this Policy
+## 4. Changes to this Policy
 
 Any future updates to this privacy policy will be documented here. Your continued use of the extension constitutes acceptance of these terms.
 

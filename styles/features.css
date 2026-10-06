@@ -429,12 +429,12 @@
 }
 
 /* Collapsed state when not focused, and inputs are empty */
-.notes-add-card:not(:focus-within):not(:has(#note-title-input:not(:placeholder-shown))):not(:has(#note-input:not(:placeholder-shown))) {
+.notes-add-card:not(:focus-within, :has(#note-title-input:not(:placeholder-shown)), :has(#note-input:not(:placeholder-shown))) {
     padding: 4px 8px;
     gap: 0;
 }
 
-.notes-add-card:not(:focus-within):not(:has(#note-title-input:not(:placeholder-shown))):not(:has(#note-input:not(:placeholder-shown))) #note-title-input {
+.notes-add-card:not(:focus-within, :has(#note-title-input:not(:placeholder-shown)), :has(#note-input:not(:placeholder-shown))) #note-title-input {
     max-height: 0;
     opacity: 0;
     padding-top: 0 !important;
@@ -444,20 +444,20 @@
     overflow: hidden;
 }
 
-.notes-add-card:not(:focus-within):not(:has(#note-title-input:not(:placeholder-shown))):not(:has(#note-input:not(:placeholder-shown))) .notes-add {
+.notes-add-card:not(:focus-within, :has(#note-title-input:not(:placeholder-shown)), :has(#note-input:not(:placeholder-shown))) .notes-add {
     border-top-color: transparent;
     padding-top: 0;
     margin-top: 0;
 }
 
-.notes-add-card:not(:focus-within):not(:has(#note-title-input:not(:placeholder-shown))):not(:has(#note-input:not(:placeholder-shown))) #note-input {
+.notes-add-card:not(:focus-within, :has(#note-title-input:not(:placeholder-shown)), :has(#note-input:not(:placeholder-shown))) #note-input {
     min-height: 32px;
     height: 32px;
     padding-top: 6px !important;
     padding-bottom: 6px !important;
 }
 
-.notes-add-card:not(:focus-within):not(:has(#note-title-input:not(:placeholder-shown))):not(:has(#note-input:not(:placeholder-shown))) #note-add-btn {
+.notes-add-card:not(:focus-within, :has(#note-title-input:not(:placeholder-shown)), :has(#note-input:not(:placeholder-shown))) #note-add-btn {
     transform: scale(0);
     opacity: 0;
     width: 0;
@@ -779,7 +779,7 @@
     padding: 6px 8px !important;
     border: 1px solid var(--note-border, var(--border-light)) !important;
     border-radius: var(--radius-md) !important;
-    background: rgba(0, 0, 0, 0.03) !important;
+    background: rgb(0 0 0 / 3%) !important;
     box-sizing: border-box;
     transition: border-color 0.2s, background-color 0.2s;
 }
@@ -788,32 +788,35 @@
 .note-item.editing textarea.note-edit-input::-webkit-scrollbar {
     width: 4px;
 }
+
 .note-item.editing textarea.note-edit-input::-webkit-scrollbar-track {
     background: transparent;
 }
+
 .note-item.editing textarea.note-edit-input::-webkit-scrollbar-thumb {
-    background: var(--note-border, rgba(0, 0, 0, 0.12));
+    background: var(--note-border, rgb(0 0 0 / 12%));
     border-radius: var(--radius-sm);
 }
+
 .note-item.editing textarea.note-edit-input::-webkit-scrollbar-thumb:hover {
     background: var(--accent);
 }
 
 .note-item.editing textarea.note-edit-input:focus {
     border-color: var(--accent) !important;
-    background: rgba(0, 0, 0, 0.05) !important;
+    background: rgb(0 0 0 / 5%) !important;
 }
 
 /* In dark theme, if no custom color is set, use a light transparent overlay */
 [data-theme="dark"] .note-item.editing:not([style*="background-color"]) textarea.note-edit-input,
 .theme-dark .note-item.editing:not([style*="background-color"]) textarea.note-edit-input {
-    background: rgba(255, 255, 255, 0.05) !important;
+    background: rgb(255 255 255 / 5%) !important;
     border-color: var(--border-light) !important;
 }
 
 [data-theme="dark"] .note-item.editing:not([style*="background-color"]) textarea.note-edit-input:focus,
 .theme-dark .note-item.editing:not([style*="background-color"]) textarea.note-edit-input:focus {
-    background: rgba(255, 255, 255, 0.08) !important;
+    background: rgb(255 255 255 / 8%) !important;
 }
 
 /* Premium dynamic bottom fading indicator and visual hints */
@@ -824,7 +827,7 @@
     left: 0;
     right: 0;
     height: 28px;
-    background: linear-gradient(to top, var(--note-bg, var(--bg-main)) 10%, rgba(255, 255, 255, 0) 100%);
+    background: linear-gradient(to top, var(--note-bg, var(--bg-main)) 10%, rgb(255 255 255 / 0%) 100%);
     pointer-events: none;
     border-radius: 0 0 var(--radius-md) var(--radius-md);
     opacity: 0;
@@ -835,7 +838,7 @@
 /* In dark theme default notes, blend the gradient beautifully */
 [data-theme="dark"] .note-item:not([style*="background-color"])::after,
 .theme-dark .note-item:not([style*="background-color"])::after {
-    background: linear-gradient(to top, var(--bg-main) 10%, rgba(0, 0, 0, 0) 100%) !important;
+    background: linear-gradient(to top, var(--bg-main) 10%, rgb(0 0 0 / 0%) 100%) !important;
 }
 
 .note-item.has-more-content::after {
@@ -948,11 +951,6 @@ body.dragging-active * {
     height: 4px;
     accent-color: var(--accent);
     cursor: pointer;
-}
-
-.note-edit-actions {
-    display: flex;
-    gap: 4px;
 }
 
 .note-edit-actions button {
