@@ -87,7 +87,7 @@ export const DnsRenderer = {
         html += `
           <div class="result-row dns-record-block">
             <div class="dns-record-header no-copy">
-              <span class="dns-record-label" style="display:flex; align-items:center; gap:4px;">MX <span style="background:var(--accent); color:var(--accent-text, #ffffff); font-size:9px; padding:1px 4px; border-radius:10px; border:none; font-weight:800;">${prio}</span></span>
+              <span class="dns-record-label" style="display:flex; align-items:center; gap:4px;">MX <span style="color:var(--text-main); font-weight:600;">${prio}</span></span>
               <span class="dns-record-copy-indicator no-copy">
                 <svg class="copy-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                 <svg class="check-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -126,7 +126,7 @@ export const DnsRenderer = {
         html += `
           <div class="result-row dns-record-block">
             <div class="dns-record-header no-copy">
-              <span class="dns-record-label" style="color: var(--success-text); border-color: var(--success-text); background: var(--success-bg);">SPF</span>
+              <span class="dns-record-label" style="color: var(--success-text); background: var(--success-bg);">SPF</span>
               <span class="dns-record-copy-indicator no-copy">
                 <svg class="copy-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                 <svg class="check-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -140,7 +140,7 @@ export const DnsRenderer = {
         html += `
           <div class="result-row dns-record-block">
             <div class="dns-record-header no-copy">
-              <span class="dns-record-label" style="color: var(--success-text); border-color: var(--success-text); background: var(--success-bg);">DKIM</span>
+              <span class="dns-record-label" style="color: var(--success-text); background: var(--success-bg);">DKIM</span>
               <span class="dns-record-copy-indicator no-copy">
                 <svg class="copy-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                 <svg class="check-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -154,7 +154,7 @@ export const DnsRenderer = {
         html += `
           <div class="result-row dns-record-block">
             <div class="dns-record-header no-copy">
-              <span class="dns-record-label" style="color: var(--success-text); border-color: var(--success-text); background: var(--success-bg);">DMARC</span>
+              <span class="dns-record-label" style="color: var(--success-text); background: var(--success-bg);">DMARC</span>
               <span class="dns-record-copy-indicator no-copy">
                 <svg class="copy-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
                 <svg class="check-icon" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>

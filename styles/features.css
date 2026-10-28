@@ -1067,62 +1067,57 @@ body.dragging-active * {
 
 /* ===== NEW DNS CARDS & LOGICAL GROUPS ===== */
 .dns-group-card {
-    background: var(--bg-sec);
+    background: var(--bg-main);
     border: 1px solid var(--border-light);
-    border-radius: var(--radius-card);
-    padding: 6px;
+    border-radius: 8px;
+    padding: 0;
     margin-bottom: 0;
-    box-shadow: var(--card-shadow);
+    overflow: hidden;
     animation: fade-in-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .dns-group-header {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
+    background: var(--bg-sec);
     border-bottom: 1px solid var(--border-light);
-    padding-bottom: 2px;
-    margin-bottom: 4px;
-    font-size: 11px;
-    text-transform: uppercase;
-    font-weight: 700;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 600;
     color: var(--text-muted);
-    letter-spacing: 0.5px;
 }
 
 .dns-group-header svg.icon {
     width: 14px;
     height: 14px;
-    stroke: var(--accent);
+    stroke: currentcolor;
 }
 
 .dns-record-block {
     display: flex;
     flex-direction: column;
     gap: 2px;
-    padding: 4px 6px;
-    border-radius: var(--radius-md);
-    background: var(--bg-main);
-    border: 1px solid var(--border-light);
-    margin-bottom: 3px;
-    transition: all 0.2s ease;
+    padding: 6px 10px;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--border-light);
+    transition: background-color 0.15s ease;
     cursor: pointer;
     position: relative;
     user-select: text;
 }
 
 .dns-record-block:last-child {
-    margin-bottom: 0;
+    border-bottom: 0;
 }
 
 .dns-record-block:hover {
-    border-color: var(--border-focus);
-    background: var(--bg-tertiary);
+    background: var(--bg-sec);
 }
 
 .dns-record-block.copied {
     background: var(--success-bg) !important;
-    border-color: var(--success-text) !important;
 }
 
 .dns-record-header {
@@ -1133,14 +1128,12 @@ body.dragging-active * {
 }
 
 .dns-record-label {
-    font-size: 10px;
-    font-weight: 800;
-    color: var(--accent);
-    background: var(--bg-sec);
-    padding: 2px 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--bg-tertiary);
+    padding: 1px 6px;
     border-radius: 4px;
-    border: 1px solid var(--border-light);
-    text-transform: uppercase;
 }
 
 .dns-record-copy-indicator {
@@ -1165,7 +1158,7 @@ body.dragging-active * {
 
 .dns-record-value {
     font-family: 'SF Mono', Menlo, 'Courier New', monospace;
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.5;
     word-break: break-all;
     white-space: pre-wrap;
@@ -1178,11 +1171,10 @@ body.dragging-active * {
     align-items: center;
     gap: 4px;
     background: var(--bg-tertiary);
-    border: 1px solid var(--border-light);
-    padding: 1px 5px;
-    border-radius: var(--radius-sm);
-    font-size: 10px;
-    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
     color: var(--text-muted);
     margin-bottom: 0;
     user-select: none;
@@ -1206,13 +1198,11 @@ body.dragging-active * {
 }
 
 .dns-val-row:hover {
-    background: var(--bg-sec) !important;
-    border-color: var(--border-light) !important;
+    background: var(--bg-tertiary) !important;
 }
 
 .dns-val-row.copied {
     background: var(--success-bg) !important;
-    border-color: var(--success-text) !important;
 }
 
 .dns-single-val {
@@ -1227,7 +1217,7 @@ body.dragging-active * {
 }
 
 .dns-record-block.copied-partially {
-    border-color: var(--success-text) !important;
+    background: var(--success-bg);
 }
 
 .dns-record-block .copy-icon {
@@ -1251,18 +1241,18 @@ body.dragging-active * {
 #domain-input {
     font-family: 'SF Mono', Menlo, 'Courier New', monospace;
     font-size: 13px;
-    font-weight: 700;
-    color: var(--accent);
-    background: var(--bg-sec) !important;
+    font-weight: 500;
+    color: var(--text-main);
+    background: var(--bg-main) !important;
     height: 38px !important;
     padding: 8px 12px !important;
     border-color: var(--border-light) !important;
     border-right: none !important;
-    transition: all 0.2s ease !important;
+    transition: border-color 0.15s ease !important;
 }
 
 #domain-input:focus {
-    background: var(--bg-tertiary) !important;
+    background: var(--bg-main) !important;
     border-color: var(--border-focus) !important;
 }
 
@@ -1304,15 +1294,15 @@ body.dragging-active * {
 }
 
 .dns-chip {
-    font-size: 10px;
-    font-weight: 700;
-    padding: 1px 5px;
-    border-radius: var(--radius-md);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 1px 7px;
+    border-radius: 6px;
     border: 1px solid var(--border-light);
-    background: var(--bg-sec);
+    background: var(--bg-main);
     color: var(--text-main);
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: background-color 0.15s ease;
     display: inline-flex;
     align-items: center;
     gap: 3px;
@@ -1320,10 +1310,7 @@ body.dragging-active * {
 }
 
 .dns-chip:hover {
-    border-color: var(--accent);
     background: var(--bg-tertiary);
-    color: var(--accent);
-    transform: translateY(-0.5px);
 }
 
 .dns-chip .remove-chip {
