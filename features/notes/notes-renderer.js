@@ -71,7 +71,7 @@ export const NotesRenderer = {
   },
 
   /** Single note item (normal state). */
-  noteItem(note) {
+  noteItem(note, inTrash = false) {
     const rendered = this.parseMarkdown(note.text);
     const escapedTitle = note.title ? Utils.escapeHTML(note.title) : '';
     
@@ -103,17 +103,16 @@ export const NotesRenderer = {
 
 
     return `
-      <div class="${noteClass}" data-id="${note.id}" style="${inlineStyle}" data-side="${note.side === 'right' ? 'right' : 'left'}" draggable="true">
+      <div class="${noteClass}" data-id="${note.id}" style="${inlineStyle}" data-side="${note.side === 'right' ? 'right' : 'left'}"${inTrash ? '' : ' draggable="true"'}>
         <div class="note-header" style="${headerStyle}">
           <div class="note-title">${escapedTitle}</div>
           <div class="note-actions">
-            <button class="note-copy-btn" title="${I18n.t('notes_copy_tooltip')}">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-            </button>
-            <button class="note-edit-btn" title="${I18n.t('notes_title_edit')}">
+            ${inTrash ? `<button class="note-restore-btn" title="${I18n.t('notes_restore')}">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+            </button>` : `<button class="note-edit-btn" title="${I18n.t('notes_title_edit')}">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
-            </button>
-            <button class="note-delete-btn" title="${I18n.t('notes_title_delete')}">
+            </button>`}
+            <button class="note-delete-btn" title="${inTrash ? I18n.t('notes_delete_forever') : I18n.t('notes_title_delete')}">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"></path><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
             </button>
           </div>
@@ -192,43 +191,37 @@ export const NotesRenderer = {
   },
  
   /**
-   * Keeps side='right' only where it can apply: a mini sticker that starts a grid row.
-   * Paired / full-width notes drop stale sides, so a saved side never blocks reordering.
+   * Every half-width note lives in a fixed column (side 'left' | 'right'), so moving one note
+   * never shifts the others. Notes without a side (legacy data) alternate within each run of
+   * half-width notes, like the old two-per-row layout; full-width notes drop it.
    */
   normalizeSides(notes) {
-    const isMini = n => n.width && n.width < 100;
-    let i = 0;
-    while (i < notes.length) {
-      const n = notes[i];
-      if (!isMini(n)) {
+    let prev = null;
+    notes.forEach(n => {
+      if (!(n.width && n.width < 100)) {
         delete n.side;
-        i += 1;
-      } else if (n.side === 'right') {
-        i += 1; // alone in its row, right column
-      } else {
-        delete n.side;
-        if (isMini(notes[i + 1] || {})) {
-          delete notes[i + 1].side; // second of a pair
-          i += 2;
-        } else {
-          i += 1;
-        }
+        prev = null;
+        return;
       }
-    }
+      if (n.side !== 'left' && n.side !== 'right') {
+        n.side = prev === 'left' ? 'right' : 'left';
+      }
+      prev = n.side;
+    });
     return notes;
   },
 
   /** Full list of notes. */
-  notesList(notes) {
+  notesList(notes, inTrash = false) {
     if (!notes || notes.length === 0) {
       return `
         <div class="notes-empty-state" style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 40px 0; color: var(--text-muted); opacity: 0.7;">
           <svg class="icon icon-large" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width: 48px; height: 48px; margin-bottom: 10px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-          <p style="margin:0; font-size: 13px; font-weight: 500;">${I18n.t('notes_empty')}</p>
+          <p style="margin:0; font-size: 13px; font-weight: 500;">${I18n.t(inTrash ? 'notes_trash_empty' : 'notes_empty')}</p>
         </div>
       `;
     }
-    return this.normalizeSides(notes).map(n => this.noteItem(n)).join('');
+    return this.normalizeSides(notes).map(n => this.noteItem(n, inTrash)).join('');
   },
  
   /** Copy notification. */

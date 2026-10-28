@@ -555,7 +555,7 @@ svg.icon-large {
     padding: 8px;
     border-radius: var(--radius-md);
     border: 1px solid var(--border-light);
-    background: var(--bg-main);
+    background-color: var(--bg-main);
     color: var(--text-main);
 }
 

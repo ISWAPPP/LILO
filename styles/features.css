@@ -480,7 +480,8 @@
 /* Drag & Drop Reordering Visuals */
 .note-item.dragging {
     opacity: 0.45;
-    border: 2px dashed var(--accent);
+    outline: 2px dashed var(--accent); /* outline, not border: a thicker border grows the note and re-packs the grid mid-drag */
+    outline-offset: -2px;
     transform: scale(0.98);
     box-shadow: var(--shadow-md);
 }
@@ -511,7 +512,7 @@
 
 /* Two-column masonry: 1px grid rows, each note spans its own height (set in JS, notes.js
    layoutMasonry), so several short stickers stack beside one tall one. Full-width notes
-   span both columns; data-side="right" pins a lone mini sticker to the right column. */
+   span both columns; data-side picks the column of a half-width note. */
 #notes-list {
     display: grid !important;
     grid-template-columns: 1fr 1fr;
@@ -528,10 +529,6 @@
 #notes-list .notes-empty-state,
 #notes-list .note-item.full-width {
     grid-column: 1 / -1;
-}
-
-#notes-list .note-item.mini-sticker[data-side="right"] {
-    grid-column: 2;
 }
 
 /* Resize handle highlight */
@@ -669,23 +666,103 @@
     line-height: 1.4;
 }
 
-/* Actions — hidden by default, overlay on hover so they don't squeeze the title */
+/* Actions — only shown while Edit mode is on (toggle next to the add card) */
 .note-actions {
-    display: flex;
+    display: none;
     gap: 4px;
     flex-shrink: 0;
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity 0.15s ease, visibility 0.15s ease;
 }
 
-.note-item:hover .note-actions {
-    visibility: visible;
-    opacity: 1;
+#notes-list.edit-mode .note-actions {
+    display: flex;
 }
 
-.note-copy-btn,
+.notes-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.notes-top .notes-add-card {
+    flex: 1;
+    min-width: 0;
+}
+
+.notes-edit-toggle {
+    flex: 0 0 auto;
+    order: 3; /* rightmost: stays put when the Trash button appears */
+    width: 40px;
+    height: 43px; /* = collapsed add card: 32px input + 2*4px padding + 2*1px border + 1px */
+    padding: 0;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    background: var(--bg-sec);
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notes-edit-toggle.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-text, #fff);
+}
+
+/* Trash button only while Edit mode is on; Trash view is a reduced copy of the list */
+.notes-trash-btn {
+    display: none;
+    order: 2;
+}
+
+.notes-top:has(.notes-edit-toggle.active) .notes-trash-btn {
+    display: flex;
+}
+
+#notes-trash-bar {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+#notes-trash-back {
+    height: 30px;
+    padding: 0 12px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+}
+
+#notes-tab.trash-mode #notes-trash-bar {
+    display: flex;
+}
+
+#notes-tab.trash-mode .notes-top,
+#notes-tab.trash-mode .passgen-section {
+    display: none !important;
+}
+
+/* Corner buttons sit over the note text: give them the note's own background */
+#notes-list.edit-mode .note-actions button {
+    background: var(--note-bg, var(--bg-main));
+    border: 1px solid var(--note-border, var(--border-light)) !important;
+    border-radius: var(--radius-md);
+}
+
+/* Edit mode: dashed note borders show that the notes are editable */
+#notes-list.edit-mode .note-item:not(.editing) {
+    border-style: dashed;
+}
+
+/* Layout locked outside Edit mode: notes can't be dragged, so no grab cursor */
+#notes-list.layout-locked:not(.edit-mode) .note-item[draggable="true"] {
+    cursor: pointer;
+}
+
 .note-edit-btn,
+.note-restore-btn,
 .note-delete-btn {
     width: 28px;
     height: 28px;
@@ -702,8 +779,8 @@
     transition: all 0.2s;
 }
 
-.note-copy-btn:hover,
-.note-edit-btn:hover {
+.note-edit-btn:hover,
+.note-restore-btn:hover {
     color: var(--note-btn-hover-color);
     background: var(--note-btn-hover-bg);
     opacity: 1;
@@ -1070,62 +1147,57 @@ body.dragging-active * {
 
 /* ===== NEW DNS CARDS & LOGICAL GROUPS ===== */
 .dns-group-card {
-    background: var(--bg-sec);
+    background: var(--bg-main);
     border: 1px solid var(--border-light);
-    border-radius: var(--radius-card);
-    padding: 6px;
+    border-radius: 8px;
+    padding: 0;
     margin-bottom: 0;
-    box-shadow: var(--card-shadow);
+    overflow: hidden;
     animation: fade-in-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .dns-group-header {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
+    background: var(--bg-sec);
     border-bottom: 1px solid var(--border-light);
-    padding-bottom: 2px;
-    margin-bottom: 4px;
-    font-size: 11px;
-    text-transform: uppercase;
-    font-weight: 700;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 600;
     color: var(--text-muted);
-    letter-spacing: 0.5px;
 }
 
 .dns-group-header svg.icon {
     width: 14px;
     height: 14px;
-    stroke: var(--accent);
+    stroke: currentcolor;
 }
 
 .dns-record-block {
     display: flex;
     flex-direction: column;
     gap: 2px;
-    padding: 4px 6px;
-    border-radius: var(--radius-md);
-    background: var(--bg-main);
-    border: 1px solid var(--border-light);
-    margin-bottom: 3px;
-    transition: all 0.2s ease;
+    padding: 6px 10px;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--border-light);
+    transition: background-color 0.15s ease;
     cursor: pointer;
     position: relative;
     user-select: text;
 }
 
 .dns-record-block:last-child {
-    margin-bottom: 0;
+    border-bottom: 0;
 }
 
 .dns-record-block:hover {
-    border-color: var(--border-focus);
-    background: var(--bg-tertiary);
+    background: var(--bg-sec);
 }
 
 .dns-record-block.copied {
     background: var(--success-bg) !important;
-    border-color: var(--success-text) !important;
 }
 
 .dns-record-header {
@@ -1136,14 +1208,12 @@ body.dragging-active * {
 }
 
 .dns-record-label {
-    font-size: 10px;
-    font-weight: 800;
-    color: var(--accent);
-    background: var(--bg-sec);
-    padding: 2px 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-muted);
+    background: var(--bg-tertiary);
+    padding: 1px 6px;
     border-radius: 4px;
-    border: 1px solid var(--border-light);
-    text-transform: uppercase;
 }
 
 .dns-record-copy-indicator {
@@ -1168,7 +1238,7 @@ body.dragging-active * {
 
 .dns-record-value {
     font-family: 'SF Mono', Menlo, 'Courier New', monospace;
-    font-size: 11px;
+    font-size: 12px;
     line-height: 1.5;
     word-break: break-all;
     white-space: pre-wrap;
@@ -1181,11 +1251,10 @@ body.dragging-active * {
     align-items: center;
     gap: 4px;
     background: var(--bg-tertiary);
-    border: 1px solid var(--border-light);
-    padding: 1px 5px;
-    border-radius: var(--radius-sm);
-    font-size: 10px;
-    font-weight: 600;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
     color: var(--text-muted);
     margin-bottom: 0;
     user-select: none;
@@ -1209,13 +1278,11 @@ body.dragging-active * {
 }
 
 .dns-val-row:hover {
-    background: var(--bg-sec) !important;
-    border-color: var(--border-light) !important;
+    background: var(--bg-tertiary) !important;
 }
 
 .dns-val-row.copied {
     background: var(--success-bg) !important;
-    border-color: var(--success-text) !important;
 }
 
 .dns-single-val {
@@ -1230,7 +1297,7 @@ body.dragging-active * {
 }
 
 .dns-record-block.copied-partially {
-    border-color: var(--success-text) !important;
+    background: var(--success-bg);
 }
 
 .dns-record-block .copy-icon {
@@ -1254,18 +1321,18 @@ body.dragging-active * {
 #domain-input {
     font-family: 'SF Mono', Menlo, 'Courier New', monospace;
     font-size: 13px;
-    font-weight: 700;
-    color: var(--accent);
-    background: var(--bg-sec) !important;
+    font-weight: 500;
+    color: var(--text-main);
+    background: var(--bg-main) !important;
     height: 38px !important;
     padding: 8px 12px !important;
     border-color: var(--border-light) !important;
     border-right: none !important;
-    transition: all 0.2s ease !important;
+    transition: border-color 0.15s ease !important;
 }
 
 #domain-input:focus {
-    background: var(--bg-tertiary) !important;
+    background: var(--bg-main) !important;
     border-color: var(--border-focus) !important;
 }
 
@@ -1307,15 +1374,15 @@ body.dragging-active * {
 }
 
 .dns-chip {
-    font-size: 10px;
-    font-weight: 700;
-    padding: 1px 5px;
-    border-radius: var(--radius-md);
+    font-size: 11px;
+    font-weight: 500;
+    padding: 1px 7px;
+    border-radius: 6px;
     border: 1px solid var(--border-light);
-    background: var(--bg-sec);
+    background: var(--bg-main);
     color: var(--text-main);
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: background-color 0.15s ease;
     display: inline-flex;
     align-items: center;
     gap: 3px;
@@ -1323,10 +1390,7 @@ body.dragging-active * {
 }
 
 .dns-chip:hover {
-    border-color: var(--accent);
     background: var(--bg-tertiary);
-    color: var(--accent);
-    transform: translateY(-0.5px);
 }
 
 .dns-chip .remove-chip {

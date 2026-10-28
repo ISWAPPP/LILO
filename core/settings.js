@@ -10,6 +10,7 @@ const defaultSettings = {
   picsHistoryLimit: 5,
   font: 'system',
   passgenEnabled: true,
+  notesLockLayout: false,
   passgen: { lower: true, upper: true, numbers: true, symbols: false, excludeSimilar: false, length: 16 },
   dnsQueries: { a: true, aaaa: false, mx: true, txt: false, spf: false, dkim: false, dmarc: false, ns: true, caa: false, soa: false },
   dnsToolbarButtons: { ssl: true, dns: true, whois: false }

@@ -2,7 +2,9 @@
 
 import { Config } from '../../config.js';
 import { Utils } from '../../core/utils.js';
+import { I18n } from '../../core/i18n.js';
 import { TabManager } from '../../core/tabs.js';
+import { Settings } from '../../core/settings.js';
 import { NotesRenderer } from './notes-renderer.js';
 import { initPassgen } from '../passgen/passgen.js';
 
@@ -18,16 +20,37 @@ async function loadNotes() {
 
 const saveNotes = () => chrome.storage.local.set({ [Config.storage.notesKey]: notes });
 
+const TRASH_DAYS = 30;
+
+async function loadTrash() {
+  const { [Config.storage.trashKey]: saved = [] } = await chrome.storage.local.get(Config.storage.trashKey);
+  const cutoff = Date.now() - TRASH_DAYS * 86400000;
+  return saved.filter(n => n.deletedAt > cutoff); // expired notes are dropped on the next save
+}
+
+const saveTrash = () => chrome.storage.local.set({ [Config.storage.trashKey]: trash });
+
 // ==================== NOTES LOGIC ====================
 
 let notes = [];
+let trash = [];
+let trashMode = false; // the list shows the Trash copy: restore / delete forever only
+let lockLayout = false; // setting: notes can only be dragged in Edit mode
+
+/** Edit mode shows the edit/delete buttons; it is never saved, so it resets with the popup. */
+function setEditMode(on) {
+  document.getElementById('notes-list')?.classList.toggle('edit-mode', on);
+  const btn = document.getElementById('notes-edit-toggle');
+  btn?.classList.toggle('active', on);
+  btn?.setAttribute('aria-pressed', String(on));
+}
 
 async function renderNotes() {
   const list = document.getElementById('notes-list');
   if (!list) {
     return;
   }
-  list.innerHTML = NotesRenderer.notesList(notes);
+  list.innerHTML = NotesRenderer.notesList(trashMode ? trash : notes, trashMode);
 
   // Calibrate and apply bottom indicators dynamically on mount
   setTimeout(() => {
@@ -54,8 +77,36 @@ async function addNote(title, text) {
 }
 
 async function deleteNote(id) {
-  notes = notes.filter(n => n.id !== id);
+  if (trashMode) {
+    trash = trash.filter(n => n.id !== id); // delete forever
+    saveTrash();
+  } else {
+    const note = notes.find(n => n.id === id);
+    if (note) {
+      trash.unshift({ ...note, deletedAt: Date.now() });
+      saveTrash();
+      Utils.showToast(I18n.t('toast_note_trashed'));
+    }
+    notes = notes.filter(n => n.id !== id);
+    saveNotes();
+  }
+  renderNotes();
+}
+
+function restoreNote(id) {
+  const note = trash.find(n => n.id === id);
+  if (!note) { return; }
+  delete note.deletedAt;
+  notes.unshift(note);
+  trash = trash.filter(n => n.id !== id);
   saveNotes();
+  saveTrash();
+  renderNotes();
+}
+
+function setTrashMode(on) {
+  trashMode = on;
+  document.getElementById('notes-tab')?.classList.toggle('trash-mode', on);
   renderNotes();
 }
 
@@ -193,31 +244,26 @@ function updateScrollIndicators(item) {
 
 // ==================== EVENT DELEGATION ====================
 
-/** Live preview while dragging: apply the same side rules to the DOM order. */
-function syncDomSides(list) {
-  const items = Array.from(list.querySelectorAll('.note-item'));
-  const pseudo = items.map(el => ({
-    width: el.classList.contains('mini-sticker') ? 48 : 100,
-    side: el.dataset.side,
-  }));
-  NotesRenderer.normalizeSides(pseudo).forEach((p, idx) => {
-    const side = p.side === 'right' ? 'right' : 'left';
-    if (items[idx].dataset.side !== side) {
-      items[idx].dataset.side = side;
-    }
-  });
-}
-
 const MASONRY_GAP = 8; // vertical gap between notes, px (grid rows are 1px)
 
-/** Each note spans as many 1px grid rows as it is tall, so the grid packs like masonry. */
+/**
+ * Two independent column stacks. Each half-width note lives in its own column (data-side) and
+ * stacks under the previous note of that column only; a full-width note starts below both
+ * columns. Moving a tall note never re-sorts the other column.
+ */
 function layoutMasonry(list, resizeObserver) {
+  const y = [1, 1]; // next free grid line per column
   list.querySelectorAll('.note-item').forEach(item => {
     resizeObserver.observe(item); // no-op if already observed
-    const span = `span ${Math.ceil(item.getBoundingClientRect().height) + MASONRY_GAP}`;
-    if (item.style.gridRowEnd !== span) {
-      item.style.gridRowEnd = span;
-    }
+    const rows = item.offsetHeight + MASONRY_GAP; // offsetHeight ignores the drag scale transform
+    const full = item.classList.contains('full-width');
+    const col = item.dataset.side === 'right' ? 1 : 0;
+    const start = full ? Math.max(y[0], y[1]) : y[col];
+    if (full) { y[0] = y[1] = start + rows; } else { y[col] = start + rows; }
+    const row = `${start} / span ${rows}`;
+    const column = full ? '1 / -1' : `${col + 1}`;
+    if (item.style.gridRow !== row) { item.style.gridRow = row; }
+    if (item.style.gridColumn !== column) { item.style.gridColumn = column; }
   });
 }
 
@@ -229,7 +275,8 @@ function setupNoteEvents() {
 
   // Re-pack on re-render / edit mode / drag reorder (childList) and on any note height change.
   const resizeObserver = new ResizeObserver(() => layoutMasonry(list, resizeObserver));
-  new MutationObserver(() => layoutMasonry(list, resizeObserver)).observe(list, { childList: true });
+  new MutationObserver(() => layoutMasonry(list, resizeObserver))
+    .observe(list, { childList: true, subtree: true, attributes: true, attributeFilter: ['data-side', 'class'] });
 
   // Global click listener to reset delete confirmations
   document.addEventListener('click', (e) => {
@@ -257,17 +304,15 @@ function setupNoteEvents() {
     }
     const id = item.dataset.id;
 
+    if (e.target.closest('.note-restore-btn')) {
+      restoreNote(id);
+      return;
+    }
+
     // Edit button
     if (e.target.closest('.note-edit-btn')) {
       resetDeleteConfirmations();
       startEditing(id);
-      return;
-    }
-
-    // Copy button
-    if (e.target.closest('.note-copy-btn')) {
-      e.stopPropagation();
-      copyNote(id);
       return;
     }
 
@@ -366,7 +411,7 @@ function setupNoteEvents() {
     }
     const isEditInput = e.target.classList.contains('note-edit-input');
     const isTitleInput = e.target.classList.contains('note-edit-title-input');
-    if (e.key === 'Enter' && ((isEditInput && !e.shiftKey) || isTitleInput)) {
+    if (e.key === 'Enter' && ((isEditInput && (e.ctrlKey || e.metaKey)) || isTitleInput)) { // Enter in the text = new line
       e.preventDefault();
       const item = e.target.closest('.note-item');
       const id = item?.dataset.id;
@@ -391,6 +436,11 @@ function setupNoteEvents() {
       return;
     }
     
+    if (trashMode || (lockLayout && !list.classList.contains('edit-mode'))) {
+      e.preventDefault();
+      return;
+    }
+
     e.dataTransfer.effectAllowed = 'move';
     item.classList.add('dragging');
     document.body.classList.add('dragging-active');
@@ -413,55 +463,36 @@ function setupNoteEvents() {
     // here would shift the layout under the pointer and flip back next event (flicker loop).
     if (!draggingItem || e.target.closest('.note-item') === draggingItem) { return; }
 
-    // Mini sticker: the pointer's half of the list decides its column.
-    if (draggingItem.classList.contains('mini-sticker')) {
-      const rect = list.getBoundingClientRect();
-      const side = e.clientX > rect.left + rect.width / 2 ? 'right' : 'left';
-      if (draggingItem.dataset.side !== side) {
-        draggingItem.dataset.side = side;
-      }
+    // Half-width note: the pointer's half of the list decides its column.
+    const listRect = list.getBoundingClientRect();
+    const dragFull = draggingItem.classList.contains('full-width');
+    const side = e.clientX > listRect.left + listRect.width / 2 ? 'right' : 'left';
+    if (!dragFull && draggingItem.dataset.side !== side) { draggingItem.dataset.side = side; }
+
+    // The pointer must be over a note, or in empty space of a column. Gaps hold no target:
+    // picking the "nearest" note there made the order flip back and forth.
+    const inside = r => e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+    if (inside(draggingItem.getBoundingClientRect())) { return; }
+    const items = Array.from(list.querySelectorAll('.note-item:not(.dragging):not(.editing)'));
+    const hit = items.find(item => inside(item.getBoundingClientRect()));
+
+    let target; // node to insert before; null = end of list
+    if (hit) {
+      const rect = hit.getBoundingClientRect();
+      target = e.clientY > rect.top + rect.height / 2 ? hit.nextSibling : hit;
+    } else {
+      // Empty space: go right after the lowest note above the pointer that shares this column
+      // (or any full-width note, which splits the list), else to the top.
+      const above = items
+        .filter(i => i.classList.contains('full-width') || dragFull || i.dataset.side === side)
+        .filter(i => i.getBoundingClientRect().bottom <= e.clientY)
+        .sort((m, n) => n.getBoundingClientRect().bottom - m.getBoundingClientRect().bottom)[0];
+      target = above ? above.nextSibling : items[0];
     }
-    
-    const items = Array.from(list.querySelectorAll('.note-item:not(.dragging)'));
-    if (items.length === 0) { return; }
-    
-    let closestItem = null;
-    let closestDistance = Infinity;
-    let isAfter = false;
-    
-    items.forEach(item => {
-      if (item.classList.contains('editing')) { return; }
-      
-      const rect = item.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      const distance = Math.hypot(e.clientX - centerX, e.clientY - centerY);
-      
-      if (distance < closestDistance) {
-        closestDistance = distance;
-        closestItem = item;
-        
-        const dx = e.clientX - centerX;
-        const dy = e.clientY - centerY;
-        
-        if (item.classList.contains('full-width')) {
-          isAfter = dy > 0;
-        } else {
-          if (Math.abs(dy) > 25) {
-            isAfter = dy > 0;
-          } else {
-            isAfter = dx > 0;
-          }
-        }
-      }
-    });
-    
-    const target = isAfter ? closestItem?.nextSibling : closestItem;
     // dragover fires continuously; only touch the DOM when the position actually changes.
-    if (closestItem && target !== draggingItem && draggingItem.nextSibling !== target) {
+    if (target !== draggingItem && draggingItem.nextSibling !== target) {
       list.insertBefore(draggingItem, target);
     }
-    syncDomSides(list);
   });
 
   list.addEventListener('drop', async (e) => {
@@ -574,7 +605,7 @@ export function initNotesFeature() {
       });
 
       addInput?.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
+        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { // plain Enter = new line
           e.preventDefault();
           addNote(titleInput?.value || '', addInput.value);
           addInput.value = '';
@@ -599,14 +630,33 @@ export function initNotesFeature() {
         }
       });
 
+      document.getElementById('notes-edit-toggle')?.addEventListener('click', () => {
+        setEditMode(!document.getElementById('notes-list')?.classList.contains('edit-mode'));
+      });
+
+      document.getElementById('notes-trash-btn')?.addEventListener('click', () => setTrashMode(true));
+      document.getElementById('notes-trash-back')?.addEventListener('click', () => setTrashMode(false));
+
       // Event delegation for notes list
       setupNoteEvents();
 
       // Load settings and notes asynchronously to make tab open speed near-instant (0.1ms)
-      loadNotes().then((loadedNotes) => {
+      Promise.all([loadNotes(), loadTrash()]).then(([loadedNotes, loadedTrash]) => {
         notes = loadedNotes;
+        trash = loadedTrash;
         renderNotes();
       });
+    },
+    // Lock setting may have changed on the Settings tab.
+    onActivate() {
+      Settings.load().then((s) => {
+        lockLayout = Boolean(s.notesLockLayout);
+        document.getElementById('notes-list')?.classList.toggle('layout-locked', lockLayout);
+      });
+    },
+    onDeactivate() {
+      setEditMode(false);
+      if (trashMode) { setTrashMode(false); }
     },
   });
 }

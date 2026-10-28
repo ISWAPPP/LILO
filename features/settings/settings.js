@@ -31,6 +31,7 @@ export function initSettingsFeature() {
       const picsHistoryLimitSlider = document.getElementById('setting-pics-history-limit');
       const picsHistoryLimitVal = document.getElementById('setting-pics-history-limit-val');
       const passgenEnabledCheckbox = document.getElementById('setting-btn-passgen');
+      const notesLockCheckbox = document.getElementById('setting-notes-lock');
 
       const dq = settings.dnsQueries || { a: true, aaaa: false, mx: true, txt: false, spf: false, dkim: false, dmarc: false, ns: true, caa: false, soa: false };
       const qA = document.getElementById('setting-query-a');
@@ -64,6 +65,7 @@ export function initSettingsFeature() {
       if (tbDns) { tbDns.checked = tb.dns; }
       if (tbWhois) { tbWhois.checked = tb.whois; }
       if (passgenEnabledCheckbox) { passgenEnabledCheckbox.checked = settings.passgenEnabled !== false; }
+      if (notesLockCheckbox) { notesLockCheckbox.checked = Boolean(settings.notesLockLayout); }
       
       // Theme Palette logic
       const themeSwatches = document.querySelectorAll('.theme-swatch');
@@ -128,6 +130,7 @@ export function initSettingsFeature() {
           dnsHistoryLimit: parseInt(historyLimitSlider?.value || '4', 10),
           picsHistoryLimit: parseInt(picsHistoryLimitSlider?.value || '5', 10),
           passgenEnabled: passgenEnabledCheckbox ? passgenEnabledCheckbox.checked : true,
+          notesLockLayout: Boolean(notesLockCheckbox?.checked),
           dnsQueries: {
             a: qA?.checked,
             aaaa: qAAAA?.checked,
@@ -185,7 +188,7 @@ export function initSettingsFeature() {
         cb?.addEventListener('change', () => handleSave());
       });
 
-      const tbCheckboxes = [tbSsl, tbDns, tbWhois, passgenEnabledCheckbox];
+      const tbCheckboxes = [tbSsl, tbDns, tbWhois, passgenEnabledCheckbox, notesLockCheckbox];
       tbCheckboxes.forEach(cb => {
         cb?.addEventListener('change', () => handleSave());
       });
