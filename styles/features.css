@@ -666,23 +666,103 @@
     line-height: 1.4;
 }
 
-/* Actions — hidden by default, overlay on hover so they don't squeeze the title */
+/* Actions — only shown while Edit mode is on (toggle next to the add card) */
 .note-actions {
-    display: flex;
+    display: none;
     gap: 4px;
     flex-shrink: 0;
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity 0.15s ease, visibility 0.15s ease;
 }
 
-.note-item:hover .note-actions {
-    visibility: visible;
-    opacity: 1;
+#notes-list.edit-mode .note-actions {
+    display: flex;
 }
 
-.note-copy-btn,
+.notes-top {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.notes-top .notes-add-card {
+    flex: 1;
+    min-width: 0;
+}
+
+.notes-edit-toggle {
+    flex: 0 0 auto;
+    order: 3; /* rightmost: stays put when the Trash button appears */
+    width: 40px;
+    height: 43px; /* = collapsed add card: 32px input + 2*4px padding + 2*1px border + 1px */
+    padding: 0;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    background: var(--bg-sec);
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.notes-edit-toggle.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-text, #fff);
+}
+
+/* Trash button only while Edit mode is on; Trash view is a reduced copy of the list */
+.notes-trash-btn {
+    display: none;
+    order: 2;
+}
+
+.notes-top:has(.notes-edit-toggle.active) .notes-trash-btn {
+    display: flex;
+}
+
+#notes-trash-bar {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: var(--text-muted);
+}
+
+#notes-trash-back {
+    height: 30px;
+    padding: 0 12px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+}
+
+#notes-tab.trash-mode #notes-trash-bar {
+    display: flex;
+}
+
+#notes-tab.trash-mode .notes-top,
+#notes-tab.trash-mode .passgen-section {
+    display: none !important;
+}
+
+/* Corner buttons sit over the note text: give them the note's own background */
+#notes-list.edit-mode .note-actions button {
+    background: var(--note-bg, var(--bg-main));
+    border: 1px solid var(--note-border, var(--border-light)) !important;
+    border-radius: var(--radius-md);
+}
+
+/* Edit mode: dashed note borders show that the notes are editable */
+#notes-list.edit-mode .note-item:not(.editing) {
+    border-style: dashed;
+}
+
+/* Layout locked outside Edit mode: notes can't be dragged, so no grab cursor */
+#notes-list.layout-locked:not(.edit-mode) .note-item[draggable="true"] {
+    cursor: pointer;
+}
+
 .note-edit-btn,
+.note-restore-btn,
 .note-delete-btn {
     width: 28px;
     height: 28px;
@@ -699,8 +779,8 @@
     transition: all 0.2s;
 }
 
-.note-copy-btn:hover,
-.note-edit-btn:hover {
+.note-edit-btn:hover,
+.note-restore-btn:hover {
     color: var(--note-btn-hover-color);
     background: var(--note-btn-hover-bg);
     opacity: 1;

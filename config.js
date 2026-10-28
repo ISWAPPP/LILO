@@ -23,6 +23,7 @@ export const Config = {
 
   storage: {
     notesKey: 'lilo_notes',
+    trashKey: 'lilo_notes_trash',
     settingsKey: 'lilo_settings',
     lastTabKey: 'lilo_last_tab',
     picsHistoryKey: 'lilo_pics_history',

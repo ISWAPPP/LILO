@@ -2,7 +2,9 @@
 
 import { Config } from '../../config.js';
 import { Utils } from '../../core/utils.js';
+import { I18n } from '../../core/i18n.js';
 import { TabManager } from '../../core/tabs.js';
+import { Settings } from '../../core/settings.js';
 import { NotesRenderer } from './notes-renderer.js';
 import { initPassgen } from '../passgen/passgen.js';
 
@@ -18,16 +20,37 @@ async function loadNotes() {
 
 const saveNotes = () => chrome.storage.local.set({ [Config.storage.notesKey]: notes });
 
+const TRASH_DAYS = 30;
+
+async function loadTrash() {
+  const { [Config.storage.trashKey]: saved = [] } = await chrome.storage.local.get(Config.storage.trashKey);
+  const cutoff = Date.now() - TRASH_DAYS * 86400000;
+  return saved.filter(n => n.deletedAt > cutoff); // expired notes are dropped on the next save
+}
+
+const saveTrash = () => chrome.storage.local.set({ [Config.storage.trashKey]: trash });
+
 // ==================== NOTES LOGIC ====================
 
 let notes = [];
+let trash = [];
+let trashMode = false; // the list shows the Trash copy: restore / delete forever only
+let lockLayout = false; // setting: notes can only be dragged in Edit mode
+
+/** Edit mode shows the edit/delete buttons; it is never saved, so it resets with the popup. */
+function setEditMode(on) {
+  document.getElementById('notes-list')?.classList.toggle('edit-mode', on);
+  const btn = document.getElementById('notes-edit-toggle');
+  btn?.classList.toggle('active', on);
+  btn?.setAttribute('aria-pressed', String(on));
+}
 
 async function renderNotes() {
   const list = document.getElementById('notes-list');
   if (!list) {
     return;
   }
-  list.innerHTML = NotesRenderer.notesList(notes);
+  list.innerHTML = NotesRenderer.notesList(trashMode ? trash : notes, trashMode);
 
   // Calibrate and apply bottom indicators dynamically on mount
   setTimeout(() => {
@@ -54,8 +77,36 @@ async function addNote(title, text) {
 }
 
 async function deleteNote(id) {
-  notes = notes.filter(n => n.id !== id);
+  if (trashMode) {
+    trash = trash.filter(n => n.id !== id); // delete forever
+    saveTrash();
+  } else {
+    const note = notes.find(n => n.id === id);
+    if (note) {
+      trash.unshift({ ...note, deletedAt: Date.now() });
+      saveTrash();
+      Utils.showToast(I18n.t('toast_note_trashed'));
+    }
+    notes = notes.filter(n => n.id !== id);
+    saveNotes();
+  }
+  renderNotes();
+}
+
+function restoreNote(id) {
+  const note = trash.find(n => n.id === id);
+  if (!note) { return; }
+  delete note.deletedAt;
+  notes.unshift(note);
+  trash = trash.filter(n => n.id !== id);
   saveNotes();
+  saveTrash();
+  renderNotes();
+}
+
+function setTrashMode(on) {
+  trashMode = on;
+  document.getElementById('notes-tab')?.classList.toggle('trash-mode', on);
   renderNotes();
 }
 
@@ -253,17 +304,15 @@ function setupNoteEvents() {
     }
     const id = item.dataset.id;
 
+    if (e.target.closest('.note-restore-btn')) {
+      restoreNote(id);
+      return;
+    }
+
     // Edit button
     if (e.target.closest('.note-edit-btn')) {
       resetDeleteConfirmations();
       startEditing(id);
-      return;
-    }
-
-    // Copy button
-    if (e.target.closest('.note-copy-btn')) {
-      e.stopPropagation();
-      copyNote(id);
       return;
     }
 
@@ -362,7 +411,7 @@ function setupNoteEvents() {
     }
     const isEditInput = e.target.classList.contains('note-edit-input');
     const isTitleInput = e.target.classList.contains('note-edit-title-input');
-    if (e.key === 'Enter' && ((isEditInput && !e.shiftKey) || isTitleInput)) {
+    if (e.key === 'Enter' && ((isEditInput && (e.ctrlKey || e.metaKey)) || isTitleInput)) { // Enter in the text = new line
       e.preventDefault();
       const item = e.target.closest('.note-item');
       const id = item?.dataset.id;
@@ -387,6 +436,11 @@ function setupNoteEvents() {
       return;
     }
     
+    if (trashMode || (lockLayout && !list.classList.contains('edit-mode'))) {
+      e.preventDefault();
+      return;
+    }
+
     e.dataTransfer.effectAllowed = 'move';
     item.classList.add('dragging');
     document.body.classList.add('dragging-active');
@@ -551,7 +605,7 @@ export function initNotesFeature() {
       });
 
       addInput?.addEventListener('keydown', (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
+        if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) { // plain Enter = new line
           e.preventDefault();
           addNote(titleInput?.value || '', addInput.value);
           addInput.value = '';
@@ -576,14 +630,33 @@ export function initNotesFeature() {
         }
       });
 
+      document.getElementById('notes-edit-toggle')?.addEventListener('click', () => {
+        setEditMode(!document.getElementById('notes-list')?.classList.contains('edit-mode'));
+      });
+
+      document.getElementById('notes-trash-btn')?.addEventListener('click', () => setTrashMode(true));
+      document.getElementById('notes-trash-back')?.addEventListener('click', () => setTrashMode(false));
+
       // Event delegation for notes list
       setupNoteEvents();
 
       // Load settings and notes asynchronously to make tab open speed near-instant (0.1ms)
-      loadNotes().then((loadedNotes) => {
+      Promise.all([loadNotes(), loadTrash()]).then(([loadedNotes, loadedTrash]) => {
         notes = loadedNotes;
+        trash = loadedTrash;
         renderNotes();
       });
+    },
+    // Lock setting may have changed on the Settings tab.
+    onActivate() {
+      Settings.load().then((s) => {
+        lockLayout = Boolean(s.notesLockLayout);
+        document.getElementById('notes-list')?.classList.toggle('layout-locked', lockLayout);
+      });
+    },
+    onDeactivate() {
+      setEditMode(false);
+      if (trashMode) { setTrashMode(false); }
     },
   });
 }
