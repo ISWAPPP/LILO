@@ -480,7 +480,8 @@
 /* Drag & Drop Reordering Visuals */
 .note-item.dragging {
     opacity: 0.45;
-    border: 2px dashed var(--accent);
+    outline: 2px dashed var(--accent); /* outline, not border: a thicker border grows the note and re-packs the grid mid-drag */
+    outline-offset: -2px;
     transform: scale(0.98);
     box-shadow: var(--shadow-md);
 }
@@ -511,7 +512,7 @@
 
 /* Two-column masonry: 1px grid rows, each note spans its own height (set in JS, notes.js
    layoutMasonry), so several short stickers stack beside one tall one. Full-width notes
-   span both columns; data-side="right" pins a lone mini sticker to the right column. */
+   span both columns; data-side picks the column of a half-width note. */
 #notes-list {
     display: grid !important;
     grid-template-columns: 1fr 1fr;
@@ -528,10 +529,6 @@
 #notes-list .notes-empty-state,
 #notes-list .note-item.full-width {
     grid-column: 1 / -1;
-}
-
-#notes-list .note-item.mini-sticker[data-side="right"] {
-    grid-column: 2;
 }
 
 /* Resize handle highlight */

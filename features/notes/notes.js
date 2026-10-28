@@ -193,31 +193,26 @@ function updateScrollIndicators(item) {
 
 // ==================== EVENT DELEGATION ====================
 
-/** Live preview while dragging: apply the same side rules to the DOM order. */
-function syncDomSides(list) {
-  const items = Array.from(list.querySelectorAll('.note-item'));
-  const pseudo = items.map(el => ({
-    width: el.classList.contains('mini-sticker') ? 48 : 100,
-    side: el.dataset.side,
-  }));
-  NotesRenderer.normalizeSides(pseudo).forEach((p, idx) => {
-    const side = p.side === 'right' ? 'right' : 'left';
-    if (items[idx].dataset.side !== side) {
-      items[idx].dataset.side = side;
-    }
-  });
-}
-
 const MASONRY_GAP = 8; // vertical gap between notes, px (grid rows are 1px)
 
-/** Each note spans as many 1px grid rows as it is tall, so the grid packs like masonry. */
+/**
+ * Two independent column stacks. Each half-width note lives in its own column (data-side) and
+ * stacks under the previous note of that column only; a full-width note starts below both
+ * columns. Moving a tall note never re-sorts the other column.
+ */
 function layoutMasonry(list, resizeObserver) {
+  const y = [1, 1]; // next free grid line per column
   list.querySelectorAll('.note-item').forEach(item => {
     resizeObserver.observe(item); // no-op if already observed
-    const span = `span ${Math.ceil(item.getBoundingClientRect().height) + MASONRY_GAP}`;
-    if (item.style.gridRowEnd !== span) {
-      item.style.gridRowEnd = span;
-    }
+    const rows = item.offsetHeight + MASONRY_GAP; // offsetHeight ignores the drag scale transform
+    const full = item.classList.contains('full-width');
+    const col = item.dataset.side === 'right' ? 1 : 0;
+    const start = full ? Math.max(y[0], y[1]) : y[col];
+    if (full) { y[0] = y[1] = start + rows; } else { y[col] = start + rows; }
+    const row = `${start} / span ${rows}`;
+    const column = full ? '1 / -1' : `${col + 1}`;
+    if (item.style.gridRow !== row) { item.style.gridRow = row; }
+    if (item.style.gridColumn !== column) { item.style.gridColumn = column; }
   });
 }
 
@@ -229,7 +224,8 @@ function setupNoteEvents() {
 
   // Re-pack on re-render / edit mode / drag reorder (childList) and on any note height change.
   const resizeObserver = new ResizeObserver(() => layoutMasonry(list, resizeObserver));
-  new MutationObserver(() => layoutMasonry(list, resizeObserver)).observe(list, { childList: true });
+  new MutationObserver(() => layoutMasonry(list, resizeObserver))
+    .observe(list, { childList: true, subtree: true, attributes: true, attributeFilter: ['data-side', 'class'] });
 
   // Global click listener to reset delete confirmations
   document.addEventListener('click', (e) => {
@@ -413,55 +409,36 @@ function setupNoteEvents() {
     // here would shift the layout under the pointer and flip back next event (flicker loop).
     if (!draggingItem || e.target.closest('.note-item') === draggingItem) { return; }
 
-    // Mini sticker: the pointer's half of the list decides its column.
-    if (draggingItem.classList.contains('mini-sticker')) {
-      const rect = list.getBoundingClientRect();
-      const side = e.clientX > rect.left + rect.width / 2 ? 'right' : 'left';
-      if (draggingItem.dataset.side !== side) {
-        draggingItem.dataset.side = side;
-      }
+    // Half-width note: the pointer's half of the list decides its column.
+    const listRect = list.getBoundingClientRect();
+    const dragFull = draggingItem.classList.contains('full-width');
+    const side = e.clientX > listRect.left + listRect.width / 2 ? 'right' : 'left';
+    if (!dragFull && draggingItem.dataset.side !== side) { draggingItem.dataset.side = side; }
+
+    // The pointer must be over a note, or in empty space of a column. Gaps hold no target:
+    // picking the "nearest" note there made the order flip back and forth.
+    const inside = r => e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+    if (inside(draggingItem.getBoundingClientRect())) { return; }
+    const items = Array.from(list.querySelectorAll('.note-item:not(.dragging):not(.editing)'));
+    const hit = items.find(item => inside(item.getBoundingClientRect()));
+
+    let target; // node to insert before; null = end of list
+    if (hit) {
+      const rect = hit.getBoundingClientRect();
+      target = e.clientY > rect.top + rect.height / 2 ? hit.nextSibling : hit;
+    } else {
+      // Empty space: go right after the lowest note above the pointer that shares this column
+      // (or any full-width note, which splits the list), else to the top.
+      const above = items
+        .filter(i => i.classList.contains('full-width') || dragFull || i.dataset.side === side)
+        .filter(i => i.getBoundingClientRect().bottom <= e.clientY)
+        .sort((m, n) => n.getBoundingClientRect().bottom - m.getBoundingClientRect().bottom)[0];
+      target = above ? above.nextSibling : items[0];
     }
-    
-    const items = Array.from(list.querySelectorAll('.note-item:not(.dragging)'));
-    if (items.length === 0) { return; }
-    
-    let closestItem = null;
-    let closestDistance = Infinity;
-    let isAfter = false;
-    
-    items.forEach(item => {
-      if (item.classList.contains('editing')) { return; }
-      
-      const rect = item.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      const distance = Math.hypot(e.clientX - centerX, e.clientY - centerY);
-      
-      if (distance < closestDistance) {
-        closestDistance = distance;
-        closestItem = item;
-        
-        const dx = e.clientX - centerX;
-        const dy = e.clientY - centerY;
-        
-        if (item.classList.contains('full-width')) {
-          isAfter = dy > 0;
-        } else {
-          if (Math.abs(dy) > 25) {
-            isAfter = dy > 0;
-          } else {
-            isAfter = dx > 0;
-          }
-        }
-      }
-    });
-    
-    const target = isAfter ? closestItem?.nextSibling : closestItem;
     // dragover fires continuously; only touch the DOM when the position actually changes.
-    if (closestItem && target !== draggingItem && draggingItem.nextSibling !== target) {
+    if (target !== draggingItem && draggingItem.nextSibling !== target) {
       list.insertBefore(draggingItem, target);
     }
-    syncDomSides(list);
   });
 
   list.addEventListener('drop', async (e) => {

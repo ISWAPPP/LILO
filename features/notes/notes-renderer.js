@@ -192,29 +192,23 @@ export const NotesRenderer = {
   },
  
   /**
-   * Keeps side='right' only where it can apply: a mini sticker that starts a grid row.
-   * Paired / full-width notes drop stale sides, so a saved side never blocks reordering.
+   * Every half-width note lives in a fixed column (side 'left' | 'right'), so moving one note
+   * never shifts the others. Notes without a side (legacy data) alternate within each run of
+   * half-width notes, like the old two-per-row layout; full-width notes drop it.
    */
   normalizeSides(notes) {
-    const isMini = n => n.width && n.width < 100;
-    let i = 0;
-    while (i < notes.length) {
-      const n = notes[i];
-      if (!isMini(n)) {
+    let prev = null;
+    notes.forEach(n => {
+      if (!(n.width && n.width < 100)) {
         delete n.side;
-        i += 1;
-      } else if (n.side === 'right') {
-        i += 1; // alone in its row, right column
-      } else {
-        delete n.side;
-        if (isMini(notes[i + 1] || {})) {
-          delete notes[i + 1].side; // second of a pair
-          i += 2;
-        } else {
-          i += 1;
-        }
+        prev = null;
+        return;
       }
-    }
+      if (n.side !== 'left' && n.side !== 'right') {
+        n.side = prev === 'left' ? 'right' : 'left';
+      }
+      prev = n.side;
+    });
     return notes;
   },
 
